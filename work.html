@@ -8,6 +8,21 @@
     <link href="https://api.fontshare.com/v2/css?f[]=general-sans@500,400&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        // Function to check if the user is on a mobile device
+    function isMobileDevice() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+    
+    // Redirect function
+    function redirectToMobilePage() {
+      window.location.href = 'mobile.html'; // Replace with the actual URL of your mobile page
+    }
+    
+    if (isMobileDevice()) {
+      redirectToMobilePage();
+    }
+        </script>
     <style>
         #wifi-loader {
 
