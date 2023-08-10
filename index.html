@@ -2,6 +2,21 @@
 <html lang="en">
 
 <head>
+  <script>
+    // Function to check if the user is on a mobile device
+function isMobileDevice() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+// Redirect function
+function redirectToMobilePage() {
+  window.location.href = 'mobile.html'; // Replace with the actual URL of your mobile page
+}
+
+if (isMobileDevice()) {
+  redirectToMobilePage();
+}
+    </script>
     <meta charset="UTF-8">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -263,7 +278,7 @@
 </head>
 
 <body class="" style="font-family: 'General Sans', sans-serif;">
-    <!-- Preloader -->
+    
     <div class="preloader">
         <div id="wifi-loader">
             <svg class="circle-outer" viewBox="0 0 86 86">
