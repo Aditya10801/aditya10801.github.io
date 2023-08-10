@@ -1,72 +1,465 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <title>Aditya Madan</title>
-  <script>
-    // Check if user is on a mobile device
-const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-
-
-// If user is on mobile and logged in, redirect to mobile-specific page
-if (isMobile ) {
-  window.location.href = "mobile.html";
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://api.fontshare.com/v2/css?f[]=general-sans@500,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        #wifi-loader {
+  
+  --front-color: #000;
+  --back-color: #c3c8de;
+  --text-color: #000;
+  width: 64px;
+  height: 64px;
+  border-radius: 50px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-</script>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
+
+#wifi-loader svg {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#wifi-loader svg circle {
+  position: absolute;
+  fill: none;
+  stroke-width: 6px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transform: rotate(-100deg);
+  transform-origin: center;
+}
+
+#wifi-loader svg circle.back {
+  stroke: var(--back-color);
+}
+
+#wifi-loader svg circle.front {
+  stroke: var(--front-color);
+}
+
+#wifi-loader svg.circle-outer {
+  height: 86px;
+  width: 86px;
+}
+
+#wifi-loader svg.circle-outer circle {
+  stroke-dasharray: 62.75 188.25;
+}
+
+#wifi-loader svg.circle-outer circle.back {
+  animation: circle-outer135 1.8s ease infinite 0.3s;
+}
+
+#wifi-loader svg.circle-outer circle.front {
+  animation: circle-outer135 1.8s ease infinite 0.15s;
+}
+
+#wifi-loader svg.circle-middle {
+  height: 60px;
+  width: 60px;
+}
+
+#wifi-loader svg.circle-middle circle {
+  stroke-dasharray: 42.5 127.5;
+}
+
+#wifi-loader svg.circle-middle circle.back {
+  animation: circle-middle6123 1.8s ease infinite 0.25s;
+}
+
+#wifi-loader svg.circle-middle circle.front {
+  animation: circle-middle6123 1.8s ease infinite 0.1s;
+}
+
+#wifi-loader svg.circle-inner {
+  height: 34px;
+  width: 34px;
+}
+
+#wifi-loader svg.circle-inner circle {
+  stroke-dasharray: 22 66;
+}
+
+#wifi-loader svg.circle-inner circle.back {
+  animation: circle-inner162 1.8s ease infinite 0.2s;
+}
+
+#wifi-loader svg.circle-inner circle.front {
+  animation: circle-inner162 1.8s ease infinite 0.05s;
+}
+
+#wifi-loader .text {
+  position: absolute;
+  bottom: -40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-transform: lowercase;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.2px;
+}
+
+#wifi-loader .text::before, #wifi-loader .text::after {
+  content: attr(data-text);
+}
+
+#wifi-loader .text::before {
+  color: var(--text-color);
+}
+
+#wifi-loader .text::after {
+  color: var(--front-color);
+  animation: text-animation76 3.6s ease infinite;
+  position: absolute;
+  left: 0;
+}
+
+@keyframes circle-outer135 {
+  0% {
+    stroke-dashoffset: 25;
+  }
+
+  25% {
+    stroke-dashoffset: 0;
+  }
+
+  65% {
+    stroke-dashoffset: 301;
+  }
+
+  80% {
+    stroke-dashoffset: 276;
+  }
+
+  100% {
+    stroke-dashoffset: 276;
+  }
+}
+
+@keyframes circle-middle6123 {
+  0% {
+    stroke-dashoffset: 17;
+  }
+
+  25% {
+    stroke-dashoffset: 0;
+  }
+
+  65% {
+    stroke-dashoffset: 204;
+  }
+
+  80% {
+    stroke-dashoffset: 187;
+  }
+
+  100% {
+    stroke-dashoffset: 187;
+  }
+}
+
+@keyframes circle-inner162 {
+  0% {
+    stroke-dashoffset: 9;
+  }
+
+  25% {
+    stroke-dashoffset: 0;
+  }
+
+  65% {
+    stroke-dashoffset: 106;
+  }
+
+  80% {
+    stroke-dashoffset: 97;
+  }
+
+  100% {
+    stroke-dashoffset: 97;
+  }
+}
+
+@keyframes text-animation76 {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  50% {
+    clip-path: inset(0);
+  }
+
+  100% {
+    clip-path: inset(0 0 0 100%);
+  }
+}
+ 
+        .card {
+            position: relative;
+            overflow: hidden;
+            /* To ensure the blurred background does not overflow */
+        }
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .card:hover .hidden {
+            display: flex;
+        }
+
+        .bg-wrapper {
+            position: relative;
+            z-index: 1;
+            /* Ensure the text appears above the blurred background */
+        }
+
+        .bg-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            border-radius: 20px;
+            background-size: cover;
+            height: 100%;
+            background-image: url('me.jpeg');
+            filter: blur(0);
+            /* Initially, no blur effect */
+            z-index: -1;
+        }
+
+        .card:hover .bg-wrapper::before {
+            filter: blur(4px);
+            /* Adjust the blur amount as per your preference */
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+
+
+
 </head>
 
-<body class="bg-[#343a40]" style="font-family: 'DM Sans', sans-serif;">
-  <div class="h-screen w-screen p-10 grid grid-rows gap-5">
-    <div class="h-[55vh] flex flex-cols gap-5 ">
-      <div class="w-1/2  grid grid-rows  gap-5">
-        <div class="h-[27.5vh] bg-[#495057] rounded-3xl text-white p-5 relative">
-          <div class="text-[3.25rem] leading-none font-bold">Bringing Your Ideas To Life Through Digital Products</div>
-          <button onclick="window.location.href='https://wa.me/9810270953';"
-            
-            class="h-12 w-52 bg-[#e9ecef] font-bold rounded-3xl  absolute bottom-5 right-5 flex flex-cols justify-center items-center text-3xl p-5 text-black">Hire
-            Me 👋🏻</button>
+<body class="" style="font-family: 'General Sans', sans-serif;">
+    <!-- Preloader -->
+    <div class="preloader">
+        <div id="wifi-loader">
+            <svg class="circle-outer" viewBox="0 0 86 86">
+                <circle class="back" cx="43" cy="43" r="40"></circle>
+                <circle class="front" cx="43" cy="43" r="40"></circle>
+                <circle class="new" cx="43" cy="43" r="40"></circle>
+            </svg>
+            <svg class="circle-middle" viewBox="0 0 60 60">
+                <circle class="back" cx="30" cy="30" r="27"></circle>
+                <circle class="front" cx="30" cy="30" r="27"></circle>
+            </svg>
+            <svg class="circle-inner" viewBox="0 0 34 34">
+                <circle class="back" cx="17" cy="17" r="14"></circle>
+                <circle class="front" cx="17" cy="17" r="14"></circle>
+            </svg>
+            <div class="text" data-text="Loading"></div>
         </div>
-        <div class="h-[27.5vh] flex flex-cols gap-5 rounded-3xl">
-          <div class="w-1/3 bg-[#8ecae6] rounded-3xl text-xl  text-center flex flex-cols justify-center items-center"><span class="text-4xl font-bold">3+<br><span class="font-medium">Years Of Experience</span></div>
-          <div class="w-1/3 bg-[#f4a261] rounded-3xl text-xl  text-center flex flex-cols justify-center items-center"><span class="text-4xl font-bold">15+<br><span class="font-medium">Projects Handled</span></div>
-          <div class="w-1/3 bg-[#e76f51] rounded-3xl text-xl  text-center flex flex-cols justify-center items-center"><span class="text-4xl font-bold">5+<br><span class="font-medium">Events Won (2021-22)</span></div>
-        </div>
-      </div>
-      <div class="w-1/2 grid grid-rows gap-5 ">
-        <div class="h-20 w-full rounded-3xl bg-[#495057]">
-          <div class="text-6xl text-white flex flex-cols font-bold justify-center items-center h-full">Aditya Madan</div>
-        </div>
-        <div class="flex  w-full flex flex-cols  gap-5">
-<div class="h-[45vh] w-1/2 bg-[#457b9d] rounded-3xl overflow-hidden"><img src="peep-54.png"></div>
-<div class="h-[45vh] w-1/2  grid grid-rows gap-5">
-<div class="h-[13vh] p-5 rounded-3xl bg-[#495057] text-3xl flex flex-cols justify-center items-center text-gray-200">Name: &nbsp;&nbsp;<div class=" text-white flex justify-end">Aditya</div></div>
-<div class="h-[13vh] p-5 rounded-3xl bg-[#495057] text-3xl flex flex-cols justify-center items-center text-gray-200">Location: &nbsp;<div class=" text-white flex justify-end">Delhi,IN</div></div>
-<div class="h-[13vh] p-5 rounded-3xl bg-[#495057] text-3xl flex flex-cols justify-center items-center text-gray-200">'Sup RN ? : &nbsp;&nbsp;<div class=" text-white flex justify-end">nm, wbu  </div></div>
-</div>
-        </div>
-      </div>
     </div>
-    <div class="h-[35vh] flex flex-cols py-5 gap-5">
-<div class="w-1/2 bg-[#495057] rounded-3xl flex p-5 flex-cols justify-center items-center h-full">
-  <div class="h-[25.5vh] flex flex-cols gap-5 rounded-3xl w-full">
- <button onclick="window.location.href='https://aditya10801.github.io/Think.Ink/';" class="w-1/3 bg-[#343a40]  text-white rounded-3xl text-xl  text-center flex flex-cols p-5 justify-center items-center"><span class="text-4xl font-bold">Think.Ink<br><span class="font-medium text-2xl">A Tattoo Studio</span></button></A>
- <button onclick="window.location.href='https://aditya10801.github.io/nCreate-2022/';" class="w-1/3 bg-[#343a40]  text-white rounded-3xl text-xl  text-center flex flex-cols p-5 justify-center items-center"><span class="text-4xl font-bold">AMEX EVs<br><span class="font-medium text-2xl">An Electric Car Band</span></button></A>
- <button onclick="window.location.href='https://github.com/Aditya10801';" class="w-1/3 bg-[#343a40]  text-white rounded-3xl text-xl border-2 border-white  text-center flex flex-cols justify-center p-5 items-center"><span class="text-4xl font-bold">My Github<br><span class="font-medium text-2xl">View More Here</span></button></A>
-  </div>
-</div>
-<div class="w-1/2 bg-[#495057] text-white rounded-3xl text-justify p-5 text-[1.35rem] leading-[1.5rem] "><div class="font-bold">Hi, I'm Aditya, a self-taught 16-year-old web developer passionate about creating user-friendly websites. I pride myself on my attention to detail and expertise in HTML, CSS, and JavaScript. When I'm not coding, I'm exploring the world of science and physics or enjoying the outdoors through hiking and photography. I'm excited to continue developing my skills and exploring new possibilities in web development.</div></div>
-    </div>
-  </div>
+    <div class="py-5 px-10 w-screen h-screen">
+    <div class="h-[33vh] w-full  ">
+        <div class="flex flex-cols gap-5 justify-center items-center">
+            <div class="w-1/4 border-2 border-black h-[35vh] rounded-3xl">
+                <div class="flex flex-cols px-3 py-10 h-full">
+                    <div class="grid ">
+                        <h1 class='text-2xl text-left' style="font-family: 'Inter', sans-serif;"> Hello 👋🏻</h1>
+                        <p class="text-[0.8rem] text-[#464646] ">I’m Aditya, a self-taught 16-year-old web
+                            developer passionate about creating user-friendly
+                            websites. I specialize in HTML, CSS, and
+                            JavaScript. When I’m not coding, I explore
+                            science, hike, and take photographs. Excited to
+                            continue growing in web development!</p>
+                    </div>
+                </div>
+            </div>
+            <div class="w-2/4 border-2 border-black h-[35vh] rounded-3xl">
+                <Div class="flex flex-cols justify-center items-center h-[35vh]">
+                    <div class='grid gap-5'> <img src="hero.png" class=" bg-cover  bg-contain w-[27rem]">
+                        <div class="flex flex-cols justify-center items-center">
+                            <button
+                                class="w-48 h-12 rounded-full px-5 bg-black flex flex-cols justify-center items-center text-white hover:bg-white hover:border-2 hover:border-black hover:text-black">Let's
+                                Work Together</button>
+                        </div>
+                    </Div>
+                </div>
 
-  
-  
+            </div>
+            <div class="w-1/4 border-2 border-black h-[35vh] rounded-3xl card">
+                <div
+                    class="bg-wrapper rounded-3xl bg-cover hover:blur-bg-image flex flex-cols justify-center items-center h-full px-20">
+                    <div class="grid gap-5">
+                        <button class="flex flex-cols justify-center items-center h-full hidden">
+                            <p class="text-[1rem] text-black px-5 py-2 rounded-full bg-white hover:bg-transparent hover:border-2 hover:border-white hover:text-white">Say Hello</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="h-[53vh] mt-10 ">
+        <div class="flex flex-cols justify-center gap-5 items-center h-[11rem]">
+            <div class="w-1/2  ">
+                <div class="grid gap-5  h-full">
+                    <div class="h-full w-full flex flex-cols gap-5 justify-center items-center ">
+                        <div class="w-1/2 h-[11rem] bg-black rounded-3xl relative">
+                            <div class="flex flex-cols justify-center items-center h-full" id="cardContent">
+                                <h1 class="text-2xl text-white " id="originalText">Industry Experience 🏆</h1>
+                                <h1 class="text-[0.9rem] mx-5 text-white hidden" id="updatedText">Executed Projects : 60+ <br>Leading Achievement: 30+ <br> Expertise Accumumulation : 5+ years</h1>
+                            </div>
+                            <img src="public/images/arrow.png" onclick="changeText()" id="changeButton" class="cursor-pointer absolute bottom-5 w-3 right-5">
+                            <img src="public/images/arrow4.png" onclick="revertText()" id="revertButton"  class="hidden cursor-pointer absolute bottom-5 w-3 left-5">
+                        </div>
+                        <div class="w-1/2 h-[11rem] bg-black rounded-3xl relative">
+                            <div class="flex flex-cols justify-center items-center h-full">
+                                <h1 class="text-2xl text-white">Work & Skill Set</h1>
+                            </div>
+                            <A href="work.html"><img src="public/images/arrow.png" class="absolute bottom-5 w-3 right-5"></A>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div class="h-[11rem] w-full border-2 border-black rounded-3xl absolute z-10 bg-white">
+                            <div class="h-12 px-10 py-5 rounded-3xl relative"> 
+                                <h1 class="text-2xl absolute">Testimonials</h1>
+                                <div class="absolute right-5">
+                                    <div class="flex flex-cols gap-5">
+                                        <img id="prevButton" src="public/images/arrow2.png" class="h-5 ">
+                                        <img id="nextButton" src="public/images/arrow3.png" class="h-5">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='px-10 py-2'>
+                                <p id="testimonialText" class="text-[0.8rem] text-gray-800">
+                                   
+                                    <br><br>
+                                    
+                                </p>
+                            </div>
+                        </div>
+                        <div class="h-[11rem] w-full border-2 border-black rounded-3xl absolute ml-1 mt-1"></div>
+                        <div class="h-[11rem] w-full border-2 border-black rounded-3xl absolute ml-2 mt-2"></div>
+                    </div>
+                    
+                    <script>
+                        const testimonials = [
+                            {
+                                text: "Coming Soon",
+                                author: "Lacey Gerard"
+                            },
+                            {
+                                text: "Coming Soon",
+                                author: "Lacey Gerard"
+                            },
+                          
+
+                            // Add more testimonials here
+                        ];
+                    
+                        const testimonialText = document.getElementById('testimonialText');
+                        const prevButton = document.getElementById('prevButton');
+                        const nextButton = document.getElementById('nextButton');
+                    
+                        let currentIndex = 0;
+                    
+                        function updateTestimonial() {
+                            testimonialText.innerHTML = testimonials[currentIndex].text;
+                        }
+                    
+                        prevButton.addEventListener('click', () => {
+                            currentIndex = (currentIndex - 1 + testimonials.length) % testimonials.length;
+                            updateTestimonial();
+                        });
+                    
+                        nextButton.addEventListener('click', () => {
+                            currentIndex = (currentIndex + 1) % testimonials.length;
+                            updateTestimonial();
+                        });
+                    
+                        // Initialize with the first testimonial
+                        updateTestimonial();
+                    </script>
+                    
+                </div>
+            </div>
+            <div class="w-1/2 bg-[url('public/images/intersection-8.jpg')] bg-cover h-[23.8rem] mt-48 rounded-3xl relative">
+                <div class="w-full backdrop-brightness-10 rounded-3xl">
+                    <div class="absolute top-5 left-5 grid">
+                        <h1 class="text-2xl text-white">Sole Finds : A new way to store your stuff</h1>
+                        <p class="text-[1rem] text-white">Revolutionize the way your store your precious <br>things in
+                            public lockers. </p>
+                       <A href="https://adityamadan.tech/solefinds/"> <button
+                            class="w-32 mt-5 hover:bg-transparent hover:text-white hover:border-2 hover:border-white transition ease-in-out rounded-full py-2 bg-white text-black">Visit
+                            Site</button></A>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="w-screen h-12 absolute bottom-0 bg-black"></div>
 </body>
 
+<script>
+    function changeText() {
+        var originalTextElement = document.getElementById('originalText');
+        var updatedTextElement = document.getElementById('updatedText');
+        var changeButton = document.getElementById('changeButton');
+        var revertButton = document.getElementById('revertButton');
+        
+        originalTextElement.classList.add('hidden');
+        updatedTextElement.classList.remove('hidden');
+        changeButton.classList.add('hidden');
+        revertButton.classList.remove('hidden');
+    }
+    
+    function revertText() {
+        var originalTextElement = document.getElementById('originalText');
+        var updatedTextElement = document.getElementById('updatedText');
+        var changeButton = document.getElementById('changeButton');
+        var revertButton = document.getElementById('revertButton');
+        
+        originalTextElement.classList.remove('hidden');
+        updatedTextElement.classList.add('hidden');
+        changeButton.classList.remove('hidden');
+        revertButton.classList.add('hidden');
+    }
+
+</script>
+ <script>
+        // Hide the preloader after 5 seconds
+        window.addEventListener('load', function () {
+            setTimeout(function () {
+                var preloader = document.querySelector('.preloader');
+                preloader.style.display = 'none';
+            }, 5000); // 5000 milliseconds = 5 seconds
+        });
+    </script>
 </html>
