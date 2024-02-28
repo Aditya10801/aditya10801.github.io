@@ -7,44 +7,81 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,300,400&display=swap" rel="stylesheet">
 </head>
 
-<body class="bg-[#343a40]" style="font-family: 'DM Sans', sans-serif;">
-    <div class='flex flex-cols justify-center items-center text-white font-bold text-5xl mt-10'>
-        Testimonials.
+<body class="" style="font-family: 'Satoshi', sans-serif;">
+    
+<div class="mt-10 text-5xl text-gray-400 text-center font-bold">Happy with our service ?</div>
+
+<div class="mt-2 text-3xl text-gray-900 text-center font-bold">Please fill out this form.</div>
+
+
+<div class=" px-10 py-10  w-full">
+ <div class="lg:md:flex gap-10 grid">
+    <div class="lg:md:w-1/2 text-justify">
+        Hello.
+<br>
+We hope you had a great experience working with us! <br>Your satisfaction is of utmost importance to us, and we would greatly appreciate it if you could take a moment to share your thoughts about the services we provided.
+
+Your feedback and testimonials are invaluable to our growth and help us enhance our services to better serve you and our future clients. We believe that the best way to gauge the quality of our work is through the experiences and opinions of our valued clients like you.
+<br><br>
+Please take a moment to complete the form and let us know about your experience with our team. Your testimonial will be featured on our website or other promotional materials to showcase the positive experiences of our clients.
+<br><br>
+We sincerely thank you for choosing our services and for taking the time to provide your valuable feedback. If you have any additional comments or suggestions, please feel free to include them in the form or reach out to our customer support team directly.
+
+Thank you once again for your trust and support. We look forward to serving you in the future.
+<br><br>
+Best regards,<br>
+Aditya
     </div>
-    <div class="h-[60vh] mt-10">
-        <div class="gap-10 grid grid-cols lg:md:flex lg:md:flex-cols-2 h-full px-10">
-            <div class="h-full lg:md:w-1/2 text-white text-justify">Hello.<br>
-                <br>
-                We hope you had a great experience working with us! Your satisfaction is of utmost importance to us, and
-                we would greatly appreciate it if you could take a moment to share your thoughts about the services we
-                provided.
-                <br><br>
-                Your feedback and testimonials are invaluable to our growth and help us enhance our services to better
-                serve you and our future clients. We believe that the best way to gauge the quality of our work is
-                through the experiences and opinions of our valued clients like you.
-                <br><br>
-                Please take a moment to complete the form and let us know about your experience with our team. Your
-                testimonial will be featured on our website or other promotional materials to showcase the positive
-                experiences of our clients.
-                <br><br>
-                We sincerely thank you for choosing our services and for taking the time to provide your valuable
-                feedback. If you have any additional comments or suggestions, please feel free to include them in the
-                form or reach out to our customer support team directly.
-                <br><br>
-                Thank you once again for your trust and support. We look forward to serving you in the future.
-                <br><br>
-                Best regards,<br>
-                Aditya
+
+    <Div class="lg:md:w-1/2 p-5  flex flex-cols items-center justify-center bg-black rounded-[2rem]">
+
+   
+            <div class="mx-auto w-full max-w-lg">
+              
+
+                <form action="https://api.web3forms.com/submit" method='post' class="mt-10">
+
+
+                    <input type="hidden" name="access_key" value="9174692e-d428-4dde-92b1-5c845c14408d" />
+                    <div class="grid gap-6 sm:grid-cols-2">
+                        <div class="relative z-0">
+                            <input type="text" name="name"
+                                class="peer block w-full appearance-none border-0 border-b border-gray-500 bg-transparent py-2.5 px-0 text-sm text-gray-100 focus:border-white focus:outline-none focus:ring-0"
+                                placeholder=" " />
+                            <label
+                                class="absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-100 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-white peer-focus:dark:text-white">Your
+                                name</label>
+                        </div>
+                        <div class="relative z-0">
+                            <input type="text" name="project"
+                                class="peer block w-full appearance-none border-0 border-b border-gray-500 bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:border-white focus:outline-none focus:ring-0"
+                                placeholder=" " />
+                            <label
+                                class="absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-100 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-white peer-focus:dark:text-white">Your
+                                project</label>
+                        </div>
+                        <div class="relative z-0 col-span-2">
+                            <textarea name="testimonial" rows="5"
+                                class="peer block w-full appearance-none border-0 border-b border-gray-500 bg-transparent py-2.5 px-0 text-sm text-gray-900 focus:border-white focus:outline-none focus:ring-0"
+                                placeholder=" "></textarea>
+                            <label
+                                class="absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-100 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:text-white peer-focus:dark:text-white">Your
+                                message</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="mt-5 rounded-md bg-white px-10 py-2 text-black hover:bg-black border-2 hover:border-white hover:text-white transition ease-in-out">Submit  </button>
+                </form>
             </div>
-        
-
-        <div class="lg:md:w-1/2">
-            <!-- component -->
-            <!-- Tailwind Play: https://play.tailwindcss.com/qIqvl7e7Ww  -->
-
+        </div>
+    </div>
+    </Div>
+ </div>
+</div>
+     <!--   <div class="lg:md:w-1/2 bg-black">
+         
 
             <div class="flex  items-center justify-start">
                 <div class="mx-auto w-full max-w-lg">
@@ -52,8 +89,6 @@
 
                     <form action="https://api.web3forms.com/submit" method='post' class="mt-10">
 
-                        <!-- This is a working contact form. 
-           Get your free access key from: https://web3forms.com/  -->
 
                         <input type="hidden" name="access_key" value="9174692e-d428-4dde-92b1-5c845c14408d" />
                         <div class="grid gap-6 sm:grid-cols-2">
@@ -87,7 +122,38 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
+
+    <footer class="px-4 py-8 text-gray-600">
+        <div class="container flex flex-wrap items-center justify-center mx-auto space-y-4 sm:justify-between sm:space-y-0">
+            <div class="flex flex-row pr-3 space-x-4 sm:space-x-8">
+                <div class="flex items-center justify-center flex-shrink-0 w-12 h-12 rounded-full bg-gray-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="currentColor" class="w-5 h-5 rounded-full text-gray-50">
+                        <path d="M18.266 26.068l7.839-7.854 4.469 4.479c1.859 1.859 1.859 4.875 0 6.734l-1.104 1.104c-1.859 1.865-4.875 1.865-6.734 0zM30.563 2.531l-1.109-1.104c-1.859-1.859-4.875-1.859-6.734 0l-6.719 6.734-6.734-6.734c-1.859-1.859-4.875-1.859-6.734 0l-1.104 1.104c-1.859 1.859-1.859 4.875 0 6.734l6.734 6.734-6.734 6.734c-1.859 1.859-1.859 4.875 0 6.734l1.104 1.104c1.859 1.859 4.875 1.859 6.734 0l21.307-21.307c1.859-1.859 1.859-4.875 0-6.734z"></path>
+                    </svg>
+                </div>
+                <ul class="flex flex-wrap items-center space-x-4 sm:space-x-8">
+                    <li>
+                        <a rel="noopener noreferrer" href="#">Terms of Use</a>
+                    </li>
+                    <li>
+                        <a rel="noopener noreferrer" href="#">Privacy</a>
+                    </li>
+                </ul>
+            </div>
+            <ul class="flex flex-wrap pl-3 space-x-4 sm:space-x-8">
+                <li>
+                    <a rel="noopener noreferrer" href="#">Instagram</a>
+                </li>
+                <li>
+                    <a rel="noopener noreferrer" href="#">Facebook</a>
+                </li>
+                <li>
+                    <a rel="noopener noreferrer" href="#">Twitter</a>
+                </li>
+            </ul>
+        </div>
+    </footer>
 </body>
 
 </html>
