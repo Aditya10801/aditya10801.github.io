@@ -9,25 +9,33 @@
     <meta charset="UTF-8">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,300,400&display=swap" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@301,400&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    
+    <script src="https://kit.fontawesome.com/c416e79406.js" crossorigin="anonymous"></script>
+ <style>
  
+     #toggle_nav:checked ~ div #hamburger #line{
+        @apply rotate-45 translate-y-1.5
+     }
+     #toggle_nav:checked ~ div #hamburger #line2{
+         @apply -rotate-45 -translate-y-1
+      }
+ 
+ </style>
 
 
 </head>
 
-<Body class="flex flex-cols justify-center items-center h-screen">
-  <div class="grid gap-5">
-  
-<div class="text-6xl text-black">
-The Site Is Under Maintenance.
-</div>
-  <div class="text-4xl text-black">
-We are bringing a fresh new look.
-</div></div>
-</Body>
+<body class="bg-black">
+  <div class="flex flex-cols justify-center items-center h-screen " style="font-family: 'Satoshi', sans-serif;">
+    <div class=" text-white text-9xl text-center grid grid-rows gap-5">
+      <i class="fa-solid fa-screwdriver-wrench"></i>
+      <span class="text-center lg:text-7xl text-4xl">This Website Is Under Maintainence.</span>
+      <span class="italic text-center lg:text-3xl text-xl ">Please visit us again later  :( </span>
+    </div>
+  </div>
+</body>
 
 </html>
