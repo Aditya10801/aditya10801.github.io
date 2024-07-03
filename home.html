@@ -42,7 +42,7 @@
    </div>
     <section class="relative">
       <div class="flex flex-col items-center justify-center h-screen text-white relative" style="z-index: 10;">
-        <div class="absolute w-1 bg-white opacity-20 animate-grow z-0" style="transform: rotate(45deg); animation: growLine 2s ease-in-out 2s forwards;"></div>
+        <div class="absolute w-1 bg-white opacity-20 animate-grow z-0" style="transform: rotate(45deg); animation: growLine 2s ease-in-out 1s forwards;"></div>
         <span class="text-3xl z-10">🏠</span>
         <span class="text-white text-8xl" style="font-family: 'Panchang', sans-serif;">Aditya Madan</span>
         <span class="text-white text-6xl" style="font-family: 'Satoshi', sans-serif;">Web Developer and Designer</span>
@@ -60,51 +60,80 @@
 
 </section>
 <section>
-<div class="overflow-hidden relative w-full py-16">
- <div class="animate-slideInfinite w-max " style="animation: slideInfinite 160s linear infinite;">
-    <div class="inline-block mr-8 bg-white text-black p-5 rounded-lg shadow-lg h-50 w-[55vw]" style="font-family: 'Satoshi', sans-serif;">
-        <div class="grid grid-rows gap-5">
-      <p class="text-2xl w-[55vw]">"Aditya's work is impeccable. The attention to detail and creative solutions have exceeded our expectations."</p>
-    <div class="flex flex-cols gap-5 items-center">  <div class="h-10 w-10 rounded-full bg-black"></div><div class="grid grid-rows"><span style="font-family: 'Panchang', sans-serif;" class="text-gray-600">Client A</span><span><i class="fa-brands fa-instagram"></i> / @username</span></div></div>
+    <div class="overflow-hidden relative w-full py-16">
+        <div class="animate-slideInfinite flex w-max" id="slider">
+            <div class="card bg-white text-black p-5 rounded-lg shadow-lg h-50 w-[55vw] mx-4" style="font-family: 'Satoshi', sans-serif;">
+                <div class="grid grid-rows gap-5">
+                    <p class="text-2xl w-[55vw]">"Aditya's work is impeccable. The attention to detail and creative solutions have exceeded our expectations."</p>
+                    <div class="flex items-center gap-5">
+                        <div class="h-10 w-10 rounded-full bg-black"></div>
+                        <div class="grid">
+                            <span style="font-family: 'Panchang', sans-serif;" class="text-gray-600">Client A</span>
+                            <span><i class="fa-brands fa-instagram"></i> / @username</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card bg-white text-black p-5 rounded-lg shadow-lg h-50 w-[55vw] mx-4" style="font-family: 'Satoshi', sans-serif;">
+                <div class="grid grid-rows gap-5">
+                    <p class="text-2xl w-[55vw]">"Aditya's work is impeccable. The attention to detail and creative solutions have exceeded our expectations."</p>
+                    <div class="flex items-center gap-5">
+                        <div class="h-10 w-10 rounded-full bg-black"></div>
+                        <div class="grid">
+                            <span style="font-family: 'Panchang', sans-serif;" class="text-gray-600">Client B</span>
+                            <span><i class="fa-brands fa-instagram"></i> / @username</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card bg-white text-black p-5 rounded-lg shadow-lg h-50 w-[55vw] mx-4" style="font-family: 'Satoshi', sans-serif;">
+                <div class="grid grid-rows gap-5">
+                    <p class="text-2xl w-[55vw]">"Aditya's work is impeccable. The attention to detail and creative solutions have exceeded our expectations."</p>
+                    <div class="flex items-center gap-5">
+                        <div class="h-10 w-10 rounded-full bg-black"></div>
+                        <div class="grid">
+                            <span style="font-family: 'Panchang', sans-serif;" class="text-gray-600">Client C</span>
+                            <span><i class="fa-brands fa-instagram"></i> / @username</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-<div class="inline-block mr-8 bg-white text-black p-5 rounded-lg shadow-lg h-50 w-[55vw]" style="font-family: 'Satoshi', sans-serif;">
-    <div class="grid grid-rows gap-5">
-  <p class="text-2xl w-[55vw]">"Aditya's work is impeccable. The attention to detail and creative solutions have exceeded our expectations."</p>
-<div class="flex flex-cols gap-5 items-center">  <div class="h-10 w-10 rounded-full bg-black"></div><div class="grid grid-rows"><span style="font-family: 'Panchang', sans-serif;" class="text-gray-600">Client B</span><span><i class="fa-brands fa-instagram"></i> / @username</span></div></div>
-</div>
-</div>
-<div class="inline-block mr-8 bg-white text-black p-5 rounded-lg shadow-lg h-50 w-[55vw]" style="font-family: 'Satoshi', sans-serif;">
-    <div class="grid grid-rows gap-5">
-  <p class="text-2xl w-[55vw]">"Aditya's work is impeccable. The attention to detail and creative solutions have exceeded our expectations."</p>
-<div class="flex flex-cols gap-5 items-center">  <div class="h-10 w-10 rounded-full bg-black"></div><div class="grid grid-rows"><span style="font-family: 'Panchang', sans-serif;" class="text-gray-600">Client C</span><span><i class="fa-brands fa-instagram"></i> / @username</span></div></div>
-</div>
-</div>
-    <!-- Repeat the sequence for seamless infinite animation -->
-    <div class="inline-block mr-8 bg-white text-black p-5 rounded-lg shadow-lg h-50 w-[55vw]" style="font-family: 'Satoshi', sans-serif;">
-        <div class="grid grid-rows gap-5">
-      <p class="text-2xl w-[55vw]">"Aditya's work is impeccable. The attention to detail and creative solutions have exceeded our expectations."</p>
-    <div class="flex flex-cols gap-5 items-center">  <div class="h-10 w-10 rounded-full bg-black"></div><div class="grid grid-rows"><span style="font-family: 'Panchang', sans-serif;" class="text-gray-600">Client A</span><span><i class="fa-brands fa-instagram"></i> / @username</span></div></div>
-    </div>
-</div>
-<div class="inline-block mr-8 bg-white text-black p-5 rounded-lg shadow-lg h-50 w-[55vw]" style="font-family: 'Satoshi', sans-serif;">
-    <div class="grid grid-rows gap-5">
-  <p class="text-2xl w-[55vw]">"Aditya's work is impeccable. The attention to detail and creative solutions have exceeded our expectations."</p>
-<div class="flex flex-cols gap-5 items-center">  <div class="h-10 w-10 rounded-full bg-black"></div><div class="grid grid-rows"><span style="font-family: 'Panchang', sans-serif;" class="text-gray-600">Client B</span><span><i class="fa-brands fa-instagram"></i> / @username</span></div></div>
-</div>
-</div>
-  </div>
-</div>
-<style>
-  @keyframes slideInfinite {
-    0% {
-      transform: translateX(0%);
-    }
-    100% {
-      transform: translateX(-200%);
-    }
-  }
-</style>
+    
+    <style>
+        @keyframes slideInfinite {
+            0% {
+                transform: translateX(0%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+    
+        .animate-slideInfinite {
+            display: flex;
+            animation: slideInfinite 160s linear infinite;
+            width: max-content;
+        }
+    
+        #slider {
+            display: flex;
+        }
+    
+        .card {
+            margin: 0 2rem; /* Add gap between cards */
+        }
+    </style>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const slider = document.getElementById("slider");
+            const clone = slider.innerHTML;
+            slider.innerHTML += clone;
+        });
+    </script>
+    
 <!-- <div class="w-full px-20 mx-auto py-16" style="font-family: 'Panchang', sans-serif;">
     <h2 class="text-4xl text-white text-center mb-10">S&nbsp;k&nbsp;i&nbsp;l&nbsp;l&nbsp;s</h2>
     <div class="space-y-4" style="font-family: 'Satoshi', sans-serif;">
@@ -135,12 +164,53 @@
     </div>
 </div> -->
 </section>
+<section class="mt-20">
+<h2 class="text-4xl text-white text-center mb-10" style="font-family: 'Panchang', sans-serif;">F&nbsp;e&nbsp;a&nbsp;t&nbsp;u&nbsp;r&nbsp;e&nbsp;d &nbsp;&nbsp;   P&nbsp;r&nbsp;o&nbsp;j&nbsp;e&nbsp;c&nbsp;t&nbsp;s</h2>
+<div class="flex flex-cols p-5 gap-5">
+    <div class="h-[40vh] w-[50vw] bg-white rounded-lg relative overflow-hidden p-5">
+        <div class="text-2xl text-black " style="font-family: 'Panchang', sans-serif;">AlleviatEd</div>
+        <div class="mt-2 text-black " style="font-family: 'Satoshi', sans-serif;">I designed the frontend for Alleviated, a modern and user-friendly blog site. With a clean and responsive layout, it ensures a seamless and enjoyable reading experience for all users.</div>
+        <div class="flex flex-cols gap-5 absolute bottom-5">
+          
+         <a href="https://adityamadan.xyz/alleviated/#">  <button class="h-10 px-5 border-2 border-black bg-white text-black flex flex-cols rounded-full justify-center items-center">Preview &nbsp;<i class="fa-solid fa-arrow-right"></i></button></a> 
+         <a href="https://github.com/Aditya10801/alleviated">   <button class="h-10 px-5 border-2 border-black bg-black text-white flex flex-cols rounded-full justify-center items-center">Github &nbsp;<i class="fa-brands fa-github"></i></button></a>
+        </div>
+        <div class="bg-[#246EB9] w-40 h-40 rounded-full absolute -top-10 -right-10 filter blur-[80px]">
+            
+        </div>
+    </div>
+    <div class="h-[40vh] w-[50vw] bg-white rounded-lg relative overflow-hidden p-5">
+        <div class="text-2xl text-black " style="font-family: 'Panchang', sans-serif;">Pursuit International School</div>
+        <div class="mt-2 text-black " style="font-family: 'Satoshi', sans-serif;">I designed the frontend for Pursuit International's school landing page. It features an inviting and intuitive design, providing easy access to information about the school's programs, values, and admissions process.</div>
+        <div class="flex flex-cols gap-5 absolute bottom-5">
+          
+   <a href="https://aditya10801.github.io/pursuit-int/">            <button class="h-10 px-5 border-2 border-black bg-white text-black flex flex-cols rounded-full justify-center items-center ">Preview &nbsp;<i class="fa-solid fa-arrow-right"></i></button></a>
+            <a href="https://github.com/Aditya10801/pursuit-int">     <button class="h-10 px-5 border-2 border-black bg-black text-white flex flex-cols rounded-full justify-center items-center">Github &nbsp;<i class="fa-brands fa-github"></i></button></a>
+        </div>
+        <div class="bg-[#F06543] w-40 h-40 rounded-full absolute -top-10 -right-10 filter blur-[80px]">
+            
+        </div>
+    </div>
+    <div class="h-[40vh] w-[50vw] bg-white rounded-lg relative overflow-hidden p-5">
+        <div class="text-2xl text-black " style="font-family: 'Panchang', sans-serif;">NutriBoom</div>
+        <div class="mt-2 text-black " style="font-family: 'Satoshi', sans-serif;">I designed the frontend for Nutriboom, a mental health and awareness platform. The interface is thoughtfully crafted to be user-friendly and supportive, offering easy access to resources, articles, and tools for mental well-being.
 
-
+        </div>
+        <div class="flex flex-cols gap-5 absolute bottom-5">
+          
+           <a href="nutriboom.onrender.com/"> <button class="h-10 px-5 border-2 border-black bg-white text-black flex flex-cols rounded-full justify-center items-center">Preview &nbsp;<i class="fa-solid fa-arrow-right"></i></button></a>
+          <a href="https://github.com/Aditya10801/nutriboom">  <button class="h-10 px-5 border-2 border-black bg-black text-white flex flex-cols rounded-full justify-center items-center">Github &nbsp;<i class="fa-brands fa-github"></i></button></a>
+        </div>
+        <div class="bg-[#F0CF65] w-40 h-40 rounded-full absolute -top-10 -right-10 filter blur-[80px]">
+            
+        </div>
+    </div>
+</div>
+ 
+</section>
 <section>
     
 </section>
-
 </body>
 
 </html>
