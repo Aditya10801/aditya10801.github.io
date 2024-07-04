@@ -16,52 +16,26 @@
       <link rel="icon" type="image/x-icon" href="favicon.ico">
       <script src="https://kit.fontawesome.com/c416e79406.js" crossorigin="anonymous"></script>
   
-  <style>
-    body, html {
-        height: 100%;
-        margin: 0;
-        font-family: Arial, sans-serif;
-    }
-    
-    .curved-path-container {
-        position: relative;
-        overflow: hidden;
-        height: 100%;
-    }
-    
-    .content {
-        position: absolute;
-        top: 50%; /* Adjust based on your design */
-        left: 50%; /* Adjust based on your design */
-        transform: translate(-50%, -50%);
-        width: 30%;
-        max-width: 200px;
-        padding: 20px;
-        background-color: #f0f0f0;
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        z-index: 1;
-    }
-    
-    .curved-path-container::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -50%;
-        width: 100%;
-        height: 100%;
-        background-color: #f0f0f0;
-        border-radius: 50%;
-        transform: translateY(-50%);
-        z-index: -1;
-    }
-    
-  </style>
+ 
   </head>
 
-<body class="bg-black text-white">
-<div class="curved-path-container"></div>
+<body class="bg-black text-white relative">
+    <button class="absolute top-5 right-5 z-40"> <a href="index.html" class="text-white py-2 px-4 rounded-full border-2 border-white hover:bg-white hover:text-black">Menu &nbsp; <i class="fa fa-arrow-right"></i></a></button>  
+  <section class="h-screen relative">  
+    <div class="flex flex-cols justify-center items-center h-screen">
+        <div class="text-5xl text-center " style="font-family: Panchang ,sans-serif">Projects</div>
+    </div>
+    <div class="h-[20vh] w-[30vw] bg-[url('https://images.unsplash.com/photo-1504378196849-b3afbd755bcc?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover  absolute top-20 left-20"></div>
+    <div class="h-[50vh] w-[30vw] bg-[url('https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')]  bg-cover absolute bottom-10 right-10"></div>
+    <div class="h-[30vh] w-[20vw] bg-[url('https://images.unsplash.com/photo-1719938570902-6fe35719cde9?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover absolute bottom-40 left-20"></div>
+    <div class="h-[25vh] w-[20vw] bg-[url('https://images.unsplash.com/photo-1719518384441-d12311be54c6?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover absolute top-20 right-80"></div>
+    <div class="h-[20vh] w-[30vw] bg-[url('https://images.unsplash.com/photo-1720016109297-634ddb636397?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover absolute bottom-20 left-96"></div>
+    <div class="absolute bottom-0 bg-black p-10 flex flex-cols justify-center items-center h-10 text-2xl "><i class="animate-bounce fa-solid fa-arrow-down"></i></div>
+
+</section>
+
+<section class="h-screen">
+</section>
 </body>
 
 </html>
