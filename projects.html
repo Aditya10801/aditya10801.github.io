@@ -130,7 +130,18 @@
 
 
 </body>
-
+<script>
+    // Function to detect if the user is on a mobile device
+    function isMobileDevice() {
+      return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+  
+    // Redirect to mobile.html if on a mobile device
+    if (isMobileDevice()) {
+      window.location.href = 'mobile.html';
+    }
+  </script>
+  
 </html>
 
 
