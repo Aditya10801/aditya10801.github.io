@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <title>Aditya Madan</title>
+  
+   
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://api.fontshare.com/v2/css?f[]=panchang@500,800&f[]=satoshi@400,401,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <script src="https://kit.fontawesome.com/c416e79406.js" crossorigin="anonymous"></script>
+    <style>
+        @keyframes growLine {
+          from {
+            height: 0%;
+          }
+          to {
+            height: 60vh; /* Adjusted to viewport height for full length */
+          }
+        }
+        @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-25px);
+    }
+  }
+      </style>
+
+
+
+</head>
+<body class="bg-black ">
+   <div class="absolute top-5 right-5 z-20">
+    <button> <a href="index.html" class="text-white text-black py-2 px-4 rounded-full border-2 border-white hover:bg-white hover:text-black">Menu &nbsp; <i class="fa fa-arrow-right"></i></a></button>
+   </div>
+    <section class="relative">
+      <div class="flex flex-col items-center justify-center h-screen text-white relative" style="z-index: 10;">
+        <div class="absolute w-[0.5px] bg-[#F06543] animate-grow z-0" style="transform: rotate(47.5deg); animation: growLine 2s ease-in-out 1s forwards;"></div>
+        <span class="text-3xl z-10">🏠</span>
+        <span class="text-white text-8xl z-40" style="font-family: 'Panchang', sans-serif;">Aditya Madan</span>
+        <span class="text-white text-6xl z-40" style="font-family: 'Satoshi', sans-serif;">Web Developer and Designer</span>
+
+        <br>
+        <br>
+        <p class="text-white w-[500px] text-xl text-center z-0" style="font-family: 'Satoshi', sans-serif;">Dedicated to pushing the boundaries of web development and design, creating seamless, innovative, and user-centric digital experiences that stand out in the digital landscape.</p>
+      </div>
+     
+<div class="absolute bottom-5 left-1/2 transform -translate-x-1/2 animate-bounce">
+    <div class="w-10 h-10 flex items-center justify-center bg-transparent border-2 border-white rounded-full">
+        <i class="fas fa-arrow-down text-xl text-white"></i>
+    </div>
+</div>
+
+</section>
+<section>
+    <div class="overflow-hidden relative w-full py-16">
+        <div class="animate-slideInfinite flex w-max" id="slider">
+            <div class="card bg-white text-black p-5 rounded-lg shadow-lg h-50 w-[55vw] mx-4" style="font-family: 'Satoshi', sans-serif;">
+                <div class="grid grid-rows gap-5">
+                    <p class="text-2xl w-[55vw]">"Aditya's work is impeccable. The attention to detail and creative solutions have exceeded our expectations."</p>
+                    <div class="flex items-center gap-5">
+                        <div class="h-10 w-10 rounded-full bg-black"></div>
+                        <div class="grid">
+                            <span style="font-family: 'Panchang', sans-serif;" class="text-gray-600">Client A</span>
+                            <span><i class="fa-brands fa-instagram"></i> / @username</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card bg-white text-black p-5 rounded-lg shadow-lg h-50 w-[55vw] mx-4" style="font-family: 'Satoshi', sans-serif;">
+                <div class="grid grid-rows gap-5">
+                    <p class="text-2xl w-[55vw]">"Aditya's work is impeccable. The attention to detail and creative solutions have exceeded our expectations."</p>
+                    <div class="flex items-center gap-5">
+                        <div class="h-10 w-10 rounded-full bg-black"></div>
+                        <div class="grid">
+                            <span style="font-family: 'Panchang', sans-serif;" class="text-gray-600">Client B</span>
+                            <span><i class="fa-brands fa-instagram"></i> / @username</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card bg-white text-black p-5 rounded-lg shadow-lg h-50 w-[55vw] mx-4" style="font-family: 'Satoshi', sans-serif;">
+                <div class="grid grid-rows gap-5">
+                    <p class="text-2xl w-[55vw]">"Aditya's work is impeccable. The attention to detail and creative solutions have exceeded our expectations."</p>
+                    <div class="flex items-center gap-5">
+                        <div class="h-10 w-10 rounded-full bg-black"></div>
+                        <div class="grid">
+                            <span style="font-family: 'Panchang', sans-serif;" class="text-gray-600">Client C</span>
+                            <span><i class="fa-brands fa-instagram"></i> / @username</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        @keyframes slideInfinite {
+            0% {
+                transform: translateX(0%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+    
+        .animate-slideInfinite {
+            display: flex;
+            animation: slideInfinite 160s linear infinite;
+            width: max-content;
+        }
+    
+        #slider {
+            display: flex;
+        }
+    
+        .card {
+            margin: 0 2rem; /* Add gap between cards */
+        }
+    </style>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const slider = document.getElementById("slider");
+            const clone = slider.innerHTML;
+            slider.innerHTML += clone;
+        });
+    </script>
+    
+<!-- <div class="w-full px-20 mx-auto py-16" style="font-family: 'Panchang', sans-serif;">
+    <h2 class="text-4xl text-white text-center mb-10">S&nbsp;k&nbsp;i&nbsp;l&nbsp;l&nbsp;s</h2>
+    <div class="space-y-4" style="font-family: 'Satoshi', sans-serif;">
+        <div class="skill">
+            <h3 class="text-xl text-white">HTML</h3>
+            <div class="w-full   rounded-full h-2.5  ">
+                <div class="bg-white h-2.5 rounded-full" style="width: 92%"></div>
+            </div>
+        </div>
+        <div class="skill">
+            <h3 class="text-xl text-white">CSS</h3>
+            <div class="w-full   rounded-full h-2.5  ">
+                <div class="bg-white h-2.5 rounded-full" style="width: 95%"></div>
+            </div>
+        </div>
+        <div class="skill">
+            <h3 class="text-xl text-white">JavaScript</h3>
+            <div class="w-full   rounded-full h-2.5  ">
+                <div class="bg-white h-2.5 rounded-full" style="width: 85%"></div>
+            </div>
+        </div>
+        <div class="skill">
+            <h3 class="text-xl text-white">React</h3>
+            <div class="w-full   rounded-full h-2.5  ">
+                <div class="bg-white h-2.5 rounded-full" style="width: 70%"></div>
+            </div>
+        </div>
+    </div>
+</div> -->
+</section>
+<section class="mt-20">
+<h2 class="text-4xl text-white text-center mb-10" style="font-family: 'Panchang', sans-serif;">F&nbsp;e&nbsp;a&nbsp;t&nbsp;u&nbsp;r&nbsp;e&nbsp;d &nbsp;&nbsp;   P&nbsp;r&nbsp;o&nbsp;j&nbsp;e&nbsp;c&nbsp;t&nbsp;s</h2>
+<div class="flex flex-cols p-5 gap-5">
+    <div class="h-[40vh] w-[50vw] bg-white rounded-lg relative overflow-hidden p-5">
+        <div class="text-2xl text-black " style="font-family: 'Panchang', sans-serif;">AlleviatEd</div>
+        <div class="mt-2 text-black " style="font-family: 'Satoshi', sans-serif;">I designed the frontend for Alleviated, a modern and user-friendly blog site. With a clean and responsive layout, it ensures a seamless and enjoyable reading experience for all users.</div>
+        <div class="flex flex-cols gap-5 absolute bottom-5">
+          
+         <a href="https://adityamadan.xyz/alleviated/#">  <button class="h-10 px-5 border-2 border-black bg-white text-black flex flex-cols rounded-full justify-center items-center">Preview &nbsp;<i class="fa-solid fa-arrow-right"></i></button></a> 
+         <a href="https://github.com/Aditya10801/alleviated">   <button class="h-10 px-5 border-2 border-black bg-black text-white flex flex-cols rounded-full justify-center items-center">Github &nbsp;<i class="fa-brands fa-github"></i></button></a>
+        </div>
+        <div class="bg-[#246EB9] w-40 h-40 rounded-full absolute -top-10 -right-10 filter blur-[80px]">
+            
+        </div>
+    </div>
+    <div class="h-[40vh] w-[50vw] bg-white rounded-lg relative overflow-hidden p-5">
+        <div class="text-2xl text-black " style="font-family: 'Panchang', sans-serif;">Pursuit International School</div>
+        <div class="mt-2 text-black " style="font-family: 'Satoshi', sans-serif;">I designed the frontend for Pursuit International's school landing page. It features an inviting and intuitive design, providing easy access to information about the school's programs, values, and admissions process.</div>
+        <div class="flex flex-cols gap-5 absolute bottom-5">
+          
+   <a href="https://aditya10801.github.io/pursuit-int/">            <button class="h-10 px-5 border-2 border-black bg-white text-black flex flex-cols rounded-full justify-center items-center ">Preview &nbsp;<i class="fa-solid fa-arrow-right"></i></button></a>
+            <a href="https://github.com/Aditya10801/pursuit-int">     <button class="h-10 px-5 border-2 border-black bg-black text-white flex flex-cols rounded-full justify-center items-center">Github &nbsp;<i class="fa-brands fa-github"></i></button></a>
+        </div>
+        <div class="bg-[#F06543] w-40 h-40 rounded-full absolute -top-10 -right-10 filter blur-[80px]">
+            
+        </div>
+    </div>
+    <div class="h-[40vh] w-[50vw] bg-white rounded-lg relative overflow-hidden p-5">
+        <div class="text-2xl text-black " style="font-family: 'Panchang', sans-serif;">NutriBoom</div>
+        <div class="mt-2 text-black " style="font-family: 'Satoshi', sans-serif;">I designed the frontend for Nutriboom, a mental health and awareness platform. The interface is thoughtfully crafted to be user-friendly and supportive, offering easy access to resources, articles, and tools for mental well-being.
+
+        </div>
+        <div class="flex flex-cols gap-5 absolute bottom-5">
+          
+           <a href="http://nutriboom.onrender.com/"> <button class="h-10 px-5 border-2 border-black bg-white text-black flex flex-cols rounded-full justify-center items-center">Preview &nbsp;<i class="fa-solid fa-arrow-right"></i></button></a>
+          <a href="https://github.com/Aditya10801/nutriboom">  <button class="h-10 px-5 border-2 border-black bg-black text-white flex flex-cols rounded-full justify-center items-center">Github &nbsp;<i class="fa-brands fa-github"></i></button></a>
+        </div>
+        <div class="bg-[#F0CF65] w-40 h-40 rounded-full absolute -top-10 -right-10 filter blur-[80px]">
+            
+        </div>
+    </div>
+</div>
+ 
+</section>
+<section class="mt-20 flex flex-cols ">
+    <div class="h-[30vh] w-1/2 mx-5 mb-5 bg-white rounded-lg p-5 relative" style="font-family: 'Panchang', sans-serif;">
+        <div class="text-black text-2xl">Get to know more about me ...</div>
+        <div class="mt-2 text-black " style="font-family: 'Satoshi',sans-serif;">
+            Welcome! I'm Aditya, a passionate web designer and developer dedicated to creating stunning and functional digital experiences. Beyond design, I love traveling, hiking, and capturing nature with my camera. Let's collaborate and bring your vision to life!
+        </div>
+
+       <a href="about.html"> <button style="font-family: 'Satoshi',sans-serif;" class=" bottom-5 right-5 absolute h-10 px-5 border-2 border-black bg-black text-white flex flex-cols rounded-full justify-center items-center">Discover&nbsp;<i class="fa-solid fa-arrow-right"></i></button></a>
+    </div>
+    <div class="h-[30vh] w-1/2 mx-5 mb-5 bg-white rounded-lg p-5 relative" style="font-family: 'Panchang', sans-serif;">
+        <div class="text-black text-2xl">Get in Touch ...</div>
+        <div class="mt-2 text-black " style="font-family: 'Satoshi',sans-serif;">
+            I'd love to hear from you! Whether you have a project in mind or just want to connect, feel free to reach out. Let's collaborate and bring your vision to life. Contact me today, and let's get started!
+        </div>
+
+        <a href="contact.html">  <button style="font-family: 'Satoshi',sans-serif;" class=" bottom-5 right-5 absolute h-10 px-5 border-2 border-black bg-black text-white flex flex-cols rounded-full justify-center items-center">Get in touch&nbsp;<i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+</section>
+</body>
+<script>
+    // Function to detect if the user is on a mobile device
+    function isMobileDevice() {
+      return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+  
+    // Redirect to mobile.html if on a mobile device
+    if (isMobileDevice()) {
+      window.location.href = 'mobile.html';
+    }
+  </script>
+  
+</html>
