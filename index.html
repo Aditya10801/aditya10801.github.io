@@ -1,56 +1,308 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  
-  <title>Aditya Madan</title>
-  
-   
-    <meta charset="UTF-8">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://api.fontshare.com/v2/css?f[]=panchang@500,800&f[]=satoshi@400,401,700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <script src="https://kit.fontawesome.com/c416e79406.js" crossorigin="anonymous"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aditya — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  :root {
+    --bg: #F0EDE8;
+    --text: #181614;
+    --muted: #8C8882;
+    --pill-bg: #1A1A1A;
+    --pill-text: #F0EDE8;
+    --accent: #D4501A;
+    --border: rgba(24,22,20,0.12);
+  }
 
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.6;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    padding: 24px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .nav-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  /* HERO */
+  main {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 40px 80px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .headline {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(52px, 8vw, 96px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.4s forwards;
+  }
+  .headline em {
+    font-style: italic;
+    color: var(--muted);
+  }
+
+  /* Floating image pills */
+  .pill-img {
+    display: inline-block;
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    object-fit: cover;
+    vertical-align: middle;
+    margin: 0 4px -8px;
+    position: relative;
+    top: -6px;
+    background: var(--border);
+    animation: floatA 4s ease-in-out infinite;
+    overflow: hidden;
+  }
+  .pill-img svg {
+    width: 100%; height: 100%;
+  }
+  .pill-img:nth-child(2) { animation-name: floatB; animation-delay: -1.5s; }
+  .pill-img:nth-child(3) { animation-name: floatA; animation-delay: -0.8s; }
+
+  @keyframes floatA {
+    0%, 100% { transform: translateY(0px) rotate(-1deg); }
+    50% { transform: translateY(-6px) rotate(1deg); }
+  }
+  @keyframes floatB {
+    0%, 100% { transform: translateY(-3px) rotate(2deg); }
+    50% { transform: translateY(3px) rotate(-1deg); }
+  }
+
+  /* BODY TEXT */
+  .body-text {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 440px;
+    margin-bottom: 48px;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.65s forwards;
+  }
+
+  /* RECONSTRUCTION BADGE */
+  .reconstruction {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--text);
+    color: var(--bg);
+    border-radius: 100px;
+    padding: 14px 24px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    margin-bottom: 60px;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.85s forwards;
+    cursor: default;
+    width: fit-content;
+  }
+  .reconstruction .icon {
+    font-size: 16px;
+    animation: spin 4s linear infinite;
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* LINKS ROW */
+  .links {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.9s 1.05s forwards;
+  }
+  .link-btn {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .link-btn:hover {
+    color: var(--text);
+    border-color: var(--text);
+  }
+  .link-btn.primary {
+    color: var(--accent);
+    border-color: var(--accent);
+    font-weight: 500;
+  }
+  .link-btn.primary:hover { opacity: 0.7; }
+
+  /* BOTTOM BAR */
+  footer {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.03em;
+    opacity: 0;
+    animation: fadeUp 0.8s 1.2s forwards;
+  }
+
+  /* DECORATIVE CIRCLE */
+  .deco-ring {
+    position: fixed;
+    right: -180px; top: 50%;
+    transform: translateY(-50%);
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    pointer-events: none;
+    opacity: 0;
+    animation: fadeIn 1.5s 1.5s forwards;
+  }
+  .deco-ring-inner {
+    position: absolute;
+    inset: 80px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+  }
+  @keyframes fadeIn { to { opacity: 1; } }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    nav { padding: 20px 24px; }
+    main { padding: 100px 24px 100px; }
+    footer { padding: 16px 24px; }
+    .deco-ring { display: none; }
+    .pill-img { width: 44px; height: 44px; }
+  }
+</style>
 </head>
+<body>
 
-<body class="bg-black relative">
-<div class="flex flex-cols justify-center items-center h-screen text-white text-8xl text-center" style="font-family: 'Satoshi', sans-serif;">
-  <ul class="space-y-2">
-    <li>
-      <a href="home.html" class="hover:bg-[#F06543] hover:text-black w-screen py-5 block text-center"><span class="text-xl italic">01</span>&nbsp;H<span class="text-6xl italic" style="font-family: 'Panchang', sans-serif;">o</span>me</a>
-    </li>
-    <li>
-     <a href="about.html" class="hover:bg-[#F06543] hover:text-black w-screen py-5 block text-center"> Ab<span class="text-6xl italic" style="font-family: 'Panchang', sans-serif;">ou</span>t&nbsp;<span class="text-xl">02</span></a>
-    </li>
-    <li>
-     <a href="projects.html" class="hover:bg-[#F06543] hover:text-black w-screen py-5 block text-center"><span class="text-xl">03</span> &nbsp;Pr<span class="text-6xl italic" style="font-family: 'Panchang', sans-serif;">o</span>je<span class="text-6xl" style="font-family: 'Panchang', sans-serif;">c</span>ts</a>
-    </li>
-    <li>
-     <a href="contact.html" class="hover:bg-[#F06543] hover:text-black w-screen py-5 block text-center"> C<span class="text-6xl italic" style="font-family: 'Panchang', sans-serif;">o</span>nta<span class="text-6xl italic" style="font-family: 'Panchang', sans-serif;">c</span>t&nbsp;<span class="text-xl">04</span></a>
-    </li>
-  </ul>
-</div>
-<div class="absolute bottom-0 right-0 p-5 text-white text-sm" style="font-family: 'Satoshi', sans-serif;">
-  &copy; 2025 Aditya Madan. All rights reserved.
-</div>
+<!-- Decorative ring -->
+<div class="deco-ring"><div class="deco-ring-inner"></div></div>
 
+<nav>
+  <a class="nav-logo" href="#">Aditya</a>
+  <div class="nav-status">
+    <span class="status-dot"></span>
+    Rebuilding
+  </div>
+</nav>
+
+<main>
+  <h1 class="headline">
+    I'm
+    <!-- Pill: avatar placeholder with initials -->
+    <span class="pill-img" style="background:#D4501A; display:inline-flex; align-items:center; justify-content:center; font-family:'DM Sans',sans-serif; font-size:18px; font-weight:500; color:#fff;">A</span>
+    <em>Aditya,</em><br>
+    a Full‑Stack
+    <!-- Pill: code icon -->
+    <span class="pill-img" style="background:#1A1A1A; display:inline-flex; align-items:center; justify-content:center; font-size:22px;">⌨️</span>
+    <em>Developer</em><br>
+    based in India
+    <!-- Pill: flag -->
+    <span class="pill-img" style="background:#f5f5f5; display:inline-flex; align-items:center; justify-content:center; font-size:22px;">🇮🇳</span>
+  </h1>
+
+  <p class="body-text">
+    BTech student building things on the web. Full stack, databases, and a growing obsession with how AI fits into all of it. Currently deep in side projects and interview prep.
+  </p>
+
+  <div class="reconstruction">
+    <span class="icon">⚙</span>
+    Portfolio under reconstruction. Something better is coming.
+  </div>
+
+  <div class="links">
+    <a class="link-btn primary" href="mailto:aditya01@example.com">Email me</a>
+    <a class="link-btn" href="https://github.com/aditya10801" target="_blank">GitHub</a>
+    <a class="link-btn" href="https://www.linkedin.com/in/aditya-madan-90b49526b/" target="_blank">LinkedIn</a>
+    <a class="link-btn" href="https://www.instagram.com/your.avg.engineer/" target="_blank">Instagram</a>
+  </div>
+</main>
+
+<footer>
+  <span>© 2026 Aditya</span>
+  <span>Full‑Stack Developer · India</span>
+</footer>
 
 </body>
-<script>
-  // Function to detect if the user is on a mobile device
-  function isMobileDevice() {
-    return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  }
-
-  // Redirect to mobile.html if on a mobile device
-  if (isMobileDevice()) {
-    window.location.href = 'mobile.html';
-  }
-</script>
-
 </html>
