@@ -11,6 +11,9 @@
   --color-card: var(--card);
   --color-accent: var(--accent);
   --color-sel: var(--sel);
+  --color-paper: var(--paper);
+  --shadow-obj: var(--obj-shadow);
+  --shadow-lift: var(--lift-shadow);
 }
 
 :root {
@@ -21,6 +24,9 @@
   --card: #e6e3dc;
   --accent: #ff4f00; /* international orange */
   --sel: #2f5bff; /* figma-ish selection blue */
+  --paper: #fbfaf7; /* objects sit on the board as paper */
+  --obj-shadow: 0 1px 1px rgb(20 19 18 / 0.05), 0 8px 18px -8px rgb(20 19 18 / 0.16), 0 28px 50px -28px rgb(20 19 18 / 0.28);
+  --lift-shadow: 0 2px 2px rgb(20 19 18 / 0.05), 0 18px 30px -10px rgb(20 19 18 / 0.22), 0 44px 70px -30px rgb(20 19 18 / 0.32);
   color-scheme: light;
 }
 :root[data-theme='dark'] {
@@ -31,6 +37,9 @@
   --card: #171715;
   --accent: #ff5c1f;
   --sel: #6b8cff;
+  --paper: #1a1a18;
+  --obj-shadow: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 10px 24px -10px rgb(0 0 0 / 0.6), 0 30px 60px -30px rgb(0 0 0 / 0.7);
+  --lift-shadow: 0 1px 0 rgb(255 255 255 / 0.05) inset, 0 20px 36px -12px rgb(0 0 0 / 0.7), 0 50px 80px -30px rgb(0 0 0 / 0.8);
   color-scheme: dark;
 }
 

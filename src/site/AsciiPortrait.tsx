@@ -151,7 +151,7 @@ export default function AsciiPortrait({ src, className = '', scattered = false, 
       W = box.clientWidth
       H = box.clientHeight
       if (!W || !H) return
-      cols = clamp(Math.round(W / 3), 56, 128)
+      cols = clamp(Math.round(W / 3.48), 92, 128) // 111 cols at the board printout width, never coarser than 92
       cellW = W / cols
       cellH = cellW / 0.58
       rows = Math.floor(H / cellH)

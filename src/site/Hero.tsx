@@ -11,13 +11,14 @@ import { Obj, Zone, useFlow, useZoneActive } from './Board'
 import { goto } from './map'
 import { LINKS, Note, RollText, Selectable, asset, istTime, reducedMotion, useClock, useFinePointer } from './ui'
 
+
 /* ───────────── meta line: coords · IST clock ───────────── */
 
 function Clock() {
   const now = useClock()
   const fine = useFinePointer()
   const [mine, setMine] = useState(false)
-  const [h, m, s] = istTime(now).split(':')
+  const [h, m] = istTime(now, false).split(':')
   const local = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })
   const face = (k: string, child: ReactNode) => (
     <motion.span
@@ -39,15 +40,36 @@ function Clock() {
       onClick={() => !fine && setMine(v => !v)}
       title="Aditya's local time"
     >
-      <span aria-hidden className="size-1.5 rounded-full bg-accent" />
+      <span aria-hidden className="size-1.5 rounded-full bg-ink/60" />
       <span className="inline-grid overflow-hidden">
         <span aria-hidden className="invisible [grid-area:1/1]">your time 00:00</span>
         <AnimatePresence initial={false}>
           {mine
             ? face('you', <>your time {local}</>)
-            : face('ist', <>IST {h}<span className="blink">:</span>{m}<span className="blink">:</span>{s}</>)}
+            : face('ist', <>IST {h}<span className="blink">:</span>{m}</>)}
         </AnimatePresence>
       </span>
+    </span>
+  )
+}
+
+/** "delhi ⇄ vellore": the cities trade places on hover (tap on touch). */
+function Route() {
+  const fine = useFinePointer()
+  const [flip, setFlip] = useState(false)
+  const cities = flip ? ['vellore', 'delhi'] : ['delhi', 'vellore']
+  const spring = { type: 'spring', stiffness: 420, damping: 30 } as const
+  return (
+    <span
+      className="inline-flex select-none items-center gap-1.5 transition-colors hover:text-ink"
+      aria-label="delhi to vellore"
+      onMouseEnter={() => fine && setFlip(true)}
+      onMouseLeave={() => fine && setFlip(false)}
+      onClick={() => !fine && setFlip(f => !f)}
+    >
+      <motion.span layout="position" key={cities[0]} transition={spring}>{cities[0]}</motion.span>
+      <motion.span aria-hidden className="inline-block" animate={{ rotateX: flip ? 180 : 0 }} transition={{ duration: 0.4 }}>⇄</motion.span>
+      <motion.span layout="position" key={cities[1]} transition={spring}>{cities[1]}</motion.span>
     </span>
   )
 }
@@ -102,7 +124,7 @@ function Resume() {
       <svg aria-hidden viewBox="0 0 14 18" className="h-[18px] w-[14px] shrink-0 overflow-visible transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:-rotate-6">
         <path d="M.5 .5 H9.5 L13.5 4.5 V17.5 H.5 Z" className="fill-bg stroke-ink/50" />
         <path d="M9.5 .5 V4.5 H13.5" className="fill-none stroke-ink/50" />
-        <rect x="-1.5" y="10" width="11" height="5" rx="1" className="fill-accent" />
+        <rect x="-1.5" y="10" width="11" height="5" rx="1" className="fill-ink transition-[fill] duration-300 group-hover:fill-accent" />
       </svg>
       <span className="inline-grid">
         <span aria-hidden className="invisible [grid-area:1/1] font-mono text-[11px]">[▓▓▓▓▓] 100%</span>
@@ -131,35 +153,100 @@ function Github() {
 
 /* ───────────── printout ───────────── */
 
+// tractor-feed holes, painted in the board colour so they read as punched through
 const holes = (side: 'left' | 'right') =>
-  `radial-gradient(circle 4px at ${side === 'left' ? '12px' : 'calc(100% - 12px)'} 11px, #0000 95%, #000)`
+  `radial-gradient(circle 4px at ${side === 'left' ? '12px' : 'calc(100% - 12px)'} 11px, var(--bg) 3.4px, color-mix(in oklab, var(--ink) 14%, transparent) 4px, transparent 4.6px)`
 
 function Printout({ active, children }: { active: boolean; children?: ReactNode }) {
   const [cols, setCols] = useState(0)
   const [printed] = useState(() => istTime(new Date(), false))
   return (
     <div className="group/print relative">
-      {/* shadow lives on a wrapper so it follows the punched tractor-feed holes */}
-      <div className="drop-shadow-[0_12px_16px_rgb(0_0_0/0.12)]">
-        <div
-          className="relative bg-card px-[34px] pb-3 pt-3"
-          style={{ maskImage: `${holes('left')}, ${holes('right')}`, maskSize: '100% 22px', maskRepeat: 'repeat-y', maskComposite: 'intersect' }}
-        >
-          <div aria-hidden className="pointer-events-none absolute inset-y-0 left-6 border-l border-dashed border-ink/15" />
-          <div aria-hidden className="pointer-events-none absolute inset-y-0 right-6 border-r border-dashed border-ink/15" />
-          {/* single header line; on hover it turns into the how-to */}
-          <div className="relative grid font-mono text-[10px] uppercase tracking-[0.12em] text-mute">
-            <span className="[grid-area:1/1] transition-opacity duration-300 group-hover/print:opacity-0">
-              portrait.txt · {cols || '...'} cols · IST {printed}
-            </span>
-            <span aria-hidden className="[grid-area:1/1] text-accent opacity-0 transition-opacity duration-300 group-hover/print:opacity-100">
-              click: charset · hold: the real me
-            </span>
-          </div>
-          <AsciiPortrait src={asset('me/face.jpg')} scattered={!active} onCols={setCols} className="mt-2" />
+      <div
+        className="relative border border-ink/[0.06] bg-paper px-[36px] pb-3 pt-3 shadow-obj"
+        style={{ backgroundImage: `${holes('left')}, ${holes('right')}`, backgroundSize: '100% 22px', backgroundRepeat: 'repeat-y' }}
+      >
+        <div aria-hidden className="pointer-events-none absolute inset-y-0 left-6 border-l border-dashed border-ink/15" />
+        <div aria-hidden className="pointer-events-none absolute inset-y-0 right-6 border-r border-dashed border-ink/15" />
+        {/* single header line; on hover it turns into the how-to */}
+        <div className="relative grid font-mono text-[11px] uppercase tracking-[0.1em] text-mute">
+          <span className="[grid-area:1/1] whitespace-nowrap transition-opacity duration-300 group-hover/print:opacity-0">
+            portrait.txt · {cols || '...'} cols · IST {printed}
+          </span>
+          <span aria-hidden className="[grid-area:1/1] whitespace-nowrap text-ink opacity-0 transition-opacity duration-300 group-hover/print:opacity-100">
+            click: charset · hold: the real me
+          </span>
         </div>
+        <AsciiPortrait src={asset('me/face.jpg')} scattered={!active} onCols={setCols} className="mt-2" />
       </div>
       {children}
+    </div>
+  )
+}
+
+/* ───────────── quick facts index card ───────────── */
+
+const rowBase = 'group/row relative flex w-full items-start gap-3 overflow-hidden border-b border-line px-4 py-2.5 text-left last:border-b-0'
+const rowValue = 'flex-1 font-mono text-[12px] leading-5 text-ink'
+
+/** Mono label that rolls to something else on hover ("building" becomes "→ hangar"). */
+function RowLabel({ text, alt }: { text: string; alt: ReactNode }) {
+  return (
+    <span className="relative inline-grid w-[72px] shrink-0 overflow-hidden font-mono text-[11px] uppercase leading-5 tracking-[0.08em] text-mute">
+      <span className="[grid-area:1/1] transition-transform duration-300 group-hover/row:-translate-y-full">{text}</span>
+      <span aria-hidden className="[grid-area:1/1] translate-y-full whitespace-nowrap text-ink transition-transform duration-300 group-hover/row:translate-y-0">{alt}</span>
+    </span>
+  )
+}
+
+function Facts() {
+  return (
+    <div className="border border-ink/[0.06] bg-paper shadow-obj">
+      <div className="border-b-[3px] border-double border-ink/10 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.1em] text-mute">quick facts</div>
+
+      {/* studying: label becomes a year-of-course meter */}
+      <div className={rowBase}>
+        <RowLabel text="studying" alt={<>▓▓▓<span className="text-mute">░</span> 3/4</>} />
+        <span className={rowValue}>B.Tech Computer Science, VIT Vellore (3rd year, &apos;28)</span>
+      </div>
+
+      {/* based: a tiny plane makes the trip along the row */}
+      <div className={rowBase}>
+        <span className="w-[72px] shrink-0 font-mono text-[11px] uppercase leading-5 tracking-[0.08em] text-mute">based</span>
+        <span className={rowValue}>Vellore, from Delhi</span>
+        <span aria-hidden className="facts-trip pointer-events-none absolute bottom-0.5 text-[9px] leading-none text-mute">✈</span>
+      </div>
+
+      {/* building: each project underlines in turn */}
+      <button type="button" className={rowBase} onClick={() => goto('hangar')}>
+        <RowLabel text="building" alt="→ hangar" />
+        <span className={rowValue}>
+          {['Loom', 'Flux', 'MessIT'].map((p, i) => (
+            <Fragment key={p}>
+              <span
+                className="relative after:absolute after:inset-x-0 after:-bottom-px after:h-px after:origin-left after:scale-x-0 after:bg-ink after:transition-transform after:duration-300 after:[transition-delay:var(--d)] group-hover/row:after:scale-x-100"
+                style={{ ['--d' as string]: `${i * 110}ms` }}
+              >
+                {p}
+              </span>
+              {i < 2 && ', '}
+            </Fragment>
+          ))}
+        </span>
+      </button>
+
+      {/* also: a quiet context line unfolds */}
+      <button type="button" className={rowBase} onClick={() => goto('log')}>
+        <RowLabel text="also" alt="→ log" />
+        <span className={rowValue}>
+          VinnovateIT, vice chair
+          <span className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 group-hover/row:grid-rows-[1fr]">
+            <span className="overflow-hidden text-[11px] text-mute">
+              a student tech club at VIT
+            </span>
+          </span>
+        </span>
+      </button>
     </div>
   )
 }
@@ -195,6 +282,9 @@ export default function Hero() {
       <style>{`
         .vp-h1 > span > span:nth-last-child(2) > span:last-child { color: var(--accent); }
         .hi-plane { left: 0; opacity: 0; transform: translateX(-14px); }
+        .facts-trip { right: 100%; opacity: 0; }
+        .group\\/row:hover .facts-trip { animation: facts-trip 1.4s cubic-bezier(.45,0,.3,1) forwards; }
+        @keyframes facts-trip { 0% { right: 100%; opacity: 0; } 15%, 85% { opacity: 1; } 100% { right: 8px; opacity: 0; } }
         .group:hover .hi-plane { animation: hi-glide 1.15s cubic-bezier(.5,0,.4,1) forwards; }
         @keyframes hi-glide {
           0% { left: 0; transform: translateX(-14px); opacity: 0; }
@@ -204,19 +294,21 @@ export default function Hero() {
       `}</style>
 
       {/* DOM order is the stacked mobile order */}
-      <Obj x={600} y={150} w={380} z={2} label="h1 / hello">
+      <Obj x={540} y={56} w={440} z={2} label="h1 / hello">
         <div>
-          <div className="flex items-center gap-3 font-mono text-[11px] text-mute">
+          <div className="flex items-center gap-2.5 whitespace-nowrap font-mono text-[11px] text-mute [&>*]:shrink-0">
             <DecryptedText
               text="N 28.61° E 77.21°"
               animateOn="hover"
               sequential
               speed={38}
               characters="0123456789.°NESW"
-              encryptedClassName="text-accent"
-              parentClassName="select-none transition-colors hover:text-ink"
+              encryptedClassName="text-ink"
+              parentClassName="!whitespace-nowrap select-none transition-colors hover:text-ink"
               title="new delhi"
             />
+            <span aria-hidden>·</span>
+            <Route />
             <span aria-hidden>·</span>
             <Clock />
           </div>
@@ -239,17 +331,22 @@ export default function Hero() {
             </h1>
           </Selectable>
           <div onMouseOver={e => launch(e)} onClick={e => launch(e, true)}>
-            <ScrambledText className="mt-5 max-w-[34ch] text-[17px] leading-[1.5] text-ink" radius={70} duration={0.9} speed={0.6} scrambleChars=".:/">
+            <ScrambledText className="mt-5 max-w-[40ch] text-[17px] leading-[1.5] text-ink" radius={70} duration={0.9} speed={0.6} scrambleChars=".:/">
               {/* SplitText makes every char inline-block, so words need their own nowrap box or they break mid-word */}
-              {'I build things, obsess over details, and occasionally get distracted by'.split(' ').map((w, i) => (
+              {['Software,', 'design,'].map((w, i) => (
                 <Fragment key={i}><span className="inline-block whitespace-nowrap">{w}</span>{' '}</Fragment>
               ))}
               <span className="inline-block whitespace-nowrap">
-                <span data-plane className="cursor-pointer border-b border-dashed border-accent/70">airplanes</span>.
-              </span>
+                <span data-plane className="cursor-pointer border-b border-dashed border-ink/35">aircraft</span>,
+              </span>{' '}
+              {'and an unreasonable number of open tabs.'.split(' ').map((w, i) => (
+                <Fragment key={i}><span className="inline-block whitespace-nowrap">{w}</span>{i < 6 && ' '}</Fragment>
+              ))}
             </ScrambledText>
           </div>
-          <p className="mt-3 max-w-[38ch] text-[15px] text-mute">A developer and designer who likes turning ideas into things people can actually use.</p>
+          <p className="mt-4 max-w-[60ch] text-[15px] leading-[1.6] text-mute">
+            I&apos;m a developer and designer who likes making things work, making them look good, and occasionally disappearing into an aviation rabbit hole. I build products, obsess over the details, and tend to learn best when I can get my hands on something and break it a little.
+          </p>
           <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
             <SayHi />
             <Resume />
@@ -258,19 +355,20 @@ export default function Hero() {
         </div>
       </Obj>
 
-      <Obj x={140} y={56} w={400} r={-1.5} z={1} label="portrait.txt">
+      <Obj x={24} y={64} w={460} r={-1.5} z={1} label="portrait.txt">
         <Printout active={active}>
           {/* the one intentional overlap */}
-          <Sticker kind="name" width={flow ? 118 : 140} rotate={-8} className={flow ? '-bottom-7 -right-2' : '-bottom-10 -right-16'} />
+          <Sticker kind="name" width={flow ? 118 : 150} rotate={-8} className={flow ? '-bottom-7 -right-2' : '-bottom-12 -right-16'} />
         </Printout>
       </Obj>
 
-      <Obj x={820} y={560} w={170} r={-3} boardOnly>
+      <Obj x={808} y={470} w={360} r={1} z={2} label="facts.card">
+        <Facts />
+      </Obj>
+
+      <Obj x={590} y={604} w={170} r={-3} boardOnly>
         <div className="pointer-events-none flex items-center gap-1">
-          <Note className="text-[21px]">scroll to fly</Note>
-          <svg aria-hidden viewBox="0 0 60 24" className="h-5 w-12 overflow-visible text-accent">
-            <path d="M2 14 C 18 4, 36 22, 54 10 M46 6 L55 10 L48 17" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          <Note className="text-[21px]">scroll to fly →</Note>
         </div>
       </Obj>
 

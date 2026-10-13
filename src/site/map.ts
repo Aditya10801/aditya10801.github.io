@@ -2,23 +2,25 @@
 
 export type Rect = { x: number; y: number; w: number; h: number }
 
-export const ZONE_W = 1040
-export const ZONE_H = 660
+export const ZONE_W = 1200
+export const ZONE_H = 680
 
-export const ORDER = ['hero', 'about', 'into', 'hangar', 'now', 'contact'] as const
+export const ORDER = ['hero', 'about', 'into', 'hangar', 'log', 'now', 'contact'] as const
 export type ZoneId = (typeof ORDER)[number]
 
 // top row runs left to right, bottom row comes back right to left
+const at = (x: number, y: number): Rect => ({ x, y, w: ZONE_W, h: ZONE_H })
 export const ZONES: Record<ZoneId, Rect> = {
-  hero: { x: 200, y: 200, w: ZONE_W, h: ZONE_H },
-  about: { x: 1500, y: 120, w: ZONE_W, h: ZONE_H },
-  into: { x: 2800, y: 260, w: ZONE_W, h: ZONE_H },
-  hangar: { x: 2800, y: 1240, w: ZONE_W, h: ZONE_H },
-  now: { x: 1500, y: 1360, w: ZONE_W, h: ZONE_H },
-  contact: { x: 200, y: 1200, w: ZONE_W, h: ZONE_H },
+  hero: at(200, 200),
+  about: at(1680, 120),
+  into: at(3160, 260),
+  hangar: at(4640, 180),
+  log: at(4640, 1320),
+  now: at(3160, 1400),
+  contact: at(1680, 1320),
 }
 
-export const WORLD = { w: 4100, h: 2300 }
+export const WORLD = { w: 6040, h: 2200 }
 
 /** Scroll distance per leg of the route. */
 export const SEG = 1100

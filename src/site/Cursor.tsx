@@ -11,7 +11,7 @@ const contextOf = (el: Element | null, down: boolean): Ctx => {
   if (el.closest('[draggable="true"], .cursor-grab, [data-drag]') || (down && el.closest('canvas, [data-pan]'))) return 'drag'
   if (el.closest('a')) return 'link'
   if (el.closest('button, [role="button"], label, summary')) return 'button'
-  if (el.closest('p, h1, h2, h3, h4, li, blockquote')) return 'text'
+  if (el.closest('p, h1, h2, h3, h4, li, blockquote, input, textarea')) return 'text'
   return 'default'
 }
 

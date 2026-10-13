@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent, type RefObject } from 'react'
+import { useEffect, useId, useMemo, useRef, useState, type PointerEvent as RPointerEvent, type RefObject } from 'react'
 import { AnimatePresence, animate, motion, useInView, useMotionValue, useSpring } from 'motion/react'
 import DecryptedText from '@/components/DecryptedText'
 import Magnet from '@/components/Magnet'
@@ -13,9 +13,9 @@ const LED = { amber: '#ffb800', green: '#3ddc84', red: '#ff4d3d', glass: '#12121
 const CLASSES = ['HELLO', 'COLLAB', 'HIRE', 'AVGEEK TALK'] as const
 type Cls = (typeof CLASSES)[number]
 const SUBJECT: Record<Cls, string> = { HELLO: 'Hello', COLLAB: 'Collab', HIRE: 'Hire', 'AVGEEK TALK': 'AvGeek talk' }
-type Gate = 'idle' | 'over' | 'scan' | 'ok' | 'denied'
+type Gate = 'idle' | 'over' | 'scan' | 'ok' | 'denied' | 'offline'
 
-const ROW = 'group relative grid grid-cols-[80px_minmax(0,1fr)_auto] items-center gap-3 py-3'
+const ROW = 'group relative grid grid-cols-[88px_minmax(0,1fr)_auto] items-center gap-3 py-3.5'
 const LBL = 'font-mono text-[11px] uppercase tracking-[0.14em] text-mute'
 
 const hash = (s: string) => {
@@ -52,62 +52,117 @@ function useCopied(ms = 2000) {
   return [copied, copy] as const
 }
 
+type Field = 'name' | 'email' | 'message'
+type Form = Record<Field, string>
+const EMPTY: Form = { name: '', email: '', message: '' }
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+const KEY = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined
+
 export default function Contact() {
   const active = useZoneActive('contact')
-  const [name, setName] = useState('')
+  const [form, setForm] = useState<Form>(EMPTY)
   const [cls, setCls] = useState<Cls>('HELLO')
   const [gate, setGate] = useState<Gate>('idle')
+  const [miss, setMiss] = useState<Field | null>(null)
   const scanner = useRef<HTMLDivElement>(null)
+  const bot = useRef<HTMLInputElement>(null)
   const timers = useRef<number[]>([])
   const later = (ms: number, fn: () => void) => timers.current.push(window.setTimeout(fn, ms))
   const clear = () => { timers.current.forEach(clearTimeout); timers.current = [] }
   useEffect(() => clear, [])
 
-  const seat = seatOf(name)
-  const nm = name.trim()
+  const nm = form.name.trim()
+  const em = form.email.trim()
+  const msg = form.message.trim()
+  const seat = seatOf(nm)
+  const subject = `${SUBJECT[cls]} from ${nm}`
+  const mailto = `mailto:${LINKS.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Hi Aditya,\n\n${msg}\n\n${nm}\nFlight AM 0110 · Seat ${seat}`)}`
 
-  /** Runs the gate. Returns false when the pass is rejected. */
-  const scan = () => {
+  const deliver = async () => {
+    const sweep = new Promise(r => setTimeout(r, reducedMotion() ? 0 : 900)) // let the scan line play
+    let ok = !!bot.current?.checked // honeypot ticked: pretend it worked, send nothing
+    if (!ok && KEY) {
+      try {
+        const res = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ access_key: KEY, subject, from_name: nm, name: nm, email: em, message: msg, class: cls, botcheck: '' }),
+        })
+        ok = !!(await res.json()).success
+      } catch {
+        ok = false
+      }
+    }
+    await sweep
+    if (ok) {
+      setGate('ok')
+      sfx('beep')
+    } else setGate('offline')
+  }
+
+  /** Validates, then sends. Returns the first missing field, or null when the pass was accepted. */
+  const submit = (): Field | null => {
+    if (gate === 'scan' || gate === 'ok') return null
     clear()
-    if (!nm) {
+    const m: Field | null = !nm ? 'name' : !EMAIL_RE.test(em) ? 'email' : !msg ? 'message' : null
+    if (m) {
+      setMiss(m)
       setGate('denied')
       sfx('deny')
-      later(2600, () => setGate('idle'))
-      return false
+      later(2600, () => setGate(g => (g === 'denied' ? 'idle' : g)))
+      return m
     }
-    const still = reducedMotion()
-    const body = `Hi Aditya,\n\n\n\n${nm}\n(flight AM 0110, seat ${seat})`
-    const href = `mailto:${LINKS.email}?subject=${encodeURIComponent(`${SUBJECT[cls]} from ${nm}`)}&body=${encodeURIComponent(body)}`
+    setMiss(null)
     setGate('scan')
-    later(still ? 0 : 800, () => { setGate('ok'); sfx('beep') })
-    later(still ? 500 : 1700, () => { location.href = href })
-    later(7000, () => setGate('idle'))
-    return true
+    void deliver()
+    return null
+  }
+
+  const again = () => {
+    clear()
+    setForm(EMPTY)
+    setMiss(null)
+    setGate('idle')
   }
 
   return (
     <Zone id="contact">
-      <Obj x={0} y={0} w={400}>
+      <Obj x={0} y={0} w={560}>
         <Header active={active} />
       </Obj>
 
-      <Obj x={0} y={196} w={600} h={250} r={-1.5} z={2} label="boarding-pass">
-        <Pass name={name} setName={setName} cls={cls} setCls={setCls} seat={seat} gate={gate} setGate={setGate} scan={scan} scanner={scanner} active={active} />
+      <Obj x={0} y={190} w={740} h={350} r={-1} z={2} label="boarding-pass">
+        <Pass
+          form={form}
+          setForm={setForm}
+          cls={cls}
+          setCls={setCls}
+          seat={seat}
+          gate={gate}
+          setGate={setGate}
+          miss={miss}
+          submit={submit}
+          again={again}
+          mailto={mailto}
+          scanner={scanner}
+          bot={bot}
+          active={active}
+        />
       </Obj>
 
-      <Obj x={404} y={462} w={200} boardOnly>
-        <Note className="block -rotate-2">drag me to the gate →</Note>
+      <Obj x={480} y={590} w={220} boardOnly>
+        {(gate === 'idle' || gate === 'over') && <Note className="block -rotate-2">drag me to the gate →</Note>}
       </Obj>
 
-      <Obj x={724} y={212} w={196} r={1.5} z={5} label="gate">
-        <Scanner ref={scanner} gate={gate} name={nm} active={active} />
+      <Obj x={860} y={318} w={240} r={1.5} z={5} label="gate">
+        <Scanner ref={scanner} gate={gate} name={nm} miss={miss} active={active} />
       </Obj>
 
-      <Obj x={660} y={410} w={380} label="other-ways-in">
+      <Obj x={780} y={0} w={420} label="other-ways-in">
         <Channels active={active} />
       </Obj>
 
-      <Obj x={0} y={626} w={600}>
+      <Obj x={0} y={652} w={740}>
         <FooterLine />
       </Obj>
     </Zone>
@@ -116,49 +171,68 @@ export default function Contact() {
 
 /* ---------- header ---------- */
 
+const TITLE = "Say hi. Don't overthink it."
+
 function Header({ active }: { active: boolean }) {
   const still = reducedMotion()
   return (
     <div>
-      <Label n="05">contact</Label>
-      <h2 className="mt-3 flex text-[26px] font-semibold leading-tight tracking-[-0.02em] text-ink" aria-label="Say hi.">
-        {[...'Say hi.'].map((c, i) => (
-          <span key={i} aria-hidden className="overflow-hidden">
-            <motion.span
-              className="inline-block whitespace-pre transition-[color,translate] duration-200 hover:-translate-y-1 hover:text-accent"
-              initial={false}
-              animate={{ y: active || still ? '0%' : '105%' }}
-              transition={{ duration: 0.5, delay: active ? 0.1 + i * 0.04 : 0, ease: [0.2, 0.8, 0.2, 1] }}
-            >
-              {c}
-            </motion.span>
-          </span>
-        ))}
+      <Label n="06">contact</Label>
+      <h2 className="mt-2 flex flex-wrap gap-x-[0.28em] text-[32px] font-medium leading-tight tracking-tight text-ink" aria-label={TITLE}>
+        {TITLE.split(' ').map((w, wi, all) => {
+          const at = all.slice(0, wi).join('').length // letter index offset for the stagger
+          return (
+            <span key={wi} aria-hidden className="inline-flex overflow-hidden pt-1">
+              {[...w].map((c, i) => (
+                <motion.span
+                  key={i}
+                  className="inline-block transition-[color,translate] duration-200 hover:-translate-y-1 hover:text-accent"
+                  initial={false}
+                  animate={{ y: active || still ? '0%' : '110%' }}
+                  transition={{ duration: 0.5, delay: active ? 0.1 + (at + i) * 0.02 : 0, ease: [0.2, 0.8, 0.2, 1] }}
+                >
+                  {c}
+                </motion.span>
+              ))}
+            </span>
+          )
+        })}
       </h2>
-      <p className="mt-1 text-[16px] text-mute">Email is the fastest way to reach me.</p>
+      <p className="mt-1.5 max-w-[60ch] text-[15px] leading-relaxed text-mute">
+        Got an interesting idea, a problem worth solving, or a plane you'd like to talk about? My inbox is open.
+      </p>
     </div>
   )
 }
 
-/* ---------- boarding pass ---------- */
+/* ---------- boarding pass (a real form) ---------- */
 
 type PassProps = {
-  name: string
-  setName: (v: string) => void
+  form: Form
+  setForm: (f: (f: Form) => Form) => void
   cls: Cls
   setCls: (c: Cls) => void
   seat: string
   gate: Gate
   setGate: (g: Gate) => void
-  scan: () => boolean
+  miss: Field | null
+  submit: () => Field | null
+  again: () => void
+  mailto: string
   scanner: RefObject<HTMLDivElement | null>
+  bot: RefObject<HTMLInputElement | null>
   active: boolean
 }
 
-function Pass({ name, setName, cls, setCls, seat, gate, setGate, scan, scanner, active }: PassProps) {
+const FIELD_LBL = 'block text-[11px] tracking-[0.16em] opacity-60'
+const UNDERLINE = 'relative block border-b border-current/40 transition-colors focus-within:border-current'
+
+function Pass({ form, setForm, cls, setCls, seat, gate, setGate, miss, submit, again, mailto, scanner, bot, active }: PassProps) {
   const flow = useFlow()
   const fine = useFinePointer()
+  const id = useId()
   const self = useRef<HTMLDivElement>(null)
+  const refs = { name: useRef<HTMLInputElement>(null), email: useRef<HTMLInputElement>(null), message: useRef<HTMLTextAreaElement>(null) }
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   const rx = useSpring(0, { stiffness: 200, damping: 20 })
@@ -166,6 +240,8 @@ function Pass({ name, setName, cls, setCls, seat, gate, setGate, scan, scanner, 
   const drag = useRef<{ px: number; py: number; ox: number; oy: number } | null>(null)
   const [dragging, setDragging] = useState(false)
   const [focused, setFocused] = useState(false)
+  const sent = gate === 'ok'
+  const set = (k: Field) => (e: { target: { value: string } }) => setForm(f => ({ ...f, [k]: e.target.value }))
 
   const home = (delay = 0) => {
     const o = { type: 'spring' as const, stiffness: 260, damping: 22, delay }
@@ -178,7 +254,12 @@ function Pass({ name, setName, cls, setCls, seat, gate, setGate, scan, scanner, 
     await animate(x, [cx, cx - 12, cx + 10, cx - 6, cx + 3, cx], { duration: 0.42 })
     home()
   }
-  const run = () => (scan() ? home(1.8) : shake())
+  const run = () => {
+    const m = submit()
+    if (!m) return home(1.2)
+    refs[m].current?.focus({ preventScroll: true })
+    shake()
+  }
 
   const over = (e: RPointerEvent) => {
     const s = scanner.current?.getBoundingClientRect()
@@ -191,7 +272,7 @@ function Pass({ name, setName, cls, setCls, seat, gate, setGate, scan, scanner, 
   }
 
   const down = (e: RPointerEvent<HTMLDivElement>) => {
-    if (flow || e.button !== 0 || (e.target as Element).closest('input, button')) return
+    if (flow || e.button !== 0 || (e.target as Element).closest('input, textarea, button, a')) return
     e.stopPropagation()
     drag.current = { px: e.clientX, py: e.clientY, ox: x.get(), oy: y.get() }
     e.currentTarget.setPointerCapture(e.pointerId)
@@ -205,15 +286,14 @@ function Pass({ name, setName, cls, setCls, seat, gate, setGate, scan, scanner, 
       // hover tilt goes on the inner card, the hover target never moves
       if (!fine || flow || reducedMotion()) return
       const r = e.currentTarget.getBoundingClientRect()
-      ry.set(((e.clientX - r.left) / r.width - 0.5) * 5)
-      rx.set(-((e.clientY - r.top) / r.height - 0.5) * 6)
+      ry.set(((e.clientX - r.left) / r.width - 0.5) * 4)
+      rx.set(-((e.clientY - r.top) / r.height - 0.5) * 5)
       return
     }
     const z = board.cam.z || 1
     x.set(d.ox + (e.clientX - d.px) / z)
     y.set(d.oy + (e.clientY - d.py) / z)
-    const o = over(e)
-    if (gate === 'idle' || gate === 'over') setGate(o ? 'over' : 'idle')
+    if (gate === 'idle' || gate === 'over') setGate(over(e) ? 'over' : 'idle')
   }
   const up = (e: RPointerEvent<HTMLDivElement>) => {
     if (!drag.current) return
@@ -228,12 +308,17 @@ function Pass({ name, setName, cls, setCls, seat, gate, setGate, scan, scanner, 
 
   // barcode: bars and gaps as flex weights, so a new seed animates instead of popping
   const bars = useMemo(() => {
-    let s = hash(`${name.trim().toUpperCase()}|${cls}`) || 1
+    let s = hash(`${form.name.trim().toUpperCase()}|${cls}`) || 1
     const rnd = () => ((s = Math.imul(s ^ (s >>> 15), 2246822507) ^ Math.imul(s ^ (s >>> 13), 3266489909)) >>> 0) / 4294967296
-    return Array.from({ length: 76 }, (_, i) => (i % 2 ? 1 + Math.floor(rnd() * 2) : 1 + Math.floor(rnd() * 4)))
-  }, [name, cls])
+    return Array.from({ length: 64 }, (_, i) => (i % 2 ? 1 + Math.floor(rnd() * 2) : 1 + Math.floor(rnd() * 4)))
+  }, [form.name, cls])
 
-  const boarded = gate === 'ok'
+  const status =
+    gate === 'scan' ? 'sending your pass.'
+    : gate === 'ok' ? `message sent. I'll reply to ${form.email.trim()}.`
+    : gate === 'offline' ? "couldn't reach the gate."
+    : gate === 'denied' && miss ? `${miss} required.`
+    : ''
 
   return (
     <motion.div
@@ -244,49 +329,111 @@ function Pass({ name, setName, cls, setCls, seat, gate, setGate, scan, scanner, 
       onPointerUp={up}
       onPointerCancel={up}
       onPointerLeave={() => { if (!drag.current) { rx.set(0); ry.set(0) } }}
-      className={`relative ${flow ? '' : 'h-[250px] touch-none'} ${dragging ? 'cursor-grabbing' : flow ? '' : 'cursor-grab'}`}
+      className={`relative ${flow ? '' : 'h-full touch-none'} ${dragging ? 'cursor-grabbing' : flow ? '' : 'cursor-grab'}`}
     >
-      <motion.div
+      <motion.form
+        noValidate
+        aria-label="Boarding pass. Write to Aditya"
+        onSubmit={e => { e.preventDefault(); run() }}
         style={{ rotateX: rx, rotateY: ry, transformPerspective: 900, color: PASS_INK }}
-        className={`flex h-full overflow-hidden rounded-[14px] bg-accent font-mono shadow-[0_1px_0_rgb(0_0_0/0.08),0_18px_40px_-24px_rgb(0_0_0/0.5)] ${flow ? 'flex-col' : ''} ${dragging ? 'shadow-[0_30px_50px_-20px_rgb(0_0_0/0.45)]' : ''}`}
+        className={`flex h-full overflow-hidden rounded-[14px] bg-accent font-mono transition-shadow duration-300 ${flow ? 'flex-col' : ''} ${dragging ? 'shadow-lift' : 'shadow-obj'}`}
       >
+        {/* honeypot, people never see it */}
+        <input ref={bot} type="checkbox" name="botcheck" tabIndex={-1} autoComplete="off" aria-hidden style={{ display: 'none' }} />
+
         {/* body */}
-        <div className="flex min-w-0 flex-1 flex-col gap-2.5 p-5">
+        <div className="flex min-w-0 flex-1 flex-col gap-3 p-6">
           <div className="flex items-center justify-between text-[11px] font-medium tracking-[0.2em]">
             <span>BOARDING PASS</span>
             <span>✈︎ AM 0110</span>
           </div>
 
-          <label className="block">
-            <span className="block text-[10px] tracking-[0.16em] opacity-60">PASSENGER</span>
-            <span className="relative block border-b border-current/40 transition-colors focus-within:border-current">
-              <input
-                value={name}
-                onChange={e => setName(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); run() } }}
-                onFocus={() => setFocused(true)}
-                onBlur={() => setFocused(false)}
-                maxLength={18}
-                placeholder="YOUR NAME"
-                spellCheck={false}
-                autoComplete="name"
-                aria-label="Passenger name"
-                className="w-full bg-transparent py-0.5 text-[16px] font-medium uppercase tracking-[0.08em] outline-none placeholder:text-current/45"
-                style={{ caretColor: PASS_INK, outline: 'none' }} // focus shows as the solid underline
-              />
-              {!focused && (
-                <span
-                  aria-hidden
-                  className={`${active ? 'blink' : ''} pointer-events-none absolute top-1/2 h-[1.05em] w-[0.55em] -translate-y-1/2 bg-current text-[16px]`}
-                  style={{ left: `calc(${(name || 'YOUR NAME').length} * (1ch + 0.08em) + 3px)` }}
+          <div className={`grid gap-4 ${flow ? '' : 'grid-cols-[1fr_1.2fr]'}`}>
+            <div>
+              <label htmlFor={`${id}-name`} className={FIELD_LBL}>PASSENGER</label>
+              <span className={UNDERLINE}>
+                <input
+                  id={`${id}-name`}
+                  ref={refs.name}
+                  name="name"
+                  value={form.name}
+                  onChange={set('name')}
+                  onFocus={() => setFocused(true)}
+                  onBlur={() => setFocused(false)}
+                  readOnly={sent}
+                  required
+                  maxLength={40}
+                  placeholder="YOUR NAME"
+                  spellCheck={false}
+                  autoComplete="name"
+                  aria-invalid={miss === 'name' || undefined}
+                  className="w-full bg-transparent py-0.5 text-[17px] font-medium uppercase tracking-[0.08em] placeholder:text-current/45"
+                  style={{ caretColor: PASS_INK, outline: 'none' }} // focus shows as the solid underline
                 />
-              )}
-            </span>
-          </label>
+                {!focused && !sent && (
+                  <span
+                    aria-hidden
+                    className={`${active ? 'blink' : ''} pointer-events-none absolute top-1/2 h-[1.05em] w-[0.55em] -translate-y-1/2 bg-current text-[17px]`}
+                    style={{ left: `calc(${Math.min((form.name || 'YOUR NAME').length, 22)} * (1ch + 0.08em) + 3px)` }}
+                  />
+                )}
+              </span>
+            </div>
+            <div>
+              <label htmlFor={`${id}-email`} className={FIELD_LBL}>REPLY TO</label>
+              <span className={UNDERLINE}>
+                <input
+                  id={`${id}-email`}
+                  ref={refs.email}
+                  name="email"
+                  type="email"
+                  inputMode="email"
+                  value={form.email}
+                  onChange={set('email')}
+                  readOnly={sent}
+                  required
+                  maxLength={120}
+                  placeholder="your@email.com"
+                  spellCheck={false}
+                  autoComplete="email"
+                  aria-invalid={miss === 'email' || undefined}
+                  className="w-full bg-transparent py-0.5 text-[15px] font-medium tracking-[0.02em] placeholder:text-current/45"
+                  style={{ caretColor: PASS_INK, outline: 'none' }}
+                />
+              </span>
+            </div>
+          </div>
 
           <div>
-            <span className="block text-[10px] tracking-[0.16em] opacity-60" id="pass-class">CLASS</span>
-            <div role="radiogroup" aria-labelledby="pass-class" className="mt-1 flex flex-wrap gap-1.5">
+            <label htmlFor={`${id}-msg`} className={FIELD_LBL}>MESSAGE</label>
+            <textarea
+              id={`${id}-msg`}
+              ref={refs.message}
+              name="message"
+              value={form.message}
+              onChange={set('message')}
+              onKeyDown={e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); run() } }}
+              readOnly={sent}
+              required
+              rows={3}
+              maxLength={2000}
+              placeholder="what's on your mind?"
+              aria-invalid={miss === 'message' || undefined}
+              aria-describedby={`${id}-hint`}
+              className="block w-full resize-none bg-transparent text-[14px] leading-[22px] placeholder:text-current/45"
+              style={{
+                caretColor: PASS_INK,
+                outline: 'none',
+                // ruled lines, like the back of a ticket
+                background: 'repeating-linear-gradient(to bottom, transparent 0 21px, color-mix(in srgb, currentColor 32%, transparent) 21px 22px)',
+              }}
+            />
+            <span id={`${id}-hint`} className="sr-only">Press Control or Command plus Enter to send.</span>
+          </div>
+
+          <div>
+            <span className={FIELD_LBL} id={`${id}-class`}>CLASS</span>
+            <div role="radiogroup" aria-labelledby={`${id}-class`} className="mt-1 flex flex-wrap gap-1.5">
               {CLASSES.map(c => (
                 <button
                   key={c}
@@ -294,7 +441,7 @@ function Pass({ name, setName, cls, setCls, seat, gate, setGate, scan, scanner, 
                   role="radio"
                   aria-checked={cls === c}
                   onClick={() => setCls(c)}
-                  className={`relative rounded-[3px] border px-1.5 py-0.5 text-[11px] tracking-[0.1em] transition-[opacity,border-color] ${cls === c ? 'border-current font-medium' : 'border-dashed border-current/35 opacity-60 hover:opacity-100'}`}
+                  className={`relative rounded-[3px] border px-2 py-0.5 text-[12px] tracking-[0.1em] transition-[opacity,border-color] ${cls === c ? 'border-current font-medium' : 'border-dashed border-current/35 opacity-60 hover:opacity-100'}`}
                 >
                   {c}
                   {cls === c && <Stamp key={c} />}
@@ -303,17 +450,8 @@ function Pass({ name, setName, cls, setCls, seat, gate, setGate, scan, scanner, 
             </div>
           </div>
 
-          <dl className="grid grid-cols-2 gap-3">
-            {[['FROM', 'WHEREVER YOU ARE'], ['TO', "ADITYA'S INBOX"]].map(([k, v]) => (
-              <div key={k}>
-                <dt className="text-[10px] tracking-[0.16em] opacity-60">{k}</dt>
-                <dd className="text-[12px] font-medium tracking-[0.04em]">{v}</dd>
-              </div>
-            ))}
-          </dl>
-
           <div className="mt-auto flex items-end gap-3">
-            <div aria-hidden className="flex h-6 flex-1">
+            <div aria-hidden className="flex h-8 flex-1">
               {bars.map((w, i) => (
                 <span
                   key={i}
@@ -323,9 +461,9 @@ function Pass({ name, setName, cls, setCls, seat, gate, setGate, scan, scanner, 
               ))}
             </div>
             <button
-              type="button"
-              onClick={run}
-              className="group/scan shrink-0 rounded-[3px] bg-current px-2 py-1 text-[11px] tracking-[0.12em] transition-transform active:scale-95"
+              type="submit"
+              disabled={gate === 'scan'}
+              className="group/scan shrink-0 rounded-[3px] bg-current px-2.5 py-1.5 text-[12px] tracking-[0.12em] transition-transform active:scale-95 disabled:opacity-60"
             >
               <span className="text-accent">
                 SCAN <span className="inline-block transition-transform group-hover/scan:translate-y-0.5">↵</span>
@@ -338,13 +476,21 @@ function Pass({ name, setName, cls, setCls, seat, gate, setGate, scan, scanner, 
         <div aria-hidden className={flow ? 'mx-4 border-t-2 border-dotted border-current/40' : 'my-4 border-l-2 border-dotted border-current/40'} />
 
         {/* stub */}
-        <div className={`relative shrink-0 p-5 ${flow ? '' : 'w-[150px]'}`}>
+        <div className={`relative flex shrink-0 justify-between gap-4 p-6 ${flow ? 'items-end' : 'w-[170px] flex-col'}`}>
           <div>
-            <span className="block text-[10px] tracking-[0.18em] opacity-60">SEAT</span>
-            <span className="block text-[26px] font-medium leading-none tabular-nums">{seat}</span>
+            <span className="block text-[11px] tracking-[0.18em] opacity-60">SEAT</span>
+            <span className="mt-1 block text-[32px] font-medium leading-none tabular-nums">{seat}</span>
           </div>
+          <dl className="space-y-2">
+            {[['FROM', 'WHEREVER YOU ARE'], ['TO', "ADITYA'S INBOX"]].map(([k, v]) => (
+              <div key={k}>
+                <dt className="text-[11px] tracking-[0.16em] opacity-60">{k}</dt>
+                <dd className="text-[12px] font-medium tracking-[0.04em]">{v}</dd>
+              </div>
+            ))}
+          </dl>
           <AnimatePresence>
-            {boarded && (
+            {sent && (
               <motion.span
                 aria-hidden
                 initial={{ scale: 1.8, opacity: 0, rotate: -18 }}
@@ -358,10 +504,26 @@ function Pass({ name, setName, cls, setCls, seat, gate, setGate, scan, scanner, 
             )}
           </AnimatePresence>
         </div>
-      </motion.div>
-      <span role="status" className="sr-only">
-        {gate === 'ok' ? `Boarding. Welcome ${name}. Opening your email app.` : gate === 'denied' ? 'Name required. Type your name on the pass first.' : ''}
-      </span>
+      </motion.form>
+
+      {/* quiet status line under the pass */}
+      <p
+        role="status"
+        aria-live="polite"
+        className={`flex min-h-6 flex-wrap items-center gap-x-3 font-mono text-[13px] text-mute ${flow ? 'mt-3' : 'absolute left-6 top-full mt-4'}`}
+      >
+        <span className={gate === 'denied' ? 'text-ink' : ''}>{status}</span>
+        {gate === 'ok' && (
+          <button type="button" onClick={again} className="group/again text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-ink">
+            write another <span className="inline-block transition-transform duration-500 group-hover/again:-rotate-[360deg]">↺</span>
+          </button>
+        )}
+        {gate === 'offline' && (
+          <a href={mailto} className="text-ink underline decoration-line underline-offset-4 transition-colors hover:decoration-ink">
+            open mail <span className="inline-block transition-transform hover:-translate-y-0.5">↗</span>
+          </a>
+        )}
+      </p>
     </motion.div>
   )
 }
@@ -379,29 +541,31 @@ function Stamp() {
   )
 }
 
-function Scanner({ ref, gate, name, active }: { ref: RefObject<HTMLDivElement | null>; gate: Gate; name: string; active: boolean }) {
+function Scanner({ ref, gate, name, miss, active }: { ref: RefObject<HTMLDivElement | null>; gate: Gate; name: string; miss: Field | null; active: boolean }) {
   const still = reducedMotion()
   const light = gate === 'ok' ? LED.green : gate === 'denied' ? LED.red : gate === 'idle' ? '' : LED.amber
   const color = gate === 'ok' ? LED.green : gate === 'denied' ? LED.red : LED.amber
   const text =
     gate === 'ok' ? `BOARDING · WELCOME ${name.toUpperCase()}`
-    : gate === 'denied' ? 'NAME REQUIRED'
+    : gate === 'denied' ? `${(miss ?? 'name').toUpperCase()} REQUIRED`
     : gate === 'scan' ? 'READING PASS'
     : gate === 'over' ? 'RELEASE TO SCAN'
+    : gate === 'offline' ? 'OFFLINE · OPEN MAIL?'
     : 'PLACE PASS HERE'
   const long = text.length > 21 && !still && active
 
   return (
-    <div ref={ref} className="rounded-[10px] border border-line bg-card p-2.5 shadow-[0_18px_40px_-26px_rgb(0_0_0/0.5)]">
+    <div ref={ref} className="rounded-[12px] border border-ink/[0.06] bg-paper p-3 shadow-obj">
       <div className="flex items-center gap-2.5">
+        {/* the status line under the pass speaks for screen readers */}
         <div
-          aria-live="polite"
-          className="relative min-w-0 flex-1 overflow-hidden whitespace-nowrap rounded-[3px] px-2 py-1.5 font-mono text-[11px] tracking-[0.08em]"
+          aria-hidden
+          className="relative min-w-0 flex-1 overflow-hidden whitespace-nowrap rounded-[3px] px-2.5 py-2 font-mono text-[12px] tracking-[0.08em]"
           style={{ background: LED.glass, color, textShadow: `0 0 6px ${color}80` }}
         >
           <motion.div key={text} initial={still ? false : { y: '-100%', opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.2 }}>
             {long ? (
-              <span className="inline-block animate-[led-marquee_6s_linear_infinite]">{text}{'\u00a0'.repeat(6)}{text}{'\u00a0'.repeat(6)}</span>
+              <span className="inline-block animate-[led-marquee_6s_linear_infinite]">{text}{' '.repeat(6)}{text}{' '.repeat(6)}</span>
             ) : text}
           </motion.div>
         </div>
@@ -412,7 +576,7 @@ function Scanner({ ref, gate, name, active }: { ref: RefObject<HTMLDivElement | 
         />
       </div>
       {/* scan window */}
-      <div className={`relative mt-2.5 h-[84px] overflow-hidden rounded-[6px] border bg-ink/[0.04] transition-colors ${gate === 'over' ? 'border-accent' : 'border-line'}`}>
+      <div className={`relative mt-3 h-[112px] overflow-hidden rounded-[6px] border bg-ink/[0.04] transition-colors ${gate === 'over' ? 'border-accent' : 'border-line'}`}>
         {gate === 'scan' && !still && (
           <motion.span
             aria-hidden
@@ -420,7 +584,7 @@ function Scanner({ ref, gate, name, active }: { ref: RefObject<HTMLDivElement | 
             style={{ background: LED.red, boxShadow: `0 0 12px 2px ${LED.red}` }}
             initial={{ top: '4%' }}
             animate={{ top: ['4%', '92%', '4%'] }}
-            transition={{ duration: 0.8, ease: 'easeInOut' }}
+            transition={{ duration: 0.9, ease: 'easeInOut', repeat: Infinity }}
           />
         )}
       </div>
@@ -433,7 +597,7 @@ function Scanner({ ref, gate, name, active }: { ref: RefObject<HTMLDivElement | 
 
 function Channels({ active }: { active: boolean }) {
   return (
-    <ul className="divide-y divide-line rounded-[6px] bg-bg px-4 py-1 shadow-[0_18px_40px_-30px_rgb(0_0_0/0.5)]">
+    <ul className="divide-y divide-line rounded-[8px] border border-ink/[0.06] bg-paper px-5 py-1.5 shadow-obj">
       <EmailRow />
       <GithubRow active={active} />
       <LinkedinRow />

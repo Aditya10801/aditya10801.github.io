@@ -64,7 +64,7 @@ export default function FlightHUD() {
       ref={root}
       onClick={go}
       aria-label="Flight instrument showing scroll progress. Click to fly direct to contact"
-      className="group fixed bottom-3 left-3 z-40 overflow-hidden rounded-sm border border-line bg-bg/90 px-3 py-2 text-left md:bottom-4 md:left-4"
+      className="group fixed bottom-3 left-3 z-40 hidden md:block overflow-hidden rounded-sm border border-line bg-bg/90 px-3 py-2 text-left md:bottom-4 md:left-4"
     >
       {/* index.css resets button font and color, so type styles live on this inner span */}
       <span className="block whitespace-pre font-mono text-[10px] leading-[1.7] text-ink md:text-[10.5px]">

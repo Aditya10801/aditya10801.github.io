@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useRef, useState, type CSSProperties, type PointerEvent as RPointerEvent, type ReactNode } from 'react'
-import { AnimatePresence, motion } from 'motion/react'
 import { ORDER, SEG, WORLD, ZONES, board, goto, type Rect, type ZoneId } from './map'
 import { reducedMotion, useMedia } from './ui'
 import { sfx } from './sound'
@@ -8,8 +7,8 @@ const FlowCtx = createContext(false)
 /** True when the board is off (small screens) and objects stack vertically. */
 export const useFlow = () => useContext(FlowCtx)
 
-const TOP = 56 // nav
-const BOTTOM = 76 // flight hud
+const TOP = 28 // breathing room, no top bar
+const BOTTOM = 116 // terminal + chips
 const N = ORDER.length
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v))
@@ -38,7 +37,7 @@ export default function Board({ children }: { children: ReactNode }) {
   if (flow) {
     return (
       <FlowCtx.Provider value>
-        <main className="relative z-10 flex flex-col gap-28 px-5 pb-32 pt-24">{children}</main>
+        <main className="relative z-10 flex flex-col gap-28 px-5 pb-44 pt-12">{children}</main>
       </FlowCtx.Provider>
     )
   }
@@ -53,7 +52,14 @@ function Canvas({ children }: { children: ReactNode }) {
   useEffect(() => {
     board.overview = overview
     if (overview) pan.current.x = pan.current.y = 0
+    dispatchEvent(new CustomEvent('board:overviewchange', { detail: overview }))
   }, [overview])
+
+  useEffect(() => {
+    const set = (e: Event) => setOverview((e as CustomEvent<boolean>).detail)
+    addEventListener('board:setoverview', set)
+    return () => removeEventListener('board:setoverview', set)
+  }, [])
 
   useEffect(() => {
     const still = reducedMotion()
@@ -93,7 +99,7 @@ function Canvas({ children }: { children: ReactNode }) {
       if (e.metaKey || e.ctrlKey || e.altKey || (e.target as HTMLElement).closest?.('input, textarea, [contenteditable]')) return
       if (e.key === 'z' || e.key === 'Z') setOverview(o => !o)
       else if (e.key === 'Escape') setOverview(false)
-      else if (/^[1-6]$/.test(e.key)) goto(+e.key - 1)
+      else if (/^[1-7]$/.test(e.key)) goto(+e.key - 1)
     }
     addEventListener('scroll', onScroll, { passive: true })
     addEventListener('wheel', onWheel, { passive: true })
@@ -164,7 +170,6 @@ function Canvas({ children }: { children: ReactNode }) {
             })}
         </div>
       </main>
-      <Controls overview={overview} toggle={() => setOverview(o => !o)} />
     </FlowCtx.Provider>
   )
 }
@@ -180,28 +185,6 @@ function Route() {
   )
 }
 
-function Controls({ overview, toggle }: { overview: boolean; toggle: () => void }) {
-  return (
-    <div className="fixed bottom-4 right-4 z-40 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.12em]">
-      <AnimatePresence>
-        {overview && (
-          <motion.span initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 8 }} className="text-mute">
-            pick a frame to fly there · esc
-          </motion.span>
-        )}
-      </AnimatePresence>
-      <button
-        onClick={toggle}
-        aria-pressed={overview}
-        className="group flex items-center gap-2 rounded-sm border border-line bg-bg/90 px-2.5 py-1.5 transition-colors hover:border-ink"
-      >
-        <span className="inline-block transition-transform duration-300 group-hover:scale-125">{overview ? '⊕' : '⊖'}</span>
-        <span>{overview ? 'zoom in' : 'zoom out'}</span>
-        <kbd className="rounded-[2px] border border-line px-1 text-mute">Z</kbd>
-      </button>
-    </div>
-  )
-}
 
 /** A section's area on the board. Children use coordinates local to the zone (ZONE_W × ZONE_H). */
 export function Zone({ id, children, className = '' }: { id: ZoneId; children: ReactNode; className?: string }) {

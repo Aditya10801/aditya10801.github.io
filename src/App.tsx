@@ -5,11 +5,12 @@ import AsciiField from './site/AsciiField'
 import Board from './site/Board'
 import { ORDER, goto, type ZoneId } from './site/map'
 import Cursor from './site/Cursor'
-import Nav from './site/Nav'
+import Terminal from './site/Terminal'
 import Hero from './site/Hero'
 import About from './site/About'
 import Into from './site/Into'
 import Hangar from './site/Hangar'
+import Log from './site/Log'
 import Now from './site/Now'
 import Contact from './site/Contact'
 import FlightHUD from './site/FlightHUD'
@@ -30,16 +31,17 @@ export default function App() {
       <AnimatePresence>{!entered && <Preloader onEnter={() => setEntered(true)} />}</AnimatePresence>
       {entered && (
         <>
-          <Nav />
           <Board>
             <Hero />
             <About />
             <Into />
             <Hangar />
+            <Log />
             <Now />
             <Contact />
           </Board>
           <FlightHUD />
+          <Terminal />
         </>
       )}
     </ClickSpark>
