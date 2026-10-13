@@ -21,26 +21,18 @@ export default function Cursor() {
   const root = useRef<HTMLDivElement>(null)
   const plane = useRef<SVGSVGElement>(null)
   const glyph = useRef<HTMLSpanElement>(null)
-  const trail = useRef<HTMLCanvasElement>(null)
+  const trail = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!fine) return
     document.documentElement.classList.add('custom-cursor')
     const still = reducedMotion()
-    const canvas = trail.current!
-    const tctx = canvas.getContext('2d')!
+    // contrail = a small pool of dot spans, not a full-screen canvas redrawn every frame
+    const dots = [...trail.current!.children] as HTMLElement[]
+    const pts: { x: number; y: number; t: number; el: HTMLElement }[] = []
+    let slot = 0
     const pos = { x: -100, y: -100, sx: -100, sy: -100, angle: 0, seen: false }
-    const pts: { x: number; y: number; t: number }[] = []
-    let dirty = false
-    let ctx: Ctx = 'default', down = false, raf = 0, shown = '', scrambleUntil = 0, ink = cssVar('--ink')
-
-    const fit = () => {
-      const dpr = Math.min(devicePixelRatio, 2)
-      canvas.width = innerWidth * dpr; canvas.height = innerHeight * dpr
-      tctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      tctx.font = '10px "Geist Mono", monospace'
-      tctx.textAlign = 'center'; tctx.textBaseline = 'middle'
-    }
+    let ctx: Ctx = 'default', down = false, raf = 0, shown = '', scrambleUntil = 0, accent = cssVar('--accent')
 
     const setGlyph = (now: number) => {
       const target = GLYPH[ctx]
@@ -70,19 +62,20 @@ export default function Cursor() {
           const bx = pos.sx - Math.cos(pos.angle) * 9, by = pos.sy - Math.sin(pos.angle) * 9
           const last = pts[pts.length - 1]
           if (!last || Math.hypot(last.x - bx, last.y - by) > 7) {
-            pts.push({ x: bx + nx, y: by + ny, t: now }, { x: bx - nx, y: by - ny, t: now })
+            for (const sgn of [1, -1]) {
+              const el = dots[slot++ % dots.length]
+              const old = pts.findIndex(q => q.el === el)
+              if (old >= 0) pts.splice(old, 1)
+              pts.push({ x: bx + nx * sgn, y: by + ny * sgn, t: now, el })
+            }
           }
         }
-        while (pts.length && now - pts[0].t > 700) pts.shift()
-        if (pts.length || dirty) tctx.clearRect(0, 0, innerWidth, innerHeight)
-        dirty = pts.length > 0
-        tctx.fillStyle = ink
+        while (pts.length && now - pts[0].t > 700) pts.shift()!.el.style.opacity = '0'
         for (const p of pts) {
           const a = 1 - (now - p.t) / 700
-          tctx.globalAlpha = a * 0.55
-          tctx.fillText(a > 0.6 ? '•' : '·', p.x, p.y)
+          p.el.style.transform = `translate3d(${p.x}px,${p.y}px,0) scale(${a > 0.6 ? 1.6 : 1})`
+          p.el.style.opacity = (a * 0.55).toFixed(2)
         }
-        tctx.globalAlpha = 1
         const showPlane = ctx === 'default' || ctx === 'drag'
         if (plane.current) {
           plane.current.style.transform = `translate(-50%,-50%) rotate(${pos.angle}rad) scale(${showPlane ? (down ? 0.8 : 1) : 0})`
@@ -90,7 +83,7 @@ export default function Cursor() {
         if (glyph.current) glyph.current.style.transform = `translate(-50%,-50%) scale(${showPlane ? 0 : down ? 0.85 : 1})`
       }
       setGlyph(now)
-      if (glyph.current) glyph.current.style.color = down ? cssVar('--accent') : ''
+      if (glyph.current) glyph.current.style.color = down ? accent : ''
       root.current!.style.transform = `translate3d(${pos.sx}px,${pos.sy}px,0)`
       root.current!.style.opacity = pos.seen ? '1' : '0'
     }
@@ -104,10 +97,8 @@ export default function Cursor() {
     const onDown = () => { down = true }
     const onUp = (e: PointerEvent) => { down = false; ctx = contextOf(e.target as Element, false) }
     const onLeave = () => { pos.seen = false }
-    const onTheme = () => { ink = cssVar('--ink') }
+    const onTheme = () => { accent = cssVar('--accent') }
 
-    fit()
-    addEventListener('resize', fit)
     addEventListener('pointermove', onMove, { passive: true })
     addEventListener('pointerdown', onDown)
     addEventListener('pointerup', onUp)
@@ -117,7 +108,6 @@ export default function Cursor() {
     return () => {
       cancelAnimationFrame(raf)
       document.documentElement.classList.remove('custom-cursor')
-      removeEventListener('resize', fit)
       removeEventListener('pointermove', onMove)
       removeEventListener('pointerdown', onDown)
       removeEventListener('pointerup', onUp)
@@ -130,7 +120,11 @@ export default function Cursor() {
   return (
     <>
       <style>{`.custom-cursor, .custom-cursor * { cursor: none !important; }`}</style>
-      <canvas ref={trail} aria-hidden className="pointer-events-none fixed inset-0 z-[9998] h-full w-full" />
+      <div ref={trail} aria-hidden className="pointer-events-none fixed left-0 top-0 z-[9998]">
+        {Array.from({ length: 28 }, (_, i) => (
+          <span key={i} className="absolute -left-px -top-px h-[2px] w-[2px] rounded-full bg-ink opacity-0 will-change-transform" />
+        ))}
+      </div>
       <div ref={root} aria-hidden className="pointer-events-none fixed left-0 top-0 z-[9999] opacity-0 mix-blend-difference transition-opacity duration-200">
         <svg
           ref={plane}

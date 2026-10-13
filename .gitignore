@@ -4,5 +4,5 @@ dist
 .DS_Store
 
 # local only: raw photos (optimized copies live in public/me) and the moodboard
-me/
-references/
+/me/
+/references/

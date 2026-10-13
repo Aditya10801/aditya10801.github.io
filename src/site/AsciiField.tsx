@@ -65,7 +65,7 @@ export default function AsciiField() {
       mouse.sx += (mouse.x - mouse.sx) * 0.2
       mouse.sy += (mouse.y - mouse.sy) * 0.2
       const chasing = Math.abs(mouse.x - mouse.sx) + Math.abs(mouse.y - mouse.sy) > 1 || Math.abs(board.cam.x + board.cam.y + board.cam.z - lastCam) > 0.05
-      if (now - last < (chasing ? 33 : 50)) return
+      if (!chasing && now - last < 50) return
       t += (now - last) / 1000
       last = now
       draw()

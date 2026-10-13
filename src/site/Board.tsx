@@ -58,22 +58,31 @@ function Canvas({ children }: { children: ReactNode }) {
   useEffect(() => {
     const still = reducedMotion()
     const cam = board.cam
-    let raf = 0, first = true, last = ''
-    const tick = () => {
+    let raf = 0, first = true, last = '', prev = performance.now()
+    const shown = new Map<Element, boolean>()
+    const tick = (now: number) => {
       raf = requestAnimationFrame(tick)
+      const dt = Math.min(0.1, (now - prev) / 1000)
+      prev = now
       const vw = innerWidth, vh = innerHeight
       board.p = Math.min(N - 1, scrollY / SEG)
       const t = aim(board.p, vw, vh)
       const P = pan.current
-      if (P.decay) { P.x *= 0.86; P.y *= 0.86; if (Math.abs(P.x) + Math.abs(P.y) < 0.5) { P.x = P.y = 0; P.decay = false } }
-      const k = first || still ? 1 : 0.11
+      if (P.decay) { const d = Math.exp(-dt * 9); P.x *= d; P.y *= d; if (Math.abs(P.x) + Math.abs(P.y) < 0.5) { P.x = P.y = 0; P.decay = false } }
+      // frame-rate independent easing, so a dropped frame doesn't stutter the camera
+      const k = first || still ? 1 : 1 - Math.exp(-dt * 7)
       first = false
       cam.x += (t.x + P.x - cam.x) * k
       cam.y += (t.y + P.y - cam.y) * k
       cam.z += (t.z - cam.z) * k
       const cx = vw / 2, cy = TOP + (vh - TOP - BOTTOM) / 2
-      const tf = `translate3d(${(cx - cam.x * cam.z).toFixed(1)}px, ${(cy - cam.y * cam.z).toFixed(1)}px, 0) scale(${cam.z.toFixed(3)})`
+      const tf = `translate3d(${(cx - cam.x * cam.z).toFixed(2)}px, ${(cy - cam.y * cam.z).toFixed(2)}px, 0) scale(${cam.z.toFixed(4)})`
       if (tf !== last) world.current!.style.transform = last = tf
+      // only paint zones near the camera: far ones would still re-raster on every clock tick and animation
+      world.current!.querySelectorAll<HTMLElement>('[data-zone]').forEach(el => {
+        const near = board.overview || Math.abs(board.p - ORDER.indexOf(el.dataset.zone as ZoneId)) < 1.1
+        if (shown.get(el) !== near) { shown.set(el, near); el.style.visibility = near ? '' : 'hidden' }
+      })
     }
     raf = requestAnimationFrame(tick)
 
