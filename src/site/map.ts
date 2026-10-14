@@ -5,7 +5,7 @@ export type Rect = { x: number; y: number; w: number; h: number }
 export const ZONE_W = 1200
 export const ZONE_H = 680
 
-export const ORDER = ['hero', 'about', 'into', 'hangar', 'log', 'now', 'contact'] as const
+export const ORDER = ['hero', 'about', 'into', 'hangar', 'design', 'log', 'now', 'contact'] as const
 export type ZoneId = (typeof ORDER)[number]
 
 // top row runs left to right, bottom row comes back right to left
@@ -15,9 +15,10 @@ export const ZONES: Record<ZoneId, Rect> = {
   about: at(1680, 120),
   into: at(3160, 260),
   hangar: at(4640, 180),
-  log: at(4640, 1320),
-  now: at(3160, 1400),
-  contact: at(1680, 1320),
+  design: at(4640, 1320),
+  log: at(3160, 1400),
+  now: at(1680, 1320),
+  contact: at(200, 1260),
 }
 
 export const WORLD = { w: 6040, h: 2200 }

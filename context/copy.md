@@ -1,430 +1,883 @@
-# Site Copy v2
+# Aditya Madan | Personal Website Copy
 
-## Global
+## Creative Direction
 
-### Navigation (terminal at the bottom of the screen)
+This is a personal website, not a web résumé.
 
-- Prompt: `aditya@board:~/hangar $` (path follows the current zone)
-- Idle hint: `type help, or press /`
-- Right side: `03/07 · hh:mm`
-- Chips: `cd <next>` · `cd <previous>` · `ls` · `zoom out` · `music on` · `theme night` · `help`
-- `help` output:
-  - `cd <place>      fly somewhere: about, into, hangar, log, now, contact, ~`
-  - `ls              list everything on the board`
-  - `open <thing>    resume, github, linkedin, instagram, loom, flux`
-  - `zoom out | in   see the whole board`
-  - `music on | off  lo-fi, generated live in your browser`
-  - `theme day | night`
-  - `whoami · date · pwd · clear`
-- Replies: `flying to ~/hangar` · `opening resume` · `zoomed out. click any frame to fly there` · `♪ lo-fi on` / `muted` · `lights off` / `lights on`
-- `whoami`: `aditya madan` / `engineering student at VIT Vellore, from Delhi` / `developer, designer, avgeek`
-- Errors: `command not found: x. try help` · `cd: no such place: x. try ls` · `sudo` → `nice try.` · `exit` → `no exits on this flight. the closest one is contact`
+The site should feel like entering Aditya's little corner of the internet. It should reveal his interests, habits, work, photographs, sense of humour, and the small details that make him who he is.
 
-Keep all navigation tooltips, flight HUD values, animation states, and board controls as they are. They are functional interface copy, not storytelling copy.
+He is a computer science student, developer, designer, AvGeek, perfectionist, Punjabi music listener, traveller, and professional overthinker. These are different parts of his life, not a hierarchy of credentials.
+
+The aviation-inspired interface is the visual language of the site, not a requirement to turn every sentence into an aviation pun.
+
+### The voice
+
+- Witty, conversational, occasionally sarcastic.
+- Comfortable switching between a joke and a sincere observation.
+- Self-deprecating without making the entire site a joke about being incompetent.
+- Thoughtful when discussing things that genuinely interest him.
+- Specific rather than grandiose.
+- Detail-conscious without repeatedly announcing that he cares about details.
+
+### The feeling
+
+Visitors should come away thinking:
+
+- This person has a distinct personality.
+- He cares about how things look and feel, sometimes probably too much.
+- He is curious about the world beyond his immediate interests.
+- He has things he enjoys that have nothing to do with his career.
+- Someone put real thought into this website.
+
+### Important constraints
+
+- Do not turn this into a résumé with an aviation skin.
+- Do not make every personal interest sound like a professional advantage.
+- Do not invent stories, achievements, technical metrics, or personal details.
+- Do not imply Aditya built software he only contributed to through design.
+- No em dashes or en dashes.
+- Preserve the existing layouts, typography, animations, terminal, interactions, and aviation-themed visual assets.
+- The copy below should replace the existing copy in the implementation. Keep functional commands and interactions working.
 
 ---
 
-## 01. Hero
+# 00. Global Navigation
 
-**Meta line**
+## Terminal prompt
 
-`N 28.61° E 77.21°` · `delhi ⇄ vellore` · `IST hh:mm`
+`aditya@board:~/hangar $`
 
-**Headline**
+Idle hint:
 
-Hi, I'm Aditya.
+`type help, or press /`
 
-**Subheadline**
+### Terminal welcome
 
-Software, design, aircraft, and an unreasonable number of open tabs.
+```text
+Welcome aboard.
 
-**Description**
+This is Aditya's corner of the internet.
+Look around. There are a few things to find.
 
-I'm a developer and designer who likes making things work, making them look good, and occasionally disappearing into an aviation rabbit hole. I build products, obsess over the details, and tend to learn best when I can get my hands on something and break it a little.
+Type help to see what you can do.
+```
 
-**Buttons**
+Keep the welcome compact. It should not behave like a full-screen onboarding modal.
+
+### Commands
+
+| Command | Behaviour |
+|---|---|
+| `help` | List available commands |
+| `whoami` | Open the short personal introduction |
+| `ls` | List available destinations |
+| `cd about` | Navigate to About |
+| `cd hangar` | Navigate to software projects |
+| `cd interests` | Navigate to personal interests |
+| `cd logbook` | Navigate to personal history |
+| `cd contact` | Navigate to Contact |
+| `pwd` | Show the current section |
+| `date` | Display the current local date and time |
+| `clear` | Clear terminal output |
+| `theme` | Toggle the supported theme |
+| `music` | Open music-related content or its existing interaction |
+| `open japan` | Reveal the Japan Polaroid or its story |
+| `open easter-eggs` | Reveal a subtle hint about hidden details |
+
+Keep all existing supported commands and aliases. These are content labels, not permission to remove existing functionality.
+
+### `whoami`
+
+```text
+aditya madan
+
+student at VIT Vellore, originally from Delhi.
+developer, designer, AvGeek.
+
+usually learning something, looking something up,
+or wondering why I haven't learned enough already.
+```
+
+### `help`
+
+```text
+Available commands:
+
+  whoami          a short introduction
+  ls              see what's around
+  cd <section>    go somewhere
+  open <thing>    look a little closer
+  music           a small detour
+  theme           change the atmosphere
+  clear           pretend nothing happened
+
+Tip: not everything here is immediately obvious.
+```
+
+### Terminal responses
+
+- `sudo`
+
+  `Nice try. You have not been granted administrative privileges over my life.`
+
+- `exit`
+
+  `No exits on this flight. The closest one is contact.`
+
+- Unknown command
+
+  `Command not found. Could be a typo. Could be a skill issue.`
+
+- `whoami` with repeated execution
+
+  `Still Aditya. Identity crisis pending.`
+
+- `help` with repeated execution
+
+  `The commands have not changed. Your commitment to exploring them is appreciated.`
+
+- `clear`
+
+  `Terminal cleared. Your browser tabs remain your responsibility.`
+
+Keep the responses short. Do not flood the terminal with jokes every time a command is entered.
+
+---
+
+# 01. Hero
+
+### Metadata
+
+`N 28.61° E 77.21° · DELHI ⇄ VELLORE · IST HH:MM`
+
+Keep the coordinates and time functional if they are already dynamically generated. Do not display a live clock if the implementation does not support it.
+
+### Headline
+
+# Hi, I'm Aditya.
+
+### Subheadline
+
+**Software, design, aircraft, and an unreasonable number of open tabs.**
+
+### Body
+
+I'm a student at VIT Vellore, originally from Delhi. I like figuring things out, making things look right, travelling somewhere new, and occasionally spending an embarrassing amount of time researching something that started as a passing thought.
+
+Some days that means building something on my laptop. Other days it means sitting around with friends, going nowhere in particular, and somehow making an entire evening out of it.
+
+Either way, I'm probably thinking about something.
+
+### Primary actions
 
 - `say hi`
+- `github`
 - `resume.pdf`
-- `github ↗`
 
-**Onboarding note**
+The résumé remains available, but it should not dominate the hero.
 
-`scroll to fly →`
+### Portrait printout
 
-**Portrait printout**
+**Caption:** `SUBJECT: ADITYA`
 
-`PORTRAIT.TXT · 111 COLS · IST hh:mm`
+**Stamp:** `GENERALLY OPERATIONAL`
 
-**Charset chip**
+**Handwritten note:** `photogenic under controlled conditions`
 
-`charset: ascii (1/4)`
-
-**Portrait hover hint**
-
-`click: charset · hold: the real me`
-
-**Sticker**
+### Name sticker
 
 `HELLO! my name is aditya`
 
+### Scroll prompt
+
+`look around ↓`
+
+### Small metadata labels
+
+- `currently: figuring it out`
+- `operating status: mostly functional`
+- `open tabs: classified`
+
+The open-tabs joke is a visual detail, not a repeated punchline across every section.
+
 ---
 
-## 02. About
+# 02. About
 
-**Label**
+### Section label
 
 `[01] about`
 
-**Paper title**
+### File label
 
 `about.txt`
 
-**Heading**
+### Heading
 
-Curious by default. AvGeek by choice.
+# Curious by default. AvGeek by choice.
 
-**Lead**
+### Lead
 
-I can spend an afternoon thinking about how an application should work, then lose the next hour reading about an aircraft I've spotted in the sky. Both feel like time well spent.
+I have a habit of getting interested in things and then wanting to know everything about them. The original question is usually innocent. The next forty-seven browser tabs are not.
 
-**Paragraph 1**
+### Body
 
-I'm Aditya, a computer science student at VIT Vellore, originally from Delhi. I like understanding the machinery behind things, whether that's the code running an application, the decisions behind a well-designed interface, or the systems that keep an aircraft moving safely through the sky.
+I'm from Delhi and currently studying Computer Science at VIT Vellore.
 
-**Paragraph 2**
+When I'm not in class, I'm usually out with friends, wandering around, or sitting somewhere talking about absolutely anything. If I'm at my laptop, there's a reasonable chance I'm trying to learn something new, looking up something random, or convincing myself that everyone else has figured life out except me.
 
-I got into building software because I wanted to make things, not just learn how they work in theory. One of my favourite examples is Altos, an aviation weather application. I designed the interface in Figma, built the frontend and backend, and got it deployed in about five hours. It was messy in places, but it existed. I could use it, test it, and make it better. That feeling is a big part of why I build.
+That last activity is particularly unproductive.
 
-**Paragraph 3**
+I like software and design, but I'm not interested in spending my entire life staring at a screen. I like travelling, listening to music, discovering places, and understanding how things work outside my immediate bubble.
 
-I'm equally drawn to the details people notice and the systems they never see. A button that feels exactly right. An API that behaves predictably. A complicated idea made simple enough that someone doesn't have to think twice about using it.
+Japan was one of those experiences that stayed with me. Beyond the places themselves, I was fascinated by the culture, the technology, and the thought put into everyday systems. So many little things seemed considered. It made me want to look closer rather than simply tick places off a list.
 
-I don't have everything figured out. I'd rather keep learning, ship things, and get a little better with every attempt.
+I notice details. Sometimes that's useful. Sometimes I'm still adjusting something that nobody else would have noticed in the first place.
 
-**Typed tag**
+### Personal tag
 
-`developer + designer · vit '28 · delhi → vellore`
+`student · delhi → vellore · avgeek · perpetual browser of things`
 
-**Polaroid front**
+### Portrait / Polaroid
 
-`amanohashidate.jpg`
+Keep the existing Japan Polaroid from Amanohashidate.
 
-Caption: `japan`
+**Front caption:**
 
-Handwritten note: `flip it, trust me`
+`Amanohashidate, Japan`
 
-**Polaroid back**
+`a very good place to stand around and think`
 
-**Matanozoki.**
+**Back caption:**
 
-At Amanohashidate, there's a tradition of bending over and looking at the view between your legs. The sandbar appears upside down, almost like a bridge stretching into the sky.
+Amanohashidate is famous for its sandbar, which can look like a bridge reaching into the sky when viewed upside down through the traditional *matanozoki* pose.
 
-A reminder that sometimes you don't need a new view. You just need to look at things differently.
+I liked the place, but I also liked everything around it: the details, the atmosphere, and seeing a different way of doing things.
+
+Japan made me want to pay attention.
+
+Flip the card to discover the story. Preserve the existing flip interaction.
+
+Do not add a motivational conclusion about how this changed my approach to software. Let the memory exist on its own.
 
 ---
 
-## 03. Things I'm Into
+# 03. Things I'm Into
 
-**Label**
+### Section label
 
-`[02] things i'm into`
+`[02] interests`
 
-**Heading**
+### Heading
 
-A few things that have my attention.
+# Things that occupy my brain rent-free.
 
-**Intro**
+### Introduction
 
-Some interests turn into projects. Some stay rabbit holes. Some somehow become both.
+Some are serious interests. Some are hobbies. Some started with one question and have since become a minor research project.
 
-### 01. Software and building
+No particular order. My brain does not have a very good filing system.
 
-I like the moment when something that existed only in my head finally runs on my machine. These days, that means working across web technologies and Go, getting deeper into backend engineering, and understanding what happens beyond the happy path.
+## Card 01. Software and building things
 
-I care about more than getting something to work once. I want to know why it works, what happens when it doesn't, and how to make it dependable.
+### Heading
 
-**Terminal artwork**
+`making things work`
 
-`$ go run ./cmd/api`
+I like learning how things work by getting my hands dirty. Sometimes I build something useful. Sometimes I spend an unreasonable amount of time figuring out why something that should work absolutely refuses to cooperate.
 
-`listening on :8080`
+I'm interested in the details behind the result, not just getting something to run once and declaring victory.
 
-`GET /health 200 0.8ms`
+**Terminal illustration:**
 
-Hover: `go test ./...`
+```text
+$ go test ./...
 
-### 02. UI/UX and product
+tests running...
+expectations high...
+```
 
-A product can be technically impressive and still be frustrating to use. That gap interests me.
+**Hover reveal:**
 
-I enjoy working through flows, questioning unnecessary steps, and getting the little details right. Good design isn't decoration added after the engineering. It's part of how the thing works.
+`it passed. I checked twice.`
 
-**Figma artwork**
+Keep Go as a genuine current interest. By launch, mention what I'm actually building or learning with it if the relevant project is ready. Do not invent a finished project or claim expertise I do not have.
+
+## Card 02. Design and the little things
+
+### Heading
+
+`one pixel off`
+
+I care about how things look, but also about how they feel to use. A beautiful interface that makes a simple task unnecessarily difficult is still a bad experience.
+
+I can spend far too long thinking about spacing, interactions, or whether something feels right. The difference between "good enough" and "exactly right" is sometimes a few pixels and sometimes a complete lack of perspective.
+
+I am still working on knowing when to stop.
+
+**Illustration:**
 
 `[ button ]`
 
-Hover: `[ ship it ]`
+**Hover reveal:**
 
-### 03. Aviation and aircraft
+`moved it 2px. you're welcome.`
 
-I'm an AvGeek. The kind who notices aircraft overhead, wants to know what's flying, and can end up reading about engines, flight operations, or aviation weather long after intending to do something else.
+The joke should appear only on interaction. Do not make the card itself look like a design résumé.
 
-I love that aviation combines engineering, precision, weather, human judgement, and an enormous amount of coordination. There's so much happening behind a flight that most passengers never have to think about.
+## Card 03. Aviation
 
-Naturally, I ended up building software around it.
+### Heading
 
-**Radar artwork**
+`look up`
 
-Use realistic radar sweeps, aircraft symbols, and flight labels. Keep the interaction playful rather than pretending this is a live operational radar.
+I'm an AvGeek. Aircraft overhead have a habit of interrupting whatever I'm doing.
 
-### 04. Where things overlap
+One minute I'm going about my day. The next I'm trying to work out what is flying past, where it might be going, or what else I can find out about it.
 
-My favourite problems tend to sit between disciplines. Design meets engineering. Software meets the real world. An interest turns into an idea, and an idea turns into a project.
+I'm interested in the aircraft themselves, but also the wider world behind a flight: weather, operations, systems, and the coordination that makes it all happen.
 
-I'm interested in the space where understanding a problem matters just as much as knowing how to implement the solution.
+There is a perfectly reasonable explanation for this. I just don't always have time to give it.
 
-**Venn artwork**
+**Illustration:**
 
-`design` + `engineering` = `something useful`
+Use the existing radar or aircraft-tracking artwork.
 
-**Hover status words**
+**Hover reveal:**
 
-`testing` · `shipping` · `squawking` · `merged`
+`yes, I looked up again.`
 
----
+## Card 04. Travelling and looking closer
 
-## 04. The Hangar
+### Heading
 
-**Label**
+`somewhere else`
 
-`[03] the hangar`
+I like travelling because it lets me experience a place rather than just read about it.
 
-**Heading**
+Japan made a particularly strong impression on me. I loved seeing another culture up close and noticing how technology, everyday life, and public systems fit together.
 
-Things I've put into the world.
+I like coming back from somewhere with more than photographs. New observations, new questions, and a camera roll that will eventually need organising.
 
-**Intro**
+Eventually.
 
-A few experiments, products, and ideas that made it past the notes app. Some are polished, some are still evolving, but each one taught me something worth keeping.
+**Illustration:**
 
-### LOOM
+Use the existing travel-inspired visual language. Do not invent a list of destinations or travel statistics.
 
-**Type:** `web app`
+**Hover reveal:**
 
-**Description**
+`camera roll: a future problem.`
 
-Your professional presence is scattered across GitHub, your résumé, and LinkedIn. LOOM explores bringing those pieces together into one portfolio, with AI helping connect the dots.
+## Small interstitial
 
-**Stack**
+`Other recurring interests include Punjabi music, particularly Karan Aujla, and conversations that were supposed to take ten minutes.`
 
-`nextjs` · `postgres` · `prisma` · `genai`
+Optional small link:
 
-**Link**
+`a little music detour ♪` (reveals the line below in place, no external link)
 
-`LIVE ↗` · `useloom.vercel.app`
-
-### FLUX
-
-**Type:** `web app`
-
-**Description**
-
-A task manager built around a simple question: what actually needs your attention right now?
-
-FLUX explores an offline-first approach to managing tasks, with urgency helping you decide what deserves your time instead of leaving you with another endless list.
-
-**Stack**
-
-`react` · `node` · `mongodb`
-
-**Link**
-
-`LIVE ↗` · `flux-space.vercel.app`
-
-### MESSIT
-
-**Type:** `ux redesign`
-
-**Description**
-
-VIT's mess app is part of everyday campus life. The idea here was simple: make a routine interaction less of a chore.
-
-I explored how the experience could go from four taps to two, cutting unnecessary steps and making the interface more direct.
-
-**Stack**
-
-`figma` · `ux research`
-
-**Link**
-
-`ON APP STORES`
-
-Click note: `no public link, sorry`
-
-**Hangar footer**
-
-Every project starts with a question. The interesting part is finding out whether the answer works.
+Do not create a full music player unless one already exists or is intentionally being implemented.
 
 ---
 
-## 05. Currently
+# 04. The Hangar
 
-**Label**
+### Section label
 
-`[04] currently`
+`[03] hangar`
 
-**Departure board**
+### Heading
 
-`DEPARTURES`
+# Things I've built.
 
-Columns: `FLIGHT / TO / STATUS`
+### Introduction
 
-| Flight | Destination | Status | Hover |
-|---|---|---|---|
-| AM101 | GO + WEB | BUILDING | SHIPPED CODE |
-| AM202 | SOFTWARE ENG | DEEP DIVING | UNDER THE HOOD |
-| AM303 | NEW PROBLEMS | BOARDING | ALWAYS |
-| AM404 | VINNOVATEIT | LEADING | VICE CHAIR |
-| AM505 | THE SKY | LOOKING UP | DAILY |
+A few things that made it beyond an idea in my notes.
 
-**NOTAM printout**
+Some are software projects. Some are experiments. They don't all have the same story, and they don't all need to pretend they're changing the world.
 
-Title: `notam a0110/26`
+Keep this section specifically for software projects that I actually built or contributed to as an engineer.
 
-I've been getting deeper into software engineering, building with Go and web technologies, and trying to understand the systems behind the interfaces.
+## Project 01. LOOM
 
-Outside the code editor, I'm still the same AvGeek who looks up when an aircraft passes overhead.
+### Type
 
-**Achievement rosette**
+`WEB APP`
 
-`2ND`
+### Description
 
-**Card front**
+Your work lives in a dozen different places. GitHub over here, your résumé over there, LinkedIn somewhere else, and the actual story of what you can do scattered across all of them.
 
-**Hexathon Designathon 2025**
+LOOM explores bringing those pieces together into a single portfolio, using AI to help connect the dots.
 
-Second place, Google Developer Groups VIT.
+### Stack
 
-**Card back**
+`Next.js · PostgreSQL · Prisma · GenAI`
 
-A graph-based approach to splitting group expenses using the fewest possible payments. A little graph theory, a practical problem, and a design challenge rolled into one.
+### Link
+
+`loom.buildspace.cv`
+
+### Under the hood
+
+Use the existing technical implementation details, where verified:
+
+- Extract relevant information from supplied professional materials.
+- Validate structured AI output before saving it.
+- Keep the portfolio presentation flexible with themes and recruiter-oriented views.
+- Handle uploaded source material carefully, including its disposal after extraction if that is how the current implementation works.
+
+Do not expose implementation claims that are no longer accurate.
+
+### Small caption
+
+`trying to make the internet tell a more coherent story`
+
+## Project 02. FLUX
+
+### Type
+
+`WEB APP`
+
+### Description
+
+Most task managers are excellent at helping you collect tasks. The actual challenge is deciding what deserves your attention.
+
+FLUX explores a different approach: a task manager that helps bring urgency into the picture instead of leaving you with an endless list and an increasingly guilty conscience.
+
+### Stack
+
+`React · Node.js · MongoDB`
+
+### Link
+
+`flux-space.vercel.app`
+
+### Under the hood
+
+Retain verified implementation details from the current project:
+
+- Offline-first task handling.
+- Efficient updates and batching, if the measured performance improvement remains accurate.
+- Per-user data isolation.
+- The existing storage and synchronisation approach.
+
+Do not include unverified performance numbers.
+
+### Small caption
+
+`because apparently making the list longer wasn't helping`
+
+## Project cards
+
+Each card should expose:
+
+- Project name and category.
+- A short description.
+- Stack labels.
+- Live project link where available.
+- An optional under-the-hood expansion.
+
+Keep the writing compact. The cards should not become long case studies.
+
+### Section footer
+
+`More things will appear here when they are ready. I would rather show fewer things properly than pad out the hangar.`
 
 ---
 
-## 06. Contact
+# 05. Design Work
 
-**Label**
+### Section label
 
-`[05] contact`
+`[04] design desk`
 
-**Heading**
+### Heading
 
-Say hi. Don't overthink it.
+# Things I've helped make better.
 
-**Subheading**
+### Introduction
 
-Got an interesting idea, a problem worth solving, or a plane you'd like to talk about? My inbox is open.
+Not everything I work on starts with a code editor.
 
-**Boarding pass**
+Sometimes the problem is the experience itself: what a person sees, where they get stuck, and how much unnecessary effort a simple task demands.
 
-`BOARDING PASS` · `✈ AM 0110`
+This is where design work belongs.
 
-- Passenger: `YOUR NAME`
-- Class: `HELLO / COLLAB / HIRE / AVGEEK TALK`
-- From: `WHEREVER YOU ARE`
-- To: `ADITYA'S INBOX`
-- Seat: `{name}`
+## MESSIT
 
-**Button**
+### Category
 
-`SCAN ↵`
+`UI/UX DESIGN CONTRIBUTION`
 
-**Scanner states**
+### Description
 
-- `PLACE PASS HERE`
-- `RELEASE TO SCAN`
-- `READING PASS`
-- `BOARDING · WELCOME {NAME}`
-- `NAME REQUIRED`
+MessIT is a campus mess app at VIT. My contribution was to its UI/UX design, focusing on making routine interactions simpler and more intuitive.
 
-**Email template**
+The goal was to reduce unnecessary steps between opening the app and getting something done.
 
-Subject: `{Class} from {name}`
+For a key action, the redesign reduced the interaction from four taps to two.
 
-Body:
+### Contribution
 
-Hi Aditya,
+`UI/UX · Interaction design · Interface design`
 
-{message}
+### Link
 
-{name}  
-Flight AM 0110 · Seat {seat}
+`No public case-study link available`
 
-**Interaction note**
+App listing (added): `MessIT on the App Store ↗` → https://apps.apple.com/in/app/messit/id6748703795
 
-`drag me to the gate →`
+### Case-study note
 
-**Other ways in**
+If the existing project materials substantiate the design process, show the relevant screens, the original friction point, and the redesigned interaction.
+
+Do not imply that I built the application, owned its backend, or implemented the engineering.
+
+Do not invent research findings, user-testing numbers, or product outcomes.
+
+### Small caption
+
+`less tapping. more getting on with your day.`
+
+### Section footer
+
+`Design is not decoration. And good design should not need a paragraph explaining why a button is where it is.`
+
+This is a design contribution, not another engineering project card. Preserve that distinction in headings, filters, metadata, and any project navigation.
+
+---
+
+# 06. Logbook
+
+### Section label
+
+`[05] logbook`
+
+### Heading
+
+# A few coordinates.
+
+### Introduction
+
+A very brief record of where I've been and what currently occupies my time.
+
+No dramatic origin story. I was simply a person before I made a website about being a person.
+
+## Entry 01. Delhi
+
+`ORIGIN`
+
+Originally from Delhi.
+
+## Entry 02. VIT Vellore
+
+`2024 → 2028`
+
+B.Tech in Computer Science and Engineering.
+
+Currently making my way through university, with all the learning, experimenting, overthinking, and figuring things out that comes with it.
+
+## Entry 03. VinnovateIT
+
+`VIT VELLORE`
+
+Vice Chairperson of VinnovateIT.
+
+A significant part of my university life, alongside the people, events, and work that come with being involved in a student technology club.
+
+Keep the role factual and concise. The website should not turn into an event résumé or a list of administrative responsibilities.
+
+## Quiet entry. Hexathon
+
+`GDG VIT · DESIGNATHON · 2025`
+
+Second place.
+
+Keep this as a compact logbook entry. No oversized trophy, award badge, or celebratory achievement card.
+
+The award can be found by someone who looks closely. It does not need to become the story of the website.
+
+---
+
+# 07. Currently
+
+### Section label
+
+`[06] currently`
+
+### Heading
+
+# Current conditions.
+
+### Introduction
+
+A snapshot of what's occupying my time lately. Subject to change without notice, occasionally without my knowledge.
+
+Use the existing departure board.
+
+## Departure board
+
+| Flight | Destination | Status |
+|---|---|---|
+| AM101 | GO + SOFTWARE | IN PROGRESS |
+| AM202 | NEW THINGS TO LEARN | BOARDING |
+| AM303 | INTERESTING PROBLEMS | ALWAYS |
+| AM404 | VINNOVATEIT | VICE CHAIR |
+| AM505 | THE SKY | LOOKING UP |
+
+### Hover details
+
+**AM101**
+
+`learning, building, breaking, repeating`
+
+**AM202**
+
+`the list of things I don't know remains ambitious`
+
+**AM303**
+
+`the interesting part is usually figuring out the actual problem`
+
+**AM404**
+
+`one of the many things happening at VIT`
+
+**AM505**
+
+`aircraft overhead remain a valid interruption`
+
+Keep this section grounded in my actual current activities. Update the entries before launch if my current focus has changed. Do not present an aspiration as a completed project.
+
+## NOTAM card
+
+### Identifier
+
+`NOTAM A0110/26`
+
+### Heading
+
+`A note from the cockpit`
+
+### Body
+
+Currently learning, building, exploring, and trying to convince myself that I am making enough progress.
+
+Some days feel productive. Other days I open my laptop, discover twelve things I don't know, and somehow make the list longer.
+
+Progress continues. Confidence is operating under intermittent conditions.
+
+Keep the tone self-aware rather than bleak. This is a small glimpse of the person behind the site, not a public account of private worries.
+
+---
+
+# 08. Contact
+
+### Section label
+
+`[07] contact`
+
+### Heading
+
+# Say hi. Don't overthink it.
+
+### Body
+
+Have an interesting idea, a good recommendation, a question about something I've made, or a plane you've been trying to identify?
+
+I'm happy to hear from you.
+
+We can talk about software, design, aviation, travel, music, or absolutely nothing important.
+
+You don't need a perfectly written message. I spend enough time trying to make things perfect already.
+
+### Boarding pass
+
+**PASSENGER**
+
+`ADITYA / ADI`
+
+**CLASS**
+
+`HELLO · COLLAB · AVGEEK TALK · OTHER`
+
+**FROM**
+
+`WHEREVER YOU ARE`
+
+**TO**
+
+`ADITYA'S INBOX`
+
+**SEAT**
+
+`YOUR CHOICE`
+
+**BUTTON**
+
+`REQUEST CLEARANCE`
+
+### Interaction states
+
+- Default: `ready when you are`
+- Hover: `this is less complicated than airport security`
+- Sending: `transmitting...`
+- Success: `message received. thanks for stopping by.`
+- Error: `transmission failed. try the direct email route.`
+
+Ensure the success state appears only after the message has actually been sent.
+
+### Other links
 
 - Email: `adityamadan01@gmail.com`
 - GitHub: `github.com/Aditya10801`
-- LinkedIn: `in/aditya-madan`
+- LinkedIn: `linkedin.com/in/aditya-madan`
 - Instagram: `@your.avg.engineer`
 - Résumé: `resume.pdf`
 
-**Footer**
-
-`© 2026 Aditya Madan · IST hh:mm · back to start ↺`
+Keep the résumé link accessible without making it the primary call to action.
 
 ---
 
-## Writing Principles
+# 09. Footer
 
-- This is a personal website, not a résumé with an aviation theme.
-- Let the writing sound like someone talking about things they genuinely enjoy.
-- Be specific wherever possible. Real projects and actual experiences beat abstract claims about curiosity.
-- Keep the AvGeek identity visible throughout the experience, but don't force aviation metaphors into every sentence.
-- Go is part of the toolkit by launch. Do not describe it as something I'm only beginning to explore.
-- Avoid generic phrases such as "passionate about technology", "turning ideas into reality", and "leveraging cutting-edge technologies".
-- No em dashes or en dashes.
-- Avoid long blocks of text. Use short paragraphs, small details, interactive notes, and visual storytelling.
-- Do not invent features, project outcomes, personal anecdotes, or achievements.
-- Keep the existing board interactions, animations, and typography intact. Update the copy without making every section longer just for the sake of it.
-- The final site should feel like spending a few minutes inside my world, not reading a list of qualifications.
+### Primary line
+
+`made with an unreasonable amount of attention to detail.`
+
+### Secondary line
+
+`and probably one more adjustment after this.`
+
+### Metadata
+
+`© 2026 ADITYA MADAN`
+
+`DELHI ⇄ VELLORE`
+
+### Back to top
+
+`return to departure`
+
+### Small hidden footer detail
+
+On hover over the copyright year:
+
+`yes, I checked the alignment.`
+
+Keep the footer understated. Do not add a large skills list, contact pitch, or résumé summary here.
 
 ---
 
-## Added during the v2 design pass (draft, not in Copy v2 yet)
+# 10. Hidden Details and Easter Eggs
 
-These came from the "feels empty" feedback and use only résumé facts. Review, rewrite, or cut.
+These should reward exploration without making the website difficult to navigate.
 
-**Hero: quick facts card**
+Use the existing terminal, hover interactions, stickers, Polaroid, and departure board. Do not add elaborate new UI just to accommodate every joke.
 
-- STUDYING · B.Tech Computer Science, VIT Vellore (3rd year, '28)
-- BASED · Vellore, from Delhi
-- BUILDING · Loom, Flux, MessIT
-- ALSO · VinnovateIT, vice chair
+## Easter egg 01. The open-tabs counter
 
-**About: spec sheet**
+If a browser-tab visual already exists, hovering it reveals:
 
-Languages, frameworks, data, tools and concepts from the résumé (see context/design.md).
+`no, I don't remember opening all of these either.`
 
-**Hangar: "under the hood" strip per project (2 to 3 real facts each)**
+Do not display a fabricated count of real browser tabs.
 
-- Loom: GenAI extraction validated with Zod before saving · themes + recruiter mode · raw files discarded after extraction
-- Flux: batched writes cut updates from 500ms to under 100ms on 1,000+ tasks · offline-first with IndexedDB · per-user isolated data
-- MessIT: 4 taps to 2 for key actions · tested with 100+ students · shipped on VIT's app stores
+## Easter egg 02. The perfectionist
 
-**New zone: Logbook (sits between the hangar and currently, label `[04] logbook`; currently becomes `[05]`, contact `[06]`)**
+Hover over a small decorative alignment mark or a subtle detail in the interface:
 
-| Date | Aircraft | Role | Remarks |
-|---|---|---|---|
-| Jan 2026 → now | VinnovateIT, VIT Vellore | Vice Chair | student tech club at VIT |
-| 2025 | GDG VIT, Hexathon Designathon | designer | 2nd place, graph-based expense settling |
-| 2024 → 2028 | VIT Vellore | B.Tech Computer Science | 3rd year |
-| before | Delhi Public School Rohini | school | Delhi |
+`this was moved 2px. twice.`
 
-Totals: 3rd year · 3 projects shipped · 1 student club
+Use sparingly.
 
-Hexathon stays a single quiet row (owner: portray me as an engineering student, not an awards list). The rosette and achievement card were removed from Currently.
+## Easter egg 03. The AvGeek
+
+Hover over the aircraft or radar:
+
+`conversation paused. aircraft overhead.`
+
+## Easter egg 04. The terminal
+
+Entering `sudo` returns:
+
+`Nice try.`
+
+Entering `exit` returns:
+
+`No exits on this flight. The closest one is contact.`
+
+## Easter egg 05. The music detour
+
+The music link can reveal:
+
+`currently accepting Punjabi music recommendations, despite having Karan Aujla on repeat.`
+
+Do not invent a currently playing track or claim that music is playing unless the site implements actual audio playback.
+
+## Easter egg 06. The Japan Polaroid
+
+The back of the Polaroid contains the Amanohashidate story from the About section.
+
+Keep the discovery satisfying but do not make essential information accessible only through the flip interaction.
+
+## Easter egg 07. The unknown command
+
+Entering a random terminal command returns one of several short responses:
+
+- `That command is not in the flight plan.`
+- `Nope. Try help.`
+- `Interesting theory. Incorrect command.`
+
+Keep responses varied but restrained. Do not turn the terminal into a chatbot.
+
+---
+
+# 11. Copy and Implementation Checklist
+
+Before considering the copy complete, verify the following.
+
+## Personality
+
+- [ ] The site feels like a person, not a professional profile.
+- [ ] Everyday life and personal interests are represented alongside work.
+- [ ] The writing includes wit and self-deprecating humour without making every section a joke.
+- [ ] The Japan story feels like a genuine memory, not a forced professional metaphor.
+- [ ] Punjabi music and Karan Aujla appear as small, natural personal details.
+- [ ] The copy acknowledges perfectionism without repeating the same joke everywhere.
+
+## Accuracy
+
+- [ ] LOOM and FLUX appear as software projects.
+- [ ] MESSIT appears explicitly as a UI/UX design contribution.
+- [ ] No copy implies that Aditya built the MessIT application.
+- [ ] No unsupported technical metrics or achievements have been added.
+- [ ] Go is described according to the actual state of the work at launch.
+- [ ] VinnovateIT and Hexathon remain contextual details, not the focus of the website.
+
+## Design and interaction
+
+- [ ] Existing terminal commands continue to work.
+- [ ] The departure board, Polaroid flip, stickers, and hover interactions remain functional.
+- [ ] Hidden details are discoverable but nonessential.
+- [ ] No important content exists only in hover states.
+- [ ] The copy fits the existing layout without unnecessary new sections.
+- [ ] The site remains responsive and readable on mobile.
+
+## Final test
+
+Read the entire website from top to bottom.
+
+If it sounds like a recruiter wrote it, rewrite it.
+
+If every sentence contains an aviation pun, remove most of them.
+
+If a personal detail is included only because it makes Aditya sound employable, question whether it belongs.
+
+If a sentence is trying too hard to be witty, simplify it.
+
+The goal is not to convince everyone that Aditya is impressive. The goal is to let people discover someone interesting, curious, occasionally ridiculous, particular about the details, and very much still figuring things out.
+
+**The website should feel finished. The person it represents does not have to be.**

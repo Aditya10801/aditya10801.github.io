@@ -70,7 +70,7 @@ A designer's desk seen from above. The board is a light paper surface. Every sec
 
 **Achievement:** 2nd place, Hexathon Designathon 2025, Google Developer Groups VIT. He designed a graph-based expense-settling system that minimizes multi-party settlement transactions through optimal debt consolidation.
 
-**Loom** · AI-powered portfolio generation · Next.js, TypeScript, PostgreSQL, Prisma, Google GenAI · live: https://useloom.vercel.app · screenshot: public/work/loom.jpg
+**Loom** · AI-powered portfolio generation · Next.js, TypeScript, PostgreSQL, Prisma, Google GenAI · live: https://loom.buildspace.cv · screenshot: public/work/loom.jpg
 - Imports GitHub, résumés and LinkedIn into a single structured profile.
 - Uses Google GenAI to extract structured fields from unstructured résumé and LinkedIn PDFs. All parsed output is validated against Zod schemas before it's saved.
 - Dynamic portfolio rendering with selectable themes, GitHub project sync, and a dedicated Recruiter Mode.

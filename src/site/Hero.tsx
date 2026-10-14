@@ -119,12 +119,12 @@ function Resume() {
       onMouseLeave={stop}
       onFocus={start}
       onBlur={stop}
-      className="group inline-flex items-center gap-2 text-[14px] text-ink"
+      className="group inline-flex items-center gap-1.5 text-[13px] text-mute transition-colors hover:text-ink"
     >
-      <svg aria-hidden viewBox="0 0 14 18" className="h-[18px] w-[14px] shrink-0 overflow-visible transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:-rotate-6">
+      <svg aria-hidden viewBox="0 0 14 18" className="h-[15px] w-[12px] shrink-0 overflow-visible transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:-rotate-6">
         <path d="M.5 .5 H9.5 L13.5 4.5 V17.5 H.5 Z" className="fill-bg stroke-ink/50" />
         <path d="M9.5 .5 V4.5 H13.5" className="fill-none stroke-ink/50" />
-        <rect x="-1.5" y="10" width="11" height="5" rx="1" className="fill-ink transition-[fill] duration-300 group-hover:fill-accent" />
+        <rect x="-1.5" y="10" width="11" height="5" rx="1" className="fill-mute transition-[fill] duration-300 group-hover:fill-ink" />
       </svg>
       <span className="inline-grid">
         <span aria-hidden className="invisible [grid-area:1/1] font-mono text-[11px]">[▓▓▓▓▓] 100%</span>
@@ -144,9 +144,14 @@ function Resume() {
 
 function Github() {
   return (
-    <a href={LINKS.github} target="_blank" rel="noreferrer" className="group inline-flex items-center gap-1 text-[14px] text-ink" aria-label="github, opens in a new tab">
-      <DecryptedText text="github" animateOn="hover" sequential speed={45} characters="01<>/{}#_" encryptedClassName="text-accent" />
-      <span aria-hidden className="inline-block text-mute transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent">↗</span>
+    <a
+      href={LINKS.github}
+      target="_blank"
+      rel="noreferrer"
+      className="relative inline-flex text-[14px] text-ink after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-ink after:transition-transform after:duration-300 hover:after:scale-x-100"
+      aria-label="github, opens in a new tab"
+    >
+      <DecryptedText text="github" animateOn="hover" sequential speed={45} characters="01<>/{}#_" encryptedClassName="text-mute" />
     </a>
   )
 }
@@ -158,96 +163,76 @@ const holes = (side: 'left' | 'right') =>
   `radial-gradient(circle 4px at ${side === 'left' ? '12px' : 'calc(100% - 12px)'} 11px, var(--bg) 3.4px, color-mix(in oklab, var(--ink) 14%, transparent) 4px, transparent 4.6px)`
 
 function Printout({ active, children }: { active: boolean; children?: ReactNode }) {
-  const [cols, setCols] = useState(0)
-  const [printed] = useState(() => istTime(new Date(), false))
+  const flow = useFlow()
   return (
-    <div className="group/print relative">
+    <div className="relative">
       <div
         className="relative border border-ink/[0.06] bg-paper px-[36px] pb-3 pt-3 shadow-obj"
         style={{ backgroundImage: `${holes('left')}, ${holes('right')}`, backgroundSize: '100% 22px', backgroundRepeat: 'repeat-y' }}
       >
         <div aria-hidden className="pointer-events-none absolute inset-y-0 left-6 border-l border-dashed border-ink/15" />
         <div aria-hidden className="pointer-events-none absolute inset-y-0 right-6 border-r border-dashed border-ink/15" />
-        {/* single header line; on hover it turns into the how-to */}
-        <div className="relative grid font-mono text-[11px] uppercase tracking-[0.1em] text-mute">
-          <span className="[grid-area:1/1] whitespace-nowrap transition-opacity duration-300 group-hover/print:opacity-0">
-            portrait.txt · {cols || '...'} cols · IST {printed}
-          </span>
-          <span aria-hidden className="[grid-area:1/1] whitespace-nowrap text-ink opacity-0 transition-opacity duration-300 group-hover/print:opacity-100">
-            click: charset · hold: the real me
-          </span>
+        <p className="relative font-mono text-[11px] uppercase tracking-[0.1em] text-mute">SUBJECT: ADITYA</p>
+        <div className="relative mt-2">
+          <AsciiPortrait src={asset('me/face.jpg')} scattered={!active} />
+          {/* rubber stamp: thumps down once each time the camera parks here */}
+          <motion.span
+            className={`pointer-events-none absolute ${flow ? "top-1" : "-top-8"} right-1 rotate-[5deg] rounded-[3px] border-2 border-double border-ink/55 bg-paper/85 px-2 py-1 font-mono text-[11px] font-medium uppercase leading-none tracking-[0.14em] text-ink/55`}
+            initial={false}
+            animate={active && !reducedMotion() ? { scale: [1.6, 0.94, 1], opacity: [0, 1, 1] } : { scale: 1, opacity: 1 }}
+            transition={{ duration: 0.45, delay: 0.6, times: [0, 0.7, 1], ease: 'easeOut' }}
+          >
+            GENERALLY OPERATIONAL
+          </motion.span>
+          <Note className="pointer-events-none absolute bottom-10 left-0 max-w-[150px] rotate-[-4deg] leading-[1.05]">photogenic under controlled conditions</Note>
         </div>
-        <AsciiPortrait src={asset('me/face.jpg')} scattered={!active} onCols={setCols} className="mt-2" />
       </div>
       {children}
     </div>
   )
 }
 
-/* ───────────── quick facts index card ───────────── */
+/* ───────────── small metadata labels ───────────── */
 
-const rowBase = 'group/row relative flex w-full items-start gap-3 overflow-hidden border-b border-line px-4 py-2.5 text-left last:border-b-0'
-const rowValue = 'flex-1 font-mono text-[12px] leading-5 text-ink'
-
-/** Mono label that rolls to something else on hover ("building" becomes "→ hangar"). */
-function RowLabel({ text, alt }: { text: string; alt: ReactNode }) {
+function Labels() {
+  const meta = 'group/l relative flex w-fit items-baseline gap-2 font-mono text-[11px] lowercase leading-5 text-mute'
   return (
-    <span className="relative inline-grid w-[72px] shrink-0 overflow-hidden font-mono text-[11px] uppercase leading-5 tracking-[0.08em] text-mute">
-      <span className="[grid-area:1/1] transition-transform duration-300 group-hover/row:-translate-y-full">{text}</span>
-      <span aria-hidden className="[grid-area:1/1] translate-y-full whitespace-nowrap text-ink transition-transform duration-300 group-hover/row:translate-y-0">{alt}</span>
-    </span>
+    <ul className="space-y-1.5">
+      {/* currently: a caret keeps thinking */}
+      <li className={meta}>
+        <span>currently:</span>
+        <span className="text-ink">figuring it out<span aria-hidden className="ml-px opacity-0 group-hover/l:animate-[blink_1s_steps(1)_infinite] group-hover/l:opacity-100">_</span></span>
+      </li>
+      {/* operating status: the status light flickers like a loose wire */}
+      <li className={meta}>
+        <span aria-hidden className="relative top-[-1px] size-1.5 self-center rounded-full bg-ink/50 group-hover/l:animate-[flicker_0.9s_steps(1)_1]" />
+        <span>operating status:</span>
+        <span className="text-ink">mostly functional</span>
+      </li>
+      {/* open tabs: easter egg 01 */}
+      <li className={meta}>
+        <span>open tabs:</span>
+        <span className="text-ink">classified</span>
+        <span className="pointer-events-none absolute left-0 top-full mt-1 whitespace-nowrap normal-case text-mute opacity-0 transition-all duration-300 [translate:0_-3px] group-hover/l:opacity-100 group-hover/l:[translate:0_0]">
+          no, I don&apos;t remember opening all of these either.
+        </span>
+      </li>
+    </ul>
   )
 }
 
-function Facts() {
+/** Easter egg 02: a print registration mark that's been nudged into place. */
+function RegMark() {
   return (
-    <div className="border border-ink/[0.06] bg-paper shadow-obj">
-      <div className="border-b-[3px] border-double border-ink/10 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.1em] text-mute">quick facts</div>
-
-      {/* studying: label becomes a year-of-course meter */}
-      <div className={rowBase}>
-        <RowLabel text="studying" alt={<>▓▓▓<span className="text-mute">░</span> 3/4</>} />
-        <span className={rowValue}>B.Tech Computer Science, VIT Vellore (3rd year, &apos;28)</span>
-      </div>
-
-      {/* based: a tiny plane makes the trip along the row */}
-      <div className={rowBase}>
-        <span className="w-[72px] shrink-0 font-mono text-[11px] uppercase leading-5 tracking-[0.08em] text-mute">based</span>
-        <span className={rowValue}>Vellore, from Delhi</span>
-        <span aria-hidden className="facts-trip pointer-events-none absolute bottom-0.5 text-[9px] leading-none text-mute">✈</span>
-      </div>
-
-      {/* building: each project underlines in turn */}
-      <button type="button" className={rowBase} onClick={() => goto('hangar')}>
-        <RowLabel text="building" alt="→ hangar" />
-        <span className={rowValue}>
-          {['Loom', 'Flux', 'MessIT'].map((p, i) => (
-            <Fragment key={p}>
-              <span
-                className="relative after:absolute after:inset-x-0 after:-bottom-px after:h-px after:origin-left after:scale-x-0 after:bg-ink after:transition-transform after:duration-300 after:[transition-delay:var(--d)] group-hover/row:after:scale-x-100"
-                style={{ ['--d' as string]: `${i * 110}ms` }}
-              >
-                {p}
-              </span>
-              {i < 2 && ', '}
-            </Fragment>
-          ))}
-        </span>
-      </button>
-
-      {/* also: a quiet context line unfolds */}
-      <button type="button" className={rowBase} onClick={() => goto('log')}>
-        <RowLabel text="also" alt="→ log" />
-        <span className={rowValue}>
-          VinnovateIT, vice chair
-          <span className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 group-hover/row:grid-rows-[1fr]">
-            <span className="overflow-hidden text-[11px] text-mute">
-              a student tech club at VIT
-            </span>
-          </span>
-        </span>
-      </button>
-    </div>
+    <span className="group/reg relative inline-block">
+      <svg viewBox="0 0 16 16" aria-hidden className="size-4 text-ink/30 transition-transform duration-500 ease-[steps(2)] group-hover/reg:translate-x-[4px]">
+        <circle cx="8" cy="8" r="4.5" fill="none" stroke="currentColor" strokeWidth="1" />
+        <path d="M8 0 V16 M0 8 H16" stroke="currentColor" strokeWidth="1" />
+      </svg>
+      <span className="pointer-events-none absolute bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap font-mono text-[11px] text-mute opacity-0 transition-opacity duration-300 group-hover/reg:opacity-100">
+        this was moved 2px. twice.
+      </span>
+    </span>
   )
 }
 
@@ -281,10 +266,8 @@ export default function Hero() {
     <Zone id="hero">
       <style>{`
         .vp-h1 > span > span:nth-last-child(2) > span:last-child { color: var(--accent); }
+        @keyframes flicker { 0%, 30%, 55% { opacity: 1; } 15%, 45% { opacity: 0.1; } }
         .hi-plane { left: 0; opacity: 0; transform: translateX(-14px); }
-        .facts-trip { right: 100%; opacity: 0; }
-        .group\\/row:hover .facts-trip { animation: facts-trip 1.4s cubic-bezier(.45,0,.3,1) forwards; }
-        @keyframes facts-trip { 0% { right: 100%; opacity: 0; } 15%, 85% { opacity: 1; } 100% { right: 8px; opacity: 0; } }
         .group:hover .hi-plane { animation: hi-glide 1.15s cubic-bezier(.5,0,.4,1) forwards; }
         @keyframes hi-glide {
           0% { left: 0; transform: translateX(-14px); opacity: 0; }
@@ -296,7 +279,7 @@ export default function Hero() {
       {/* DOM order is the stacked mobile order */}
       <Obj x={540} y={56} w={440} z={2} label="h1 / hello">
         <div>
-          <div className="flex items-center gap-2.5 whitespace-nowrap font-mono text-[11px] text-mute [&>*]:shrink-0">
+          <div className="flex items-center gap-2.5 whitespace-nowrap font-mono text-[11px] uppercase text-mute [&>*]:shrink-0">
             <DecryptedText
               text="N 28.61° E 77.21°"
               animateOn="hover"
@@ -344,13 +327,15 @@ export default function Hero() {
               ))}
             </ScrambledText>
           </div>
-          <p className="mt-4 max-w-[60ch] text-[15px] leading-[1.6] text-mute">
-            I&apos;m a developer and designer who likes making things work, making them look good, and occasionally disappearing into an aviation rabbit hole. I build products, obsess over the details, and tend to learn best when I can get my hands on something and break it a little.
-          </p>
+          <div className="mt-4 max-w-[60ch] space-y-3 text-[15px] leading-[1.6] text-mute">
+            <p>I&apos;m a student at VIT Vellore, originally from Delhi. I like figuring things out, making things look right, travelling somewhere new, and occasionally spending an embarrassing amount of time researching something that started as a passing thought.</p>
+            <p>Some days that means building something on my laptop. Other days it means sitting around with friends, going nowhere in particular, and somehow making an entire evening out of it.</p>
+            <p className="text-ink">Either way, I&apos;m probably thinking about something.</p>
+          </div>
           <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
             <SayHi />
-            <Resume />
             <Github />
+            <Resume />
           </div>
         </div>
       </Obj>
@@ -362,14 +347,19 @@ export default function Hero() {
         </Printout>
       </Obj>
 
-      <Obj x={808} y={470} w={360} r={1} z={2} label="facts.card">
-        <Facts />
+      <Obj x={848} y={506} w={330} z={2}>
+        <Labels />
       </Obj>
 
-      <Obj x={590} y={604} w={170} r={-3} boardOnly>
-        <div className="pointer-events-none flex items-center gap-1">
-          <Note className="text-[21px]">scroll to fly →</Note>
-        </div>
+      <Obj x={540} y={596} w={160} z={2}>
+        <p className="group/look inline-flex items-center gap-1.5 font-mono text-[11px] text-mute">
+          look around
+          <span aria-hidden className="inline-block transition-transform duration-300 group-hover/look:translate-y-1">↓</span>
+        </p>
+      </Obj>
+
+      <Obj x={500} y={44} w={16} boardOnly>
+        <RegMark />
       </Obj>
 
       {createPortal(

@@ -22,9 +22,7 @@ function script(cmd: string, out: string[], typeMs: number, outMs: number): Fram
 function Terminal({ hot, on }: Art) {
   const frames = useMemo(
     () =>
-      hot
-        ? script('go test ./...', ['ok  api/handlers  0.21s', 'ok  api/store     0.09s', 'PASS'], 22, 260)
-        : script('go run ./cmd/api', ['listening on :8080', 'GET /health 200 0.8ms'], 70, 650),
+      hot ? script('go test ./...', [' ', 'tests running...', 'expectations high...'], 24, 380) : script('go test ./...', [' ', 'tests running...', 'expectations high...'], 70, 900),
     [hot],
   )
   const [i, setI] = useState(() => (reducedMotion() ? frames.length - 1 : 0))
@@ -83,13 +81,16 @@ function Figma({ hot, on }: Art) {
     <div className="flex h-full items-center justify-center">
       <pre className="relative m-0 font-mono text-mute">
         {FIG}
-        <span className={`absolute whitespace-pre transition-colors duration-150 ${pressed ? 'bg-ink text-bg' : 'text-ink'}`} style={at(9, 5)}>
-          {hot ? '[ ship it ]' : '[ button ]'}
+        <span
+          className={`absolute whitespace-pre transition-[color,background-color,translate] duration-300 ${pressed ? 'bg-ink text-bg' : 'text-ink'} ${hot ? 'translate-x-[2px]' : ''}`}
+          style={at(9, 5)}
+        >
+          [ button ]
           {pressed && (
             <>
               <span className="pointer-events-none absolute -inset-[3px] border border-sel" />
               <span className="absolute left-1/2 top-full mt-1.5 -translate-x-1/2 whitespace-nowrap rounded-sm bg-sel px-1 text-[10px] leading-[1.4] text-white">
-                {hot ? '88' : '80'} × 24
+                80 × 24
               </span>
             </>
           )}
@@ -242,117 +243,75 @@ function Scope({ hot, on }: Art) {
   return <canvas ref={ref} className="block size-full" />
 }
 
-/* ───────────── 04 venn ───────────── */
+/* ───────────── 04 passport stamp ───────────── */
 
-const VW = 32
-const VH = 9 // grid rows; two label rows go under it
-const ASPECT = 2.05 // char cell is ~2x taller than wide
-const R = 7.5
-
-function vennFrame(d: number) {
-  const cy = (VH - 1) / 2
-  const c1 = VW / 2 - d
-  const c2 = VW / 2 + d
-  const in1 = (x: number, y: number) => Math.hypot(x - c1, (y - cy) * ASPECT) < R
-  const in2 = (x: number, y: number) => Math.hypot(x - c2, (y - cy) * ASPECT) < R
-  const edge = (f: typeof in1, x: number, y: number) => f(x, y) && !(f(x - 1, y) && f(x + 1, y) && f(x, y - 1) && f(x, y + 1))
-  let out = ''
-  for (let y = 0; y < VH; y++) {
-    for (let x = 0; x < VW; x++) {
-      const a = in1(x, y)
-      const b = in2(x, y)
-      if (a && b && x === VW / 2 && y === cy) out += '<b>✦</b>'
-      else if (edge(in1, x, y) || edge(in2, x, y)) out += '*'
-      else if (a && b) out += '<i>░</i>'
-      else if (a || b) out += (x + y) % 3 ? ' ' : '.'
-      else out += ' '
-    }
-    out += '\n'
-  }
-  const center = (s: string) => ' '.repeat(Math.max(0, Math.round((VW - s.length) / 2))) + s
-  if (d < 2.4) return out + center('design + engineering') + '\n' + `<b>${center('= something useful')}</b>`
-  const lbl = (s: string, cx: number) => Math.max(0, Math.round(cx - s.length / 2))
-  const a = lbl('design', c1)
-  const b = Math.max(a + 7, lbl('engineering', c2))
-  return out + `${' '.repeat(a)}design${' '.repeat(b - a - 6)}engineering\n `
-}
-
-function Venn({ hot, on }: Art) {
-  const ref = useRef<HTMLPreElement>(null)
-  const hotRef = useRef(hot)
-  hotRef.current = hot
-  useEffect(() => {
-    const el = ref.current!
-    let d = 5
-    el.innerHTML = vennFrame(d)
-    if (!on || reducedMotion()) return
-    let t = 0
-    let raf = 0
-    let last = 0
-    const tick = (now: number) => {
-      raf = requestAnimationFrame(tick)
-      if (now - last < 33) return // ~30fps is plenty for ascii
-      t += (now - (last || now)) / 1000
-      last = now
-      const goal = hotRef.current ? 0 : 4.8 + 3.6 * Math.sin(t * 0.7)
-      d += (goal - d) * (hotRef.current ? 0.14 : 0.08)
-      el.innerHTML = vennFrame(d)
-    }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [on])
+/** A passport page with one stamp. Hover presses it again. */
+function Stamp({ hot }: Art) {
   return (
-    <div className="flex h-full items-center justify-center">
-      <pre ref={ref} className="m-0 font-mono text-mute [&_b]:font-medium [&_b]:text-ink [&_i]:not-italic [&_i]:text-ink/40" />
+    <div className="relative flex h-full items-center justify-center overflow-hidden bg-[repeating-linear-gradient(135deg,transparent_0_7px,var(--line)_7px_8px)]">
+      <svg
+        viewBox="0 0 180 104"
+        className={`w-[170px] text-ink/75 ${hot && !reducedMotion() ? 'stamp-press' : ''}`}
+        style={{ rotate: '-7deg' }}
+      >
+        <rect x="3" y="3" width="174" height="98" rx="12" fill="none" stroke="currentColor" strokeWidth="2.4" />
+        <rect x="10" y="10" width="160" height="84" rx="7" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="3 3" />
+        <text x="90" y="62" textAnchor="middle" fill="currentColor" className="font-mono" fontSize="30" fontWeight="600" letterSpacing="6">JAPAN</text>
+        <path d="M70 80 h40 M84 76 l6 4 l-6 4 M66 26 h48" stroke="currentColor" strokeWidth="1.4" fill="none" strokeLinecap="round" />
+      </svg>
     </div>
   )
 }
 
 /* ───────────── notes ───────────── */
 
-type NoteData = { title: string; body: string[]; status: string; Art: (p: Art) => ReactNode; x: number; y: number; r: number }
+type NoteData = { title: string; body: string[]; reveal: string; Art: (p: Art) => ReactNode; x: number; y: number; r: number }
 
 const NOTES: NoteData[] = [
   {
-    title: 'Software and building',
+    title: 'making things work',
     body: [
-      'I like the moment when something that existed only in my head finally runs on my machine. These days, that means working across web technologies and Go, getting deeper into backend engineering, and understanding what happens beyond the happy path.',
-      "I care about more than getting something to work once. I want to know why it works, what happens when it doesn't, and how to make it dependable.",
+      'I like learning how things work by getting my hands dirty. Sometimes I build something useful. Sometimes I spend an unreasonable amount of time figuring out why something that should work absolutely refuses to cooperate.',
+      "I'm interested in the details behind the result, not just getting something to run once and declaring victory.",
     ],
-    status: 'testing',
+    reveal: 'it passed. I checked twice.',
     Art: Terminal,
-    x: 0, y: 140, r: -1.2,
+    x: 0, y: 150, r: -1.2,
   },
   {
-    title: 'UI/UX and product',
+    title: 'one pixel off',
     body: [
-      'A product can be technically impressive and still be frustrating to use. That gap interests me.',
-      "I enjoy working through flows, questioning unnecessary steps, and getting the little details right. Good design isn't decoration added after the engineering. It's part of how the thing works.",
+      'I care about how things look, but also about how they feel to use. A beautiful interface that makes a simple task unnecessarily difficult is still a bad experience.',
+      'I can spend far too long thinking about spacing, interactions, or whether something feels right. The difference between "good enough" and "exactly right" is sometimes a few pixels and sometimes a complete lack of perspective.',
+      'I am still working on knowing when to stop.',
     ],
-    status: 'shipping',
+    reveal: "moved it 2px. you're welcome.",
     Art: Figma,
-    x: 308, y: 152, r: 0.8,
+    x: 308, y: 162, r: 0.8,
   },
   {
-    title: 'Aviation and aircraft',
+    title: 'look up',
     body: [
-      "I'm an AvGeek. The kind who notices aircraft overhead, wants to know what's flying, and can end up reading about engines, flight operations, or aviation weather long after intending to do something else.",
-      "I love that aviation combines engineering, precision, weather, human judgement, and an enormous amount of coordination. There's so much happening behind a flight that most passengers never have to think about.",
-      'Naturally, I ended up building software around it.',
+      "I'm an AvGeek. Aircraft overhead have a habit of interrupting whatever I'm doing.",
+      "One minute I'm going about my day. The next I'm trying to work out what is flying past, where it might be going, or what else I can find out about it.",
+      "I'm interested in the aircraft themselves, but also the wider world behind a flight: weather, operations, systems, and the coordination that makes it all happen.",
+      "There is a perfectly reasonable explanation for this. I just don't always have time to give it.",
     ],
-    status: 'squawking',
+    reveal: 'yes, I looked up again.',
     Art: Scope,
-    x: 616, y: 136, r: -0.6,
+    x: 616, y: 146, r: -0.6,
   },
   {
-    title: 'Where things overlap',
+    title: 'somewhere else',
     body: [
-      'My favourite problems tend to sit between disciplines. Design meets engineering. Software meets the real world. An interest turns into an idea, and an idea turns into a project.',
-      "I'm interested in the space where understanding a problem matters just as much as knowing how to implement the solution.",
+      'I like travelling because it lets me experience a place rather than just read about it.',
+      'Japan made a particularly strong impression on me. I loved seeing another culture up close and noticing how technology, everyday life, and public systems fit together.',
+      'I like coming back from somewhere with more than photographs. New observations, new questions, and a camera roll that will eventually need organising.',
+      'Eventually.',
     ],
-    status: 'merged',
-    Art: Venn,
-    x: 924, y: 148, r: 1.1,
+    reveal: 'camera roll: a future problem.',
+    Art: Stamp,
+    x: 924, y: 158, r: 1.1,
   },
 ]
 
@@ -375,9 +334,10 @@ const fold = (open: boolean) => `grid transition-[grid-template-rows,margin,opac
  * Focus (click) brings it forward, folds the art away and unfolds the rest of the copy.
  */
 function PinnedNote({ n, focused, onFocus, on }: { n: number; focused: boolean; onFocus: () => void; on: boolean }) {
-  const { title, body, status, Art } = NOTES[n]
+  const { title, body, reveal, Art } = NOTES[n]
   const fine = useFinePointer()
   const [hover, setHover] = useState(false)
+  const [artHover, setArtHover] = useState(false)
   const hot = hover || focused
   return (
     <div
@@ -403,12 +363,25 @@ function PinnedNote({ n, focused, onFocus, on }: { n: number; focused: boolean; 
         <Pin />
         <div className="flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.14em] text-mute">
           <span className={`transition-colors ${hot ? 'text-ink' : ''}`}>0{n + 1} / 04</span>
-          <span className={`transition-opacity duration-300 ${hot ? 'opacity-100' : 'opacity-0'}`}>{status}</span>
         </div>
         <div className={`${fold(!focused)} ${focused ? 'mt-0' : 'mt-3'}`}>
           <div className="min-h-0 overflow-hidden">
-            <div aria-hidden className="relative h-[170px] overflow-hidden border border-ink/10 bg-bg/50 font-mono text-[12px] leading-[1.25] text-ink">
+            <div
+              aria-hidden
+              onMouseEnter={() => setArtHover(true)}
+              onMouseLeave={() => setArtHover(false)}
+              className="relative h-[140px] overflow-hidden border border-ink/10 bg-bg/50 font-mono text-[11px] leading-[1.25] text-ink"
+            >
               <Art hot={hot} on={on && !focused} />
+              {Art === Scope && (
+                <span
+                  className={`absolute inset-x-0 top-0 bg-paper/90 px-2.5 py-1 font-mono text-[11px] text-ink transition-[opacity,translate] duration-300 ${
+                    artHover ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
+                  }`}
+                >
+                  conversation paused. aircraft overhead.
+                </span>
+              )}
             </div>
           </div>
         </div>
@@ -421,11 +394,31 @@ function PinnedNote({ n, focused, onFocus, on }: { n: number; focused: boolean; 
             ))}
           </div>
         </div>
-        <span className={`mt-3 block font-mono text-[11px] uppercase tracking-[0.12em] text-mute transition-opacity duration-300 ${focused ? 'opacity-100' : 'opacity-0 group-hover/pin:opacity-100'}`}>
-          {focused ? 'fold ↑' : 'read more ↓'}
-        </span>
+        <div className="mt-3 flex items-center justify-between gap-2 font-mono text-[11px] text-mute">
+          <span className={`transition-[opacity,translate] duration-300 ${hot ? 'translate-y-0 opacity-100' : 'translate-y-1 opacity-0'}`}>{reveal}</span>
+          <span aria-hidden className={`transition-[opacity,rotate] duration-300 ${focused ? 'rotate-180 opacity-100' : 'opacity-0 group-hover/pin:opacity-100'}`}>↓</span>
+        </div>
       </div>
     </div>
+  )
+}
+
+function Interstitial() {
+  const [open, setOpen] = useState(false)
+  return (
+    <p className="text-[15px] leading-[1.6] text-mute">
+      Other recurring interests include Punjabi music, particularly Karan Aujla, and conversations that were supposed to take ten minutes.{' '}
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        aria-expanded={open}
+        className="group/m inline-flex items-baseline gap-1 whitespace-nowrap font-mono text-[13px] text-ink underline decoration-ink/30 underline-offset-4 transition-colors hover:decoration-ink"
+      >
+        a little music detour
+        <span aria-hidden className="inline-block transition-transform duration-300 group-hover/m:-rotate-12 group-hover/m:scale-110">♪</span>
+      </button>
+      {open && <span className="ml-2 animate-[fade-in_.4s_ease] text-ink">currently accepting Punjabi music recommendations, despite having Karan Aujla on repeat.</span>}
+    </p>
   )
 }
 
@@ -438,14 +431,17 @@ export default function Into() {
       <style>{`
         @keyframes pin-wobble { 0%,100% { rotate: 0deg } 25% { rotate: -14deg } 55% { rotate: 10deg } 80% { rotate: -4deg } }
         .group\\/pin:hover .pin { animation: pin-wobble .55s ease-in-out; transform-origin: 50% 90%; }
+        @keyframes stamp-press { 0% { scale: 1 } 35% { scale: 1.18; opacity: .4 } 70% { scale: .96; opacity: 1 } 100% { scale: 1 } }
+        .stamp-press { animation: stamp-press .5s cubic-bezier(.3,.7,.3,1) }
+        @keyframes fade-in { from { opacity: 0 } }
       `}</style>
 
-      <Obj x={0} y={0} w={640}>
+      <Obj x={0} y={0} w={900}>
         <div ref={head}>
-          <Label n="02">things i'm into</Label>
+          <Label n="02">interests</Label>
           <h2 className="mt-2 text-[32px] font-medium leading-tight tracking-tight text-ink">
             <VariableProximity
-              label="A few things that have my attention."
+              label="Things that occupy my brain rent-free."
               containerRef={head}
               fromFontVariationSettings="'wght' 480"
               toFontVariationSettings="'wght' 780"
@@ -454,7 +450,8 @@ export default function Into() {
               style={{ fontFamily: 'inherit' }}
             />
           </h2>
-          <p className="mt-1.5 max-w-[60ch] text-[15px] text-mute">Some interests turn into projects. Some stay rabbit holes. Some somehow become both.</p>
+          <p className="mt-1.5 text-[15px] text-mute">Some are serious interests. Some are hobbies. Some started with one question and have since become a minor research project.</p>
+          <p className="text-[15px] text-mute">No particular order. My brain does not have a very good filing system.</p>
         </div>
       </Obj>
 
@@ -471,6 +468,10 @@ export default function Into() {
           />
         </Obj>
       ))}
+
+      <Obj x={0} y={650} w={1200}>
+        <Interstitial />
+      </Obj>
     </Zone>
   )
 }

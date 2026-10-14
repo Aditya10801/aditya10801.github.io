@@ -14,30 +14,51 @@ const PLACES: Record<string, ZoneId> = {
   about: 'about', me: 'about',
   into: 'into', interests: 'into',
   hangar: 'hangar', projects: 'hangar', work: 'hangar',
+  design: 'design', desk: 'design', 'design-desk': 'design',
   log: 'log', logbook: 'log',
   now: 'now', currently: 'now',
   contact: 'contact', hi: 'contact', email: 'contact',
 }
 const OPEN: Record<string, string> = {
   resume: LINKS.resume, github: LINKS.github, linkedin: LINKS.linkedin, instagram: LINKS.instagram,
-  loom: 'https://useloom.vercel.app', flux: 'https://flux-space.vercel.app',
+  loom: 'https://loom.buildspace.cv', flux: 'https://flux-space.vercel.app',
 }
+// friendly names for paths and listings
+const NAME: Record<ZoneId, string> = {
+  hero: '~', about: 'about', into: 'interests', hangar: 'hangar', design: 'design', log: 'logbook', now: 'currently', contact: 'contact',
+}
+const pathOf = (z: ZoneId) => (z === 'hero' ? '~' : `~/${NAME[z]}`)
+
 const COMMANDS = [
-  ...ORDER.filter(z => z !== 'hero').map(z => `cd ${z}`), 'cd ~', 'ls', 'whoami',
-  ...Object.keys(OPEN).map(k => `open ${k}`), 'zoom out', 'zoom in',
-  'music on', 'music off', 'theme day', 'theme night', 'help', 'clear', 'date', 'pwd',
-]
-const HELP = [
-  'cd <place>      fly somewhere: about, into, hangar, log, now, contact, ~',
-  'ls              list everything on the board',
-  'open <thing>    resume, github, linkedin, instagram, loom, flux',
-  'zoom out | in   see the whole board',
-  'music on | off  lo-fi, generated live in your browser',
-  'theme day | night',
-  'whoami · date · pwd · clear',
+  ...ORDER.filter(z => z !== 'hero').map(z => `cd ${NAME[z]}`), 'cd ~', 'ls', 'whoami',
+  ...Object.keys(OPEN).map(k => `open ${k}`), 'open japan', 'open easter-eggs', 'zoom out', 'zoom in',
+  'music', 'music on', 'music off', 'theme', 'theme day', 'theme night', 'help', 'clear', 'date', 'pwd',
 ]
 
-const pathOf = (z: ZoneId) => (z === 'hero' ? '~' : `~/${z}`)
+// copy: context/copy.md, "00. Global Navigation"
+const WELCOME = ['Welcome aboard.', '', "This is Aditya's corner of the internet.", 'Look around. There are a few things to find.', '', 'Type help to see what you can do.']
+const WHOAMI = [
+  'aditya madan', '',
+  'student at VIT Vellore, originally from Delhi.', 'developer, designer, AvGeek.', '',
+  'usually learning something, looking something up,', "or wondering why I haven't learned enough already.",
+]
+const HELP = [
+  'Available commands:', '',
+  '  whoami          a short introduction',
+  "  ls              see what's around",
+  '  cd <section>    go somewhere',
+  '  open <thing>    look a little closer',
+  '  music           a small detour',
+  '  theme           change the atmosphere',
+  '  clear           pretend nothing happened', '',
+  'Tip: not everything here is immediately obvious.',
+]
+const UNKNOWN = [
+  'Command not found. Could be a typo. Could be a skill issue.',
+  'That command is not in the flight plan.',
+  'Nope. Try help.',
+  'Interesting theory. Incorrect command.',
+]
 
 /** Typed shell path that retypes itself when the zone changes. */
 function useTyped(target: string) {
@@ -75,6 +96,7 @@ export default function Terminal() {
   const hist = useRef<string[]>([])
   const hi = useRef(-1)
   const hideTimer = useRef(0)
+  const said = useRef({ whoami: 0, help: 0, unknown: 0 })
   const path = useTyped(pathOf(zone))
 
   useEffect(() => onSoundChange(setMusic), [])
@@ -124,6 +146,25 @@ export default function Terminal() {
     hideTimer.current = window.setTimeout(() => { if (document.activeElement !== input.current) setShowOut(false) }, 7000)
   }
 
+  // compact welcome once, then it gets out of the way
+  useEffect(() => {
+    const id = setTimeout(() => print(WELCOME.map(text => ({ kind: 'out' as const, text }))), 900)
+    return () => clearTimeout(id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // output never sits on top of the board: scrolling or clicking elsewhere tucks it away
+  useEffect(() => {
+    const away = (e: Event) => {
+      if (document.activeElement === input.current) return
+      if (e.type === 'pointerdown' && (e.target as Element).closest?.('[data-terminal]')) return
+      setShowOut(false)
+    }
+    addEventListener('scroll', away, { passive: true })
+    addEventListener('pointerdown', away)
+    return () => { removeEventListener('scroll', away); removeEventListener('pointerdown', away) }
+  }, [])
+
   const run = (raw: string) => {
     const cmd = raw.trim().replace(/\s+/g, ' ')
     if (!cmd) return
@@ -144,8 +185,14 @@ export default function Terminal() {
         return say(`flying to ${pathOf(target)}`)
       }
       case 'ls':
-        return say(ORDER.filter(z => z !== 'hero').map(z => `${z}/`).join('  ') + '  resume.pdf')
+        return say(ORDER.filter(z => z !== 'hero').map(z => `${NAME[z]}/`).join('  ') + '  resume.pdf')
       case 'open': {
+        if (arg === 'japan') {
+          goto('about')
+          setTimeout(() => dispatchEvent(new Event('open:japan')), board.flow ? 600 : 1400)
+          return say('flying to the japan polaroid')
+        }
+        if (arg === 'easter-eggs' || arg === 'easter eggs') return say('a few small things here react when you hover them. the smaller they are, the likelier.')
         const url = OPEN[arg.replace(/\.pdf$/, '')]
         if (!url) return err(`open: can't find ${arg || 'that'}. try: ${Object.keys(OPEN).join(', ')}`)
         window.open(url, '_blank', 'noopener')
@@ -164,7 +211,7 @@ export default function Terminal() {
       case 'mute': {
         const on = head === 'play' ? true : head === 'mute' ? false : arg === 'off' ? false : arg === 'on' ? true : !soundOn()
         setSound(on)
-        return say(on ? '♪ lo-fi on' : 'muted')
+        return say(...(on ? ['♪ lo-fi on, generated live in your browser.', 'currently accepting Punjabi music recommendations, despite having Karan Aujla on repeat.'] : ['muted.']))
       }
       case 'theme': {
         const next = arg === 'day' || arg === 'light' ? 'light' : arg === 'night' || arg === 'dark' ? 'dark' : theme === 'dark' ? 'light' : 'dark'
@@ -172,24 +219,28 @@ export default function Terminal() {
         return say(next === 'dark' ? 'lights off' : 'lights on')
       }
       case 'whoami':
-        return say('aditya madan', 'engineering student at VIT Vellore, from Delhi', 'developer, designer, avgeek')
+        return say(...(said.current.whoami++ ? ['Still Aditya. Identity crisis pending.'] : WHOAMI))
       case 'pwd':
         return say(pathOf(zone))
       case 'date':
-        return say(`${istTime(new Date())} IST, vellore`)
+        return say(`${new Date().toLocaleDateString('en-GB', { timeZone: 'Asia/Kolkata', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })} · ${istTime(new Date())} IST`)
       case 'help':
       case '?':
-        return say(...HELP)
+        return say(...(said.current.help++ ? ['The commands have not changed. Your commitment to exploring them is appreciated.'] : HELP))
       case 'clear':
-        setLines([])
-        return setShowOut(false)
+        sfx('click')
+        setLines([{ kind: 'out', text: 'Terminal cleared. Your browser tabs remain your responsibility.' }])
+        setShowOut(true)
+        clearTimeout(hideTimer.current)
+        hideTimer.current = window.setTimeout(() => { if (document.activeElement !== input.current) setShowOut(false) }, 4000)
+        return
       case 'sudo':
-        return err('nice try.')
+        return err('Nice try. You have not been granted administrative privileges over my life.')
       case 'exit':
         goto('contact')
-        return say('no exits on this flight. the closest one is contact')
+        return say('No exits on this flight. The closest one is contact.')
       default:
-        return err(`command not found: ${head}. try help`)
+        return err(UNKNOWN[said.current.unknown++ % UNKNOWN.length])
     }
   }
 
@@ -202,12 +253,12 @@ export default function Terminal() {
 
   const i = ORDER.indexOf(zone)
   const idle = [
-    i < ORDER.length - 1 && `cd ${ORDER[i + 1]}`,
-    i > 0 && `cd ${i === 1 ? '~' : ORDER[i - 1]}`,
+    i < ORDER.length - 1 && `cd ${NAME[ORDER[i + 1]]}`,
+    i > 0 && `cd ${NAME[ORDER[i - 1]]}`,
     'ls',
     !board.flow && (overview ? 'zoom in' : 'zoom out'),
-    music ? 'music off' : 'music on',
-    theme === 'dark' ? 'theme day' : 'theme night',
+    music ? 'music off' : 'music',
+    'theme',
     'help',
   ].filter(Boolean) as string[]
   const chips = value ? matches : idle
@@ -225,7 +276,7 @@ export default function Terminal() {
 
   return (
     <div className="pointer-events-none fixed inset-x-2 bottom-2 z-50 flex flex-col items-center md:inset-x-0 md:bottom-4">
-      <div className="pointer-events-auto w-full md:w-[min(640px,calc(100vw-620px))] md:min-w-[440px]">
+      <div data-terminal className="pointer-events-auto w-full md:w-[min(640px,calc(100vw-620px))] md:min-w-[440px]">
         {/* output */}
         <AnimatePresence>
           {showOut && lines.length > 0 && (

@@ -1,5 +1,5 @@
-import { Fragment, useEffect, useRef, useState, type CSSProperties } from 'react'
-import { AnimatePresence, motion, useAnimate, type Variants } from 'motion/react'
+import { Fragment, useEffect, useState, type CSSProperties } from 'react'
+import { AnimatePresence, motion, type Variants } from 'motion/react'
 import { Obj, Zone, useFlow, useZoneActive } from './Board'
 import { Label, RollText, asset, reducedMotion } from './ui'
 import { sfx } from './sound'
@@ -9,13 +9,13 @@ type Project = {
   n: string
   call: string
   type: string
-  status: string
   body: string[]
+  caption: string
   hood: string[]
   stack: string[]
-  href?: string
-  host?: string
-  img?: string
+  href: string
+  host: string
+  img: string
 }
 
 const PROJECTS: Project[] = [
@@ -23,86 +23,87 @@ const PROJECTS: Project[] = [
     id: 'loom',
     n: '03.1',
     call: 'LOOM',
-    type: 'web app',
-    status: 'LIVE ↗',
+    type: 'WEB APP',
     body: [
-      'Your professional presence is scattered across GitHub, your résumé, and LinkedIn. LOOM explores bringing those pieces together into one portfolio, with AI helping connect the dots.',
+      'Your work lives in a dozen different places. GitHub over here, your résumé over there, LinkedIn somewhere else, and the actual story of what you can do scattered across all of them.',
+      'LOOM explores bringing those pieces together into a single portfolio, using AI to help connect the dots.',
     ],
-    hood: ['GenAI extraction validated with Zod before saving', 'themes + recruiter mode', 'raw files discarded after extraction'],
-    stack: ['nextjs', 'postgres', 'prisma', 'genai'],
-    href: 'https://useloom.vercel.app',
-    host: 'useloom.vercel.app',
+    caption: 'trying to make the internet tell a more coherent story',
+    hood: [
+      'pulls the relevant details from résumés and LinkedIn PDFs',
+      "validates the AI's structured output before saving",
+      'themes and a recruiter view',
+      'discards uploaded files after extraction',
+    ],
+    stack: ['Next.js', 'PostgreSQL', 'Prisma', 'GenAI'],
+    href: 'https://loom.buildspace.cv',
+    host: 'loom.buildspace.cv',
     img: 'work/loom.jpg',
   },
   {
     id: 'flux',
     n: '03.2',
     call: 'FLUX',
-    type: 'web app',
-    status: 'LIVE ↗',
+    type: 'WEB APP',
     body: [
-      'A task manager built around a simple question: what actually needs your attention right now?',
-      'FLUX explores an offline-first approach to managing tasks, with urgency helping you decide what deserves your time instead of leaving you with another endless list.',
+      'Most task managers are excellent at helping you collect tasks. The actual challenge is deciding what deserves your attention.',
+      'FLUX explores a different approach: a task manager that helps bring urgency into the picture instead of leaving you with an endless list and an increasingly guilty conscience.',
     ],
-    hood: ['batched writes cut updates from 500ms to under 100ms on 1,000+ tasks', 'offline-first with IndexedDB', 'per-user isolated data'],
-    stack: ['react', 'node', 'mongodb'],
+    caption: "because apparently making the list longer wasn't helping",
+    hood: ['offline-first task handling', 'batched updates', 'per-user data isolation', 'IndexedDB storage with sync'],
+    stack: ['React', 'Node.js', 'MongoDB'],
     href: 'https://flux-space.vercel.app',
     host: 'flux-space.vercel.app',
     img: 'work/flux.jpg',
   },
-  {
-    id: 'messit',
-    n: '03.3',
-    call: 'MESSIT',
-    type: 'ux redesign',
-    status: 'ON APP STORES',
-    body: [
-      "VIT's mess app is part of everyday campus life. The idea here was simple: make a routine interaction less of a chore.",
-      'I explored how the experience could go from four taps to two, cutting unnecessary steps and making the interface more direct.',
-    ],
-    hood: ['4 taps to 2 for key actions', 'tested with 100+ students', "shipped on VIT's app stores"],
-    stack: ['figma', 'ux research'],
-  },
 ]
 
-/* ---------- messit: ascii prototype, 4 taps vs 2 taps on the same clock ---------- */
+const INTRO = [
+  'A few things that made it beyond an idea in my notes.',
+  "Some are software projects. Some are experiments. They don't all have the same story, and they don't all need to pretend they're changing the world.",
+]
+const FOOTER = 'More things will appear here when they are ready. I would rather show fewer things properly than pad out the hangar.'
 
-function phone(taps: number, total: number) {
-  const rows = [1, 2, 3, 4].map(k => (k <= total ? ` ${taps === k ? '▸' : ' '}[tap ${k}]   ` : ' '.repeat(12)))
-  return [
-    '┌────────────┐',
-    '│ messit   ≡ │',
-    '├────────────┤',
-    ...rows.map(r => `│${r}│`),
-    '│            │',
-    `│${taps === total ? '   ✓ done   ' : ' '.repeat(12)}│`,
-    '└────────────┘',
-    ` ${'●'.repeat(taps)}${'○'.repeat(total - taps)}  ${taps}/${total}`.padEnd(14),
-  ]
-}
+const still = () => reducedMotion()
 
-function Phones({ run }: { run: boolean }) {
-  const [f, setF] = useState(0)
-  useEffect(() => {
-    if (!run || reducedMotion()) return
-    const id = setInterval(() => setF(v => v + 1), 520)
-    return () => clearInterval(id)
-  }, [run])
-  const t = reducedMotion() ? 11 : f % 12
-  const a = phone(Math.min(t, 4), 4)
-  const b = phone(Math.min(t, 2), 2)
-  const art = [' before          after', ...a.map((l, i) => ` ${l}  ${b[i]}`)].join('\n')
+/* ---------- zone heading, shared with the design desk ---------- */
+
+/** Letters rise in on first arrival; words stay whole when the line wraps; a little wave on hover. */
+export function Heading({ text, seen }: { text: string; seen: boolean }) {
   return (
-    <div className="absolute inset-0 grid place-items-center">
-      <pre aria-hidden className="m-0 font-mono text-[11px] leading-[1.3] text-ink">{art}</pre>
-      <span className="sr-only">Prototype flow: the key action used to take four taps, now it takes two.</span>
-    </div>
+    <h2 className="hw mt-3 text-[32px] font-medium leading-tight tracking-tight text-ink" aria-label={text}>
+      <style>{`
+        @keyframes hw-wave { 40% { transform: translateY(-0.16em) } }
+        .hw:hover .hw-c { animation: hw-wave 0.45s cubic-bezier(.3,0,.3,1) calc(var(--i) * 22ms) }
+      `}</style>
+      {text.split(' ').map((w, wi, all) => (
+        <Fragment key={wi}>
+          <span aria-hidden className="inline-block whitespace-nowrap">
+            {[...w].map((c, ci) => {
+              const i = all.slice(0, wi).join(' ').length + (wi ? 1 : 0) + ci
+              return (
+                <motion.span
+                  key={ci}
+                  className="inline-block"
+                  style={{ '--i': i } as CSSProperties}
+                  initial={still() ? false : { y: '0.5em', opacity: 0 }}
+                  animate={seen || still() ? { y: 0, opacity: 1 } : undefined}
+                  transition={{ delay: 0.15 + i * 0.025, duration: 0.5, ease: [0.2, 0.9, 0.3, 1] }}
+                >
+                  <span className="hw-c inline-block">{c}</span>
+                </motion.span>
+              )
+            })}
+          </span>
+          {wi < all.length - 1 && ' '}
+        </Fragment>
+      ))}
+    </h2>
   )
 }
 
 /* ---------- dossier ---------- */
 
-const still = () => reducedMotion()
 const sheet: Variants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.055, delayChildren: 0.05 } },
@@ -114,35 +115,31 @@ const line: Variants = {
 }
 
 /** Browser frame with the screenshot, revealed top-down behind a scanline. */
-function Visual({ p, run }: { p: Project; run: boolean }) {
+function Visual({ p }: { p: Project }) {
   return (
     <div className="group/vis overflow-hidden rounded-[4px] border border-ink/10 bg-card">
       <div className="flex items-center gap-1.5 border-b border-ink/10 px-2.5 py-1.5">
         {[0, 1, 2].map(i => (
           <span key={i} className="size-[7px] rounded-full bg-ink/15" />
         ))}
-        <span className="ml-2 flex-1 truncate rounded-[3px] bg-paper px-2 py-0.5 font-mono text-[11px] text-mute">{p.host ?? 'messit · prototype'}</span>
+        <span className="ml-2 flex-1 truncate rounded-[3px] bg-paper px-2 py-0.5 font-mono text-[11px] text-mute">{p.host}</span>
       </div>
       <div className="relative aspect-[16/10] overflow-hidden">
-        {p.img ? (
-          <motion.div
-            key={p.id}
-            className="absolute inset-0"
-            initial={still() ? false : { clipPath: 'inset(0 0 100% 0)' }}
-            animate={{ clipPath: 'inset(0 0 0% 0)' }}
-            transition={{ duration: 0.9, ease: [0.6, 0, 0.2, 1], delay: 0.1 }}
-          >
-            <img
-              src={asset(p.img)}
-              alt={`${p.call} screenshot`}
-              draggable={false}
-              className="h-full w-full object-cover object-top transition-transform duration-700 ease-[cubic-bezier(.2,.8,.2,1)] group-hover/vis:scale-[1.035]"
-            />
-          </motion.div>
-        ) : (
-          <Phones run={run} />
-        )}
-        {p.img && !still() && (
+        <motion.div
+          key={p.id}
+          className="absolute inset-0"
+          initial={still() ? false : { clipPath: 'inset(0 0 100% 0)' }}
+          animate={{ clipPath: 'inset(0 0 0% 0)' }}
+          transition={{ duration: 0.9, ease: [0.6, 0, 0.2, 1], delay: 0.1 }}
+        >
+          <img
+            src={asset(p.img)}
+            alt={`${p.call} screenshot`}
+            draggable={false}
+            className="h-full w-full object-cover object-top transition-transform duration-700 ease-[cubic-bezier(.2,.8,.2,1)] group-hover/vis:scale-[1.035]"
+          />
+        </motion.div>
+        {!still() && (
           <motion.span
             key={`scan-${p.id}`}
             aria-hidden
@@ -157,36 +154,53 @@ function Visual({ p, run }: { p: Project; run: boolean }) {
   )
 }
 
-/** MessIT has no public link: the status shakes and says so. */
-function NoLink() {
-  const [scope, animate] = useAnimate<HTMLButtonElement>()
-  const [nope, setNope] = useState(false)
-  const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
-  useEffect(() => () => clearTimeout(timer.current), [])
+/** Optional expansion, collapsed by default. */
+function Hood({ p }: { p: Project }) {
+  const [open, setOpen] = useState(false)
   return (
-    <button
-      ref={scope}
-      type="button"
-      onClick={() => {
-        if (!still()) animate(scope.current, { x: [0, -7, 7, -4, 4, 0] }, { duration: 0.4 })
-        sfx('deny')
-        setNope(true)
-        clearTimeout(timer.current)
-        timer.current = setTimeout(() => setNope(false), 1500)
-      }}
-      className="font-mono text-[12px] uppercase tracking-[0.08em] text-mute"
-    >
-      {nope ? <span className="normal-case tracking-normal text-ink">no public link, sorry</span> : 'ON APP STORES'}
-    </button>
+    <div className="border-t border-dashed border-ink/15 pt-3">
+      <button
+        type="button"
+        aria-expanded={open}
+        onClick={() => {
+          setOpen(o => !o)
+          sfx('click')
+        }}
+        className="group/hood flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-mute transition-colors hover:text-ink"
+      >
+        <span aria-hidden className={`inline-block transition-transform duration-300 ${open ? 'rotate-45' : 'group-hover/hood:rotate-90'}`}>
+          +
+        </span>
+        under the hood
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.ul
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: still() ? 0 : 0.3, ease: [0.2, 0.8, 0.2, 1] }}
+            className="grid grid-cols-1 gap-x-7 gap-y-1.5 overflow-hidden pt-3 font-mono text-[12px] text-ink/70 sm:grid-cols-2"
+          >
+            {p.hood.map(h => (
+              <li key={h} className="flex gap-2.5">
+                <span aria-hidden className="text-ink/25">/</span>
+                {h}
+              </li>
+            ))}
+          </motion.ul>
+        )}
+      </AnimatePresence>
+    </div>
   )
 }
 
-function Dossier({ p, run, flow }: { p: Project; run: boolean; flow: boolean }) {
+function Dossier({ p, flow }: { p: Project; flow: boolean }) {
   return (
     <motion.div variants={sheet} initial={still() ? false : 'hidden'} animate="show" exit="exit" className="flex flex-col gap-5">
       <div className={flow ? 'flex flex-col gap-5' : 'grid grid-cols-[440px_1fr] gap-7'}>
         <motion.div variants={line}>
-          <Visual p={p} run={run} />
+          <Visual p={p} />
         </motion.div>
         <div className="flex min-w-0 flex-col">
           <motion.p variants={line} className="font-mono text-[11px] uppercase tracking-[0.12em] text-mute">
@@ -200,18 +214,14 @@ function Dossier({ p, run, flow }: { p: Project; run: boolean; flow: boolean }) 
               {t}
             </motion.p>
           ))}
+          <motion.p variants={line} className="mt-4 font-mono text-[12px] leading-snug text-mute">
+            {p.caption}
+          </motion.p>
         </div>
       </div>
 
-      {/* under the hood: quiet, mono, real facts only */}
-      <motion.div variants={line} className="flex flex-wrap items-baseline gap-x-3 gap-y-1.5 border-t border-dashed border-ink/15 pt-4 font-mono text-[11.5px] text-mute">
-        <span className="uppercase tracking-[0.12em]">under the hood</span>
-        {p.hood.map(h => (
-          <span key={h} className="group/h inline-flex items-baseline gap-3">
-            <span aria-hidden className="text-ink/25">/</span>
-            <span className="transition-colors duration-200 group-hover/h:text-ink">{h}</span>
-          </span>
-        ))}
+      <motion.div variants={line}>
+        <Hood p={p} />
       </motion.div>
 
       <motion.div variants={line} className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-ink/[0.08] pt-4">
@@ -224,19 +234,14 @@ function Dossier({ p, run, flow }: { p: Project; run: boolean; flow: boolean }) 
             </li>
           ))}
         </ul>
-        {p.href ? (
-          <a href={p.href} target="_blank" rel="noreferrer" className="group/link inline-flex items-center gap-2 font-mono text-[12px] text-ink">
-            <span className="tracking-[0.08em]">LIVE</span>
-            <span className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-left-bottom bg-no-repeat pb-px text-mute transition-[background-size,color] duration-300 group-hover/link:bg-[length:100%_1px] group-hover/link:text-ink">
-              {p.host}
-            </span>
-            <span aria-hidden className="inline-block transition-[rotate,translate] duration-300 group-hover/link:translate-x-0.5 group-hover/link:rotate-45">
-              ↗
-            </span>
-          </a>
-        ) : (
-          <NoLink />
-        )}
+        <a href={p.href} target="_blank" rel="noreferrer" className="group/link inline-flex items-center gap-1.5 font-mono text-[12px] text-ink">
+          <span className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-left-bottom bg-no-repeat pb-px transition-[background-size] duration-300 group-hover/link:bg-[length:100%_1px]">
+            {p.host}
+          </span>
+          <span aria-hidden className="inline-block transition-[rotate,translate] duration-300 group-hover/link:translate-x-0.5 group-hover/link:rotate-45">
+            ↗
+          </span>
+        </a>
       </motion.div>
     </motion.div>
   )
@@ -270,10 +275,7 @@ function Strip({ p, on, select }: { p: Project; on: boolean; select: () => void 
             <span className="mt-1.5 font-mono text-[20px] font-medium leading-none tracking-[0.08em] text-ink">
               <RollText text={p.call} />
             </span>
-            <span className="mt-1.5 truncate text-[13px] leading-none text-mute">{p.type}</span>
-          </span>
-          <span className="flex w-[108px] shrink-0 items-center justify-center border-l border-ink/10 font-mono text-[11px] tracking-[0.08em] text-mute">
-            <span className={`transition-colors ${on ? 'text-ink' : ''}`}>{p.status}</span>
+            <span className="mt-1.5 font-mono text-[11px] leading-none tracking-[0.1em] text-mute">{p.type}</span>
           </span>
         </span>
       </button>
@@ -281,53 +283,21 @@ function Strip({ p, on, select }: { p: Project; on: boolean; select: () => void 
   )
 }
 
-/* ---------- header ---------- */
+/* ---------- zone ---------- */
 
 function Header({ seen }: { seen: boolean }) {
-  const text = "Things I've put into the world."
   return (
     <div>
-      <style>{`
-        @keyframes hw-wave { 40% { transform: translateY(-0.16em) } }
-        .hw:hover .hw-c { animation: hw-wave 0.45s cubic-bezier(.3,0,.3,1) calc(var(--i) * 22ms) }
-      `}</style>
-      <Label n="03">the hangar</Label>
-      <h2 className="hw mt-3 text-[32px] font-medium leading-tight tracking-tight text-ink" aria-label={text}>
-        {/* words stay whole when the line wraps; letters inside them animate */}
-        {text.split(' ').map((w, wi, all) => (
-          <Fragment key={wi}>
-          <span aria-hidden className="inline-block whitespace-nowrap">
-            {[...w].map((c, ci) => {
-              const i = all.slice(0, wi).join(' ').length + (wi ? 1 : 0) + ci
-              return (
-                <motion.span
-                  key={ci}
-                  className="inline-block"
-                  style={{ '--i': i } as CSSProperties}
-                  initial={still() ? false : { y: '0.5em', opacity: 0 }}
-                  animate={seen || still() ? { y: 0, opacity: 1 } : undefined}
-                  transition={{ delay: 0.15 + i * 0.025, duration: 0.5, ease: [0.2, 0.9, 0.3, 1] }}
-                >
-                  <span className="hw-c inline-block">{c}</span>
-                </motion.span>
-              )
-            })}
-          </span>
-          {wi < all.length - 1 && ' '}
-          </Fragment>
-        ))}
-      </h2>
-      <p className="mt-3 max-w-[60ch] text-[15px] leading-[1.6] text-mute">
-        A few experiments, products, and ideas that made it past the notes app. Some are polished, some are still evolving, but each one taught me something worth keeping.
-      </p>
+      <Label n="03">hangar</Label>
+      <Heading text="Things I've built." seen={seen} />
+      {INTRO.map((t, i) => (
+        <p key={i} className="mt-3 max-w-[60ch] text-[15px] leading-[1.6] text-mute">
+          {t}
+        </p>
+      ))}
     </div>
   )
 }
-
-/* ---------- zone ---------- */
-
-const FOOTER = 'Every project starts with a question. The interesting part is finding out whether the answer works.'
-
 
 export default function Hangar() {
   const flow = useFlow()
@@ -348,7 +318,7 @@ export default function Hangar() {
         {PROJECTS.map(q => (
           <Obj key={q.id} x={0} y={0} w={760}>
             <article className="rounded-[4px] border border-ink/[0.06] bg-paper p-5 shadow-obj">
-              <Dossier p={q} run={active} flow />
+              <Dossier p={q} flow />
             </article>
           </Obj>
         ))}
@@ -365,7 +335,7 @@ export default function Hangar() {
         <Header seen={seen} />
       </Obj>
 
-      <Obj x={0} y={262} w={376} label="strip bay">
+      <Obj x={0} y={290} w={376} label="strip bay">
         <ul role="tablist" aria-label="Projects" aria-orientation="vertical" className="flex flex-col gap-3 rounded-[4px] border border-ink/[0.06] bg-card p-3.5">
           {PROJECTS.map((q, i) => (
             <Strip
@@ -387,15 +357,15 @@ export default function Hangar() {
           <span className="absolute -top-[26px] right-8 rounded-t-[4px] border border-b-0 border-ink/[0.06] bg-paper px-3 pb-1 pt-1.5 font-mono text-[11px] uppercase tracking-[0.12em] text-mute">
             file {p.n}
           </span>
-          <article id="dossier" role="tabpanel" aria-labelledby={`strip-${p.id}`} className="relative min-h-[500px] rounded-[4px] border border-ink/[0.06] bg-paper p-7 shadow-obj">
+          <article id="dossier" role="tabpanel" aria-labelledby={`strip-${p.id}`} className="relative min-h-[480px] rounded-[4px] border border-ink/[0.06] bg-paper p-7 shadow-obj">
             <AnimatePresence mode="wait" initial={false}>
-              <Dossier key={`${p.id}-${seen}`} p={p} run={active} flow={false} />
+              <Dossier key={`${p.id}-${seen}`} p={p} flow={false} />
             </AnimatePresence>
           </article>
         </div>
       </Obj>
 
-      <Obj x={0} y={598} w={376}>
+      <Obj x={0} y={540} w={376}>
         <p className="text-[13px] leading-[1.6] text-mute">{FOOTER}</p>
       </Obj>
     </Zone>

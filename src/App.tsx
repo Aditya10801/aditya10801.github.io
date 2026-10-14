@@ -10,6 +10,7 @@ import Hero from './site/Hero'
 import About from './site/About'
 import Into from './site/Into'
 import Hangar from './site/Hangar'
+import Design from './site/Design'
 import Log from './site/Log'
 import Now from './site/Now'
 import Contact from './site/Contact'
@@ -36,6 +37,7 @@ export default function App() {
             <About />
             <Into />
             <Hangar />
+            <Design />
             <Log />
             <Now />
             <Contact />

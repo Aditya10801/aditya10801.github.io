@@ -99,7 +99,7 @@ function Canvas({ children }: { children: ReactNode }) {
       if (e.metaKey || e.ctrlKey || e.altKey || (e.target as HTMLElement).closest?.('input, textarea, [contenteditable]')) return
       if (e.key === 'z' || e.key === 'Z') setOverview(o => !o)
       else if (e.key === 'Escape') setOverview(false)
-      else if (/^[1-7]$/.test(e.key)) goto(+e.key - 1)
+      else if (/^[1-8]$/.test(e.key)) goto(+e.key - 1)
     }
     addEventListener('scroll', onScroll, { passive: true })
     addEventListener('wheel', onWheel, { passive: true })
