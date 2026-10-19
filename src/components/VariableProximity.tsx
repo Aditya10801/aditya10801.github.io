@@ -61,12 +61,15 @@ interface VariableProximityProps extends HTMLAttributes<HTMLSpanElement> {
   radius?: number;
   falloff?: 'linear' | 'exponential' | 'gaussian';
   className?: string;
+  /** render a screen-reader copy of the label (turn off when the parent element is already named) */
+  srLabel?: boolean;
   onClick?: () => void;
   style?: CSSProperties;
 }
 
 const VariableProximity = forwardRef<HTMLSpanElement, VariableProximityProps>((props, ref) => {
   const {
+    srLabel = true,
     label,
     fromFontVariationSettings,
     toFontVariationSettings,
@@ -201,7 +204,7 @@ const VariableProximity = forwardRef<HTMLSpanElement, VariableProximityProps>((p
           {wordIndex < words.length - 1 && <span className="inline-block">&nbsp;</span>}
         </span>
       ))}
-      <span className="sr-only">{label}</span>
+      {srLabel && <span className="sr-only">{label}</span>}
     </span>
   );
 });

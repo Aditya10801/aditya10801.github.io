@@ -1,54 +1,104 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://readme-typing-svg.demolab.com?font=Geist+Mono&size=15&duration=2400&pause=1000&color=FF5C1F&vCenter=true&width=560&height=28&lines=engineering+student+at+VIT+Vellore;developer+%2B+designer;building+with+Go+and+the+web;avgeek%2C+always+looking+up">
-  <img alt="typing intro" src="https://readme-typing-svg.demolab.com?font=Geist+Mono&size=15&duration=2400&pause=1000&color=FF4F00&vCenter=true&width=560&height=28&lines=engineering+student+at+VIT+Vellore;developer+%2B+designer;building+with+Go+and+the+web;avgeek%2C+always+looking+up">
-</picture>
+# adityamadan.cv
 
-```text
-aditya@github:~ $ whoami
-aditya madan
-engineering student at VIT Vellore, from Delhi
-developer, designer, avgeek
+My corner of the internet: **[adityamadan.cv](https://adityamadan.cv)**
+
+It isn't a résumé. It's a light paper board covered in things from my life: an ASCII printout of my face, a polaroid from Japan, pinned notes, flight strips, a logbook, a departure board and a boarding pass. Scrolling flies a camera from one cluster to the next, like a plane following a route.
+
+![The hero: an ASCII portrait printout next to "Hi, I'm Aditya."](public/og.jpg)
+
+## Things to try
+
+- **Scroll** to fly between zones. Drag empty board to pan. Press **Z** to zoom out to the whole board and click a frame to fly there.
+- **The terminal at the bottom is the navigation.** Type `help`, `ls`, `cd hangar`, `open japan`, `whoami`, `music` or `theme`. `/` or `⌘K` focuses it, Tab completes, ↑↓ walks history.
+- **Drag** any object by its frame name, or peel the name sticker.
+- **Click** the portrait to change its character set. **Hold** it to see the real photo.
+- **Fill in the boarding pass** and drag it to the gate to send me a message.
+- Music is a lo-fi loop synthesized live in the browser. It starts with your first click; `music off` mutes it.
+- A few small things react when you hover them. The smaller they are, the likelier.
+
+## Stack
+
+| | |
+|---|---|
+| Framework | [Vite](https://vite.dev) + [React 19](https://react.dev) + TypeScript |
+| Styling | [Tailwind CSS v4](https://tailwindcss.com) with design tokens in `src/index.css` (light "day" and dark "night" themes) |
+| Motion | [Motion](https://motion.dev), [GSAP](https://gsap.com) (SplitText and ScrambleText for the scrambling headline), and a custom camera for the board |
+| Components | A handful from [React Bits](https://reactbits.dev): SplitFlapText, FlipCard, Magnet, DecryptedText, VariableProximity, ScrambledText, ClickSpark |
+| Audio | WebAudio only. Every note, drum and UI click is synthesized; no audio files |
+| Contact | [Web3Forms](https://web3forms.com), with a pre-filled `mailto:` fallback |
+| Fonts | Geist, Geist Mono and Caveat, self-hosted as woff2 |
+
+## Getting started
+
+Needs Node 20 or newer.
+
+```sh
+npm install
+cp .env.example .env    # add your Web3Forms key so the contact form can send
+npm run dev             # http://localhost:5173
 ```
 
-I build products, obsess over the details, and occasionally disappear into an aviation rabbit hole.
+```sh
+npm run build           # type-checks, then builds to dist/
+npm run preview         # serves the production build
+```
 
-### things I've put into the world
+### Environment
 
-| | | |
-|---|---|---|
-| **[Altos](https://altos-app.vercel.app)** | Aviation weather app. Designed in Figma, built front to back, deployed in about five hours. | [code](https://github.com/Aditya10801/Preflight) |
-| **[Flux](https://flux-space.vercel.app)** | Offline-first task manager built around one question: what actually needs your attention right now? | [code](https://github.com/Aditya10801/DoNext) |
-| **[Loom](https://useloom.vercel.app)** | One portfolio from your GitHub, résumé and LinkedIn, with AI connecting the dots. | |
-| **[adityamadan.cv](https://adityamadan.cv)** | My corner of the internet. A canvas you fly around, with a terminal for a nav. | [code](https://github.com/Aditya10801/aditya10801.github.io) |
+| Variable | What it's for |
+|---|---|
+| `VITE_WEB3FORMS_KEY` | Web3Forms access key for the boarding-pass form. Without it, scanning the pass falls back to opening a pre-filled email. |
 
-### toolkit
+## Deploying
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://skillicons.dev/icons?i=go,ts,js,react,nextjs,nodejs,express,postgres,prisma,mongodb,tailwind,figma,git,vercel&theme=dark&perline=14">
-  <img alt="Go, TypeScript, JavaScript, React, Next.js, Node, Express, PostgreSQL, Prisma, MongoDB, Tailwind, Figma, Git, Vercel" src="https://skillicons.dev/icons?i=go,ts,js,react,nextjs,nodejs,express,postgres,prisma,mongodb,tailwind,figma,git,vercel&theme=light&perline=14">
-</picture>
+The site is hosted on **Vercel**. It detects Vite automatically: build command `npm run build`, output directory `dist`. Add `VITE_WEB3FORMS_KEY` under Project Settings → Environment Variables, then redeploy. The key is baked in at build time.
 
-### flight log
+`public/404.html` is served for unknown URLs, and `public/robots.txt`, `public/sitemap.xml` and `public/og.jpg` ship as they are.
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api?username=Aditya10801&show_icons=true&include_all_commits=true&hide_border=true&border_radius=6&bg_color=1a1a18&title_color=ff5c1f&text_color=ebe9e4&icon_color=ff5c1f&custom_title=flight%20log">
-  <img height="165" alt="GitHub stats" src="https://github-readme-stats.vercel.app/api?username=Aditya10801&show_icons=true&include_all_commits=true&hide_border=true&border_radius=6&bg_color=fbfaf7&title_color=ff4f00&text_color=141312&icon_color=ff4f00&custom_title=flight%20log">
-</picture>
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api/top-langs/?username=Aditya10801&layout=compact&langs_count=8&hide_border=true&border_radius=6&bg_color=1a1a18&title_color=ff5c1f&text_color=ebe9e4&custom_title=languages">
-  <img height="165" alt="Top languages" src="https://github-readme-stats.vercel.app/api/top-langs/?username=Aditya10801&layout=compact&langs_count=8&hide_border=true&border_radius=6&bg_color=fbfaf7&title_color=ff4f00&text_color=141312&custom_title=languages">
-</picture>
+There is also a GitHub Pages workflow in `.github/workflows/static.yml`. It reads the key from a repository secret named `WEB3FORMS_KEY`.
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://streak-stats.demolab.com?user=Aditya10801&hide_border=true&border_radius=6&background=1A1A18&ring=FF5C1F&fire=FF5C1F&currStreakNum=EBE9E4&sideNums=EBE9E4&currStreakLabel=FF5C1F&sideLabels=8B877F&dates=8B877F&stroke=2A2A28">
-  <img alt="Contribution streak" src="https://streak-stats.demolab.com?user=Aditya10801&hide_border=true&border_radius=6&background=FBFAF7&ring=FF4F00&fire=FF4F00&currStreakNum=141312&sideNums=141312&currStreakLabel=FF4F00&sideLabels=77736C&dates=77736C&stroke=E6E3DC">
-</picture>
+## Project structure
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Aditya10801/Aditya10801/output/snake-dark.svg">
-  <img alt="Contribution snake" src="https://raw.githubusercontent.com/Aditya10801/Aditya10801/output/snake.svg">
-</picture>
+```
+src/
+  App.tsx              shell: loader, board, terminal, flight HUD; non-hero zones and GSAP are lazy loaded
+  index.css            tokens, fonts, base styles
+  components/          React Bits components (copied in via the shadcn registry, then tuned)
+  site/
+    map.ts             where every zone sits on the board, and goto()
+    Board.tsx          the camera, zones, draggable objects, zoom-out overview
+    Terminal.tsx       the navigation prompt and every command
+    Preloader.tsx      drives the pre-flight boot screen that index.html paints first
+    sound.ts           synthesized lo-fi music and UI sounds
+    AsciiPortrait.tsx  the face, rendered as ASCII on a canvas
+    Hero.tsx About.tsx Into.tsx Hangar.tsx Design.tsx Log.tsx Now.tsx Contact.tsx   one file per zone
+context/
+  copy.md              every word on the site; edit here first
+  design.md            art direction and the facts the site is allowed to state
+DESIGN.md              concept, system and deliberate design decisions
+public/                photos, project screenshots, fonts, icons, 404, robots, sitemap
+```
 
-### elsewhere
+### Editing content
 
-[adityamadan.cv](https://adityamadan.cv) · [LinkedIn](https://www.linkedin.com/in/aditya-madan-90b49526b) · [Instagram](https://www.instagram.com/your.avg.engineer/) · adityamadan01@gmail.com
+1. Change the words in `context/copy.md`.
+2. Update the matching zone component in `src/site/`.
+3. Photos live in `public/me/` and project screenshots in `public/work/`.
+4. To move or add a zone, edit `src/site/map.ts`.
+
+## Accessibility and performance
+
+- **Reduced motion:** visitors who prefer it get a calm stacked layout, with no camera flight and nothing animating in. Phones get the same stacked layout.
+- **Keyboard:** a skip link comes first. Keyboard focus that lands in another zone flies the camera there, so a focused element is never off screen.
+- **Contrast:** text passes automated WCAG AA contrast checks (axe) in the default theme.
+- **Crawlers and no-JS visitors:** they get a readable HTML version of the hero.
+- **Loading:** the boot screen paints from HTML before any JavaScript, and the first JavaScript download is about 90 KB gzipped. The rest of the board streams in right after.
+
+## Credits
+
+- Components adapted from [React Bits](https://reactbits.dev) by David Haz.
+- [Geist](https://vercel.com/font) by Vercel and [Caveat](https://fonts.google.com/specimen/Caveat) by Impallari Type, both under the SIL Open Font License.
+
+---
+
+© 2026 Aditya Madan. Words, photos and design are mine. If you'd like to reuse something, [ask me](mailto:adityamadan01@gmail.com).

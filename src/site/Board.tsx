@@ -23,7 +23,7 @@ function aim(p: number, vw: number, vh: number) {
   }
   const i = Math.min(N - 1, Math.max(0, Math.floor(p)))
   const a = ZONES[ORDER[i]], b = ZONES[ORDER[Math.min(N - 1, i + 1)]]
-  const e = smoother(clamp01((p - i - 0.18) / 0.64))
+  const e = smoother(clamp01((p - i - 0.24) / 0.52))
   return {
     x: lerp(a.x + a.w / 2, b.x + b.w / 2, e),
     y: lerp(a.y + a.h / 2, b.y + b.h / 2, e),
@@ -32,12 +32,15 @@ function aim(p: number, vw: number, vh: number) {
 }
 
 export default function Board({ children }: { children: ReactNode }) {
-  const flow = useMedia('(max-width: 899px)')
+  // phones, and anyone who asked for less motion, get the plain stacked layout: no camera flight
+  const small = useMedia('(max-width: 899px)')
+  const calm = useMedia('(prefers-reduced-motion: reduce)')
+  const flow = small || calm
   board.flow = flow
   if (flow) {
     return (
       <FlowCtx.Provider value>
-        <main className="relative z-10 flex flex-col gap-28 px-5 pb-44 pt-12">{children}</main>
+        <main id="main" tabIndex={-1} className="relative z-10 flex flex-col gap-28 px-5 pb-44 pt-12 outline-none">{children}</main>
       </FlowCtx.Provider>
     )
   }
@@ -105,12 +108,20 @@ function Canvas({ children }: { children: ReactNode }) {
     addEventListener('wheel', onWheel, { passive: true })
     addEventListener('board:closeoverview', onClose)
     addEventListener('keydown', onKey)
+    // keyboard focus that lands in another zone flies the camera there, so a focus stop is never off screen
+    const onFocus = (e: FocusEvent) => {
+      const z = (e.target as Element).closest?.('[data-zone]') as HTMLElement | null
+      const i = z ? ORDER.indexOf(z.dataset.zone as ZoneId) : -1
+      if (i >= 0 && Math.round(board.p) !== i) window.scrollTo({ top: i * SEG, behavior: still ? 'auto' : 'smooth' })
+    }
+    addEventListener('focusin', onFocus)
     return () => {
       cancelAnimationFrame(raf)
       removeEventListener('scroll', onScroll)
       removeEventListener('wheel', onWheel)
       removeEventListener('board:closeoverview', onClose)
       removeEventListener('keydown', onKey)
+      removeEventListener('focusin', onFocus)
     }
   }, [])
 
@@ -135,6 +146,8 @@ function Canvas({ children }: { children: ReactNode }) {
       {/* scroll runway: native scroll drives the camera */}
       <div aria-hidden style={{ height: `calc(${(N - 1) * SEG}px + 100vh)` }} />
       <main
+        id="main"
+        tabIndex={-1}
         data-pan
         onPointerDown={down}
         onPointerMove={move}
@@ -169,6 +182,8 @@ function Canvas({ children }: { children: ReactNode }) {
               )
             })}
         </div>
+        {/* soft edges: neighbouring zones read as previews, not as cut-off text */}
+        <div aria-hidden className="pointer-events-none fixed inset-0 z-[1] bg-[linear-gradient(to_right,var(--bg),transparent_5%,transparent_95%,var(--bg))]" />
       </main>
     </FlowCtx.Provider>
   )
@@ -271,7 +286,11 @@ export function Obj({ x, y, w, h, r = 0, z, label, boardOnly, className = '', st
         </div>
       )}
       {label && !flow && (
-        <span aria-hidden className="pointer-events-none absolute -inset-[3px] border border-sel opacity-0 transition-opacity duration-150 group-hover/obj:opacity-100" />
+        <span aria-hidden className="pointer-events-none absolute -inset-[3px] border border-sel opacity-0 transition-opacity duration-150 group-hover/obj:opacity-100">
+          {['-left-[4px] -top-[4px]', '-right-[4px] -top-[4px]', '-left-[4px] -bottom-[4px]', '-right-[4px] -bottom-[4px]'].map(c => (
+            <span key={c} className={`absolute h-[7px] w-[7px] border border-sel bg-paper ${c}`} />
+          ))}
+        </span>
       )}
       {children}
     </div>
@@ -287,7 +306,7 @@ function zoneTick() {
   zoneRaf = requestAnimationFrame(zoneTick)
 }
 
-/** True while the camera is parked on this zone (board), or while the section is on screen (stacked layout). */
+/** True while the camera is on or flying into this zone (board), or while the section is on screen (stacked layout). */
 export function useZoneActive(id: ZoneId) {
   const flow = useFlow()
   const [on, setOn] = useState(false)
@@ -300,7 +319,8 @@ export function useZoneActive(id: ZoneId) {
       return () => io.disconnect()
     }
     const i = ORDER.indexOf(id)
-    const fn = () => { const v = !board.overview && Math.abs(board.p - i) < 0.3; setOn(o => (o === v ? o : v)) }
+    // wake a zone halfway through the flight toward it, so it has finished revealing by the time the camera parks
+    const fn = () => { const v = !board.overview && Math.abs(board.p - i) < 0.55; setOn(o => (o === v ? o : v)) }
     zoneWatchers.add(fn)
     if (!zoneRaf) zoneRaf = requestAnimationFrame(zoneTick)
     return () => { zoneWatchers.delete(fn) }

@@ -3,23 +3,103 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aditya Madan</title>
-    <meta name="description" content="Aditya's corner of the internet. I build things, obsess over details, and occasionally get distracted by airplanes." />
+    <title>Aditya Madan · corner of the internet</title>
+    <meta name="description" content="Aditya's corner of the internet. A computer science student at VIT Vellore, originally from Delhi. Software, design, aircraft, and an unreasonable number of open tabs." />
+    <link rel="canonical" href="https://adityamadan.cv/" />
+    <meta name="theme-color" content="#141312" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content="#141312" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&family=Caveat:wght@500;700&display=swap" rel="stylesheet" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Aditya Madan" />
+    <meta property="og:title" content="Aditya Madan · corner of the internet" />
+    <meta property="og:description" content="Software, design, aircraft, and an unreasonable number of open tabs. Fly around the board." />
+    <meta property="og:url" content="https://adityamadan.cv/" />
+    <meta property="og:image" content="https://adityamadan.cv/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Aditya Madan's board: an ASCII portrait printout next to the words Hi, I'm Aditya." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Aditya Madan · corner of the internet" />
+    <meta name="twitter:description" content="Software, design, aircraft, and an unreasonable number of open tabs." />
+    <meta name="twitter:image" content="https://adityamadan.cv/og.jpg" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Aditya Madan",
+        "url": "https://adityamadan.cv/",
+        "description": "Computer science student at VIT Vellore, originally from Delhi. Developer, designer, AvGeek.",
+        "affiliation": { "@type": "CollegeOrUniversity", "name": "Vellore Institute of Technology" },
+        "homeLocation": { "@type": "Place", "name": "Delhi, India" },
+        "sameAs": [
+          "https://github.com/Aditya10801",
+          "https://www.linkedin.com/in/aditya-madan-90b49526b",
+          "https://www.instagram.com/your.avg.engineer/"
+        ]
+      }
+    </script>
+
+    <link rel="preload" href="/fonts/geist.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/geist-mono.woff2" as="font" type="font/woff2" crossorigin />
     <script>
       try {
         const t = localStorage.getItem('theme')
         document.documentElement.dataset.theme = t || 'light'
       } catch { document.documentElement.dataset.theme = 'light' }
+      document.documentElement.classList.add('js')
+      // already boarded this visit (e.g. back from the 404): skip the pre-flight
+      try { if (sessionStorage.getItem('boarded')) document.documentElement.classList.add('boarded') } catch {}
     </script>
+    <style>
+      /* boot screen: painted from HTML before any JS, then driven by Preloader.tsx */
+      html { background: #efede8 } html[data-theme='dark'] { background: #0d0d0c }
+      .js #root > main { display: none }
+      #loader { --l-bg: #efede8; --l-ink: #141312; --l-mute: #6b675f; --l-acc: #ff4f00; display: none; position: fixed; inset: 0; z-index: 100; align-items: center; justify-content: center; padding: 24px; background: var(--l-bg); color: var(--l-ink) }
+      [data-theme='dark'] #loader { --l-bg: #0d0d0c; --l-ink: #ebe9e4; --l-mute: #8b877f; --l-acc: #ff5c1f }
+      .js #loader { display: flex }
+      .boarded #loader { display: none }
+      @view-transition { navigation: auto; }
+      .ld { margin: 0; font: 12px/1.9 'Geist Mono', ui-monospace, Menlo, monospace; white-space: pre }
+      .ld-name { font: 500 15px/1.6 'Geist', system-ui, sans-serif; letter-spacing: -0.01em }
+      .ld-m { color: var(--l-mute) } .ld-s { font-size: 11px; letter-spacing: .16em }
+      .ld-w { color: var(--l-mute); animation: ld-blink 1s steps(1) infinite } .ld-ok, .ld-a { color: var(--l-acc) } .ld-r { opacity: .4 }
+      @keyframes ld-blink { 50% { opacity: 0 } }
+      @media (prefers-reduced-motion: reduce) { .ld-w { animation: none } }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="loader" role="status" aria-live="polite" aria-label="Loading, 0 percent">
+      <pre class="ld"><span class="ld-name">aditya madan</span>
+<span class="ld-m">corner of the internet</span>
+
+<span class="ld-m ld-s">PRE-FLIGHT</span>
+fonts ............................... <span data-ck="fonts" class="ld-w">..</span>
+portrait ............................ <span data-ck="portrait" class="ld-w">..</span>
+photos .............................. <span data-ck="photos" class="ld-w">..</span>
+sound ............................... <span data-ck="sound" class="ld-w">..</span>
+
+[<span data-bar class="ld-a"></span><span data-rest class="ld-r">░░░░░░░░░░░░░░░░░░░░░░░░</span>]          <span data-pct>0%</span>
+
+<span class="ld-m">♪ music starts with your first click</span></pre>
+    </div>
+    <div id="root">
+      <!-- what crawlers and no-JS visitors get; React replaces it on load -->
+      <main style="max-width:640px;margin:0 auto;padding:48px 20px;font:16px/1.6 system-ui,sans-serif;color:#141312;background:#efede8">
+        <h1 style="font-size:32px;line-height:1.1;margin:0 0 12px">Hi, I'm Aditya.</h1>
+        <p><strong>Software, design, aircraft, and an unreasonable number of open tabs.</strong></p>
+        <p>I'm a student at VIT Vellore, originally from Delhi. I like figuring things out, making things look right, travelling somewhere new, and occasionally spending an embarrassing amount of time researching something that started as a passing thought.</p>
+        <h2 style="font-size:20px;margin:32px 0 8px">Things I've built</h2>
+        <ul>
+          <li><a href="https://loom.buildspace.cv">Loom</a>: bringing GitHub, a résumé and LinkedIn together into one portfolio.</li>
+          <li><a href="https://flux-space.vercel.app">Flux</a>: a task manager that brings urgency into the picture.</li>
+        </ul>
+        <h2 style="font-size:20px;margin:32px 0 8px">Say hi</h2>
+        <p><a href="mailto:adityamadan01@gmail.com">adityamadan01@gmail.com</a> · <a href="https://github.com/Aditya10801">GitHub</a> · <a href="https://www.linkedin.com/in/aditya-madan-90b49526b">LinkedIn</a> · <a href="https://www.instagram.com/your.avg.engineer/">Instagram</a></p>
+        <noscript><p>The full site is an interactive board that needs JavaScript.</p></noscript>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

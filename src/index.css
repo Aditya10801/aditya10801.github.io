@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* self-hosted woff2, latin subset (variable fonts, one file each) */
+@font-face { font-family: 'Geist'; src: url('/fonts/geist.woff2') format('woff2'); font-weight: 300 800; font-style: normal; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Geist Mono'; src: url('/fonts/geist-mono.woff2') format('woff2'); font-weight: 400 500; font-style: normal; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Caveat'; src: url('/fonts/caveat.woff2') format('woff2'); font-weight: 500 700; font-style: normal; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
 @theme inline {
   --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -19,12 +24,13 @@
 :root {
   --bg: #efede8;
   --ink: #141312;
-  --mute: #77736c;
+  --mute: #6b675f;
   --line: rgb(20 19 18 / 0.12);
   --card: #e6e3dc;
   --accent: #ff4f00; /* international orange */
   --sel: #2f5bff; /* figma-ish selection blue */
   --paper: #fbfaf7; /* objects sit on the board as paper */
+  --accent-ink: #b83a00; /* the accent as small text: 4.9:1 on the board, 5.6:1 on paper */
   --obj-shadow: 0 1px 1px rgb(20 19 18 / 0.05), 0 8px 18px -8px rgb(20 19 18 / 0.16), 0 28px 50px -28px rgb(20 19 18 / 0.28);
   --lift-shadow: 0 2px 2px rgb(20 19 18 / 0.05), 0 18px 30px -10px rgb(20 19 18 / 0.22), 0 44px 70px -30px rgb(20 19 18 / 0.32);
   color-scheme: light;
@@ -38,6 +44,7 @@
   --accent: #ff5c1f;
   --sel: #6b8cff;
   --paper: #1a1a18;
+  --accent-ink: #ff5c1f;
   --obj-shadow: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 10px 24px -10px rgb(0 0 0 / 0.6), 0 30px 60px -30px rgb(0 0 0 / 0.7);
   --lift-shadow: 0 1px 0 rgb(255 255 255 / 0.05) inset, 0 20px 36px -12px rgb(0 0 0 / 0.7), 0 50px 80px -30px rgb(0 0 0 / 0.8);
   color-scheme: dark;
@@ -61,12 +68,15 @@ body { background: var(--bg); }
   :focus-visible { outline: 1.5px solid var(--sel); outline-offset: 3px; border-radius: 2px; }
 }
 
+/* accent as text uses the darker ink so small labels pass AA; fills keep the bright orange */
+.text-accent { color: var(--accent-ink); }
+
 /* RollText: letters roll up to an accent copy on hover */
 .roll { display: inline-flex; overflow: hidden; height: 1.3em; line-height: 1.3em; vertical-align: bottom; }
 .roll-c {
   display: inline-block;
   white-space: pre;
-  text-shadow: 0 1.3em var(--accent);
+  text-shadow: 0 1.3em var(--roll, var(--accent));
   transition: transform 0.45s cubic-bezier(0.7, 0, 0.2, 1);
   transition-delay: calc(var(--i) * 16ms);
 }

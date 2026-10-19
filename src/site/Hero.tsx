@@ -1,8 +1,7 @@
-import { Fragment, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react'
+import { Fragment, Suspense, lazy, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'motion/react'
 import VariableProximity from '@/components/VariableProximity'
-import ScrambledText from '@/components/ScrambledText'
 import DecryptedText from '@/components/DecryptedText'
 import Magnet from '@/components/Magnet'
 import AsciiPortrait from './AsciiPortrait'
@@ -10,6 +9,9 @@ import { Sticker } from './Stickers'
 import { Obj, Zone, useFlow, useZoneActive } from './Board'
 import { goto } from './map'
 import { LINKS, Note, RollText, Selectable, asset, istTime, reducedMotion, useClock, useFinePointer } from './ui'
+
+// gsap only powers this one effect, so it loads after first paint; the same text shows meanwhile
+const ScrambledText = lazy(() => import('@/components/ScrambledText'))
 
 
 /* ───────────── meta line: coords · IST clock ───────────── */
@@ -81,11 +83,13 @@ function SayHi() {
     <Magnet padding={40} magnetStrength={3} maxOffset={8}>
       <button
         type="button"
+        aria-label="say hi"
         onClick={() => goto('contact')}
-        className="group relative inline-flex h-10 items-center overflow-hidden rounded-full bg-ink px-5 text-[14px] font-medium text-bg"
+        className="group relative inline-flex h-10 items-center overflow-hidden rounded-full bg-ink px-5 text-[14px] font-medium text-bg transition-colors duration-300 hover:text-[#141312] focus-visible:text-[#141312] active:scale-[0.97] [--roll:currentColor]"
       >
+        <span aria-hidden className="absolute inset-0 -translate-x-[101%] bg-accent transition-transform duration-500 ease-[cubic-bezier(.7,0,.2,1)] group-hover:translate-x-0 group-focus-visible:translate-x-0" />
         <span aria-hidden className="hi-plane pointer-events-none absolute top-[4px] text-[9px] leading-none text-accent">✈</span>
-        <RollText text="say hi" />
+        <span className="relative"><RollText text="say hi" /></span>
       </button>
     </Magnet>
   )
@@ -114,12 +118,10 @@ function Resume() {
     <a
       href={LINKS.resume}
       download="aditya-madan-resume.pdf"
-      aria-label="download resume, pdf"
+      aria-label="resume.pdf, download"
       onMouseEnter={start}
       onMouseLeave={stop}
-      onFocus={start}
-      onBlur={stop}
-      className="group inline-flex items-center gap-1.5 text-[13px] text-mute transition-colors hover:text-ink"
+      className="min-h-[24px] group inline-flex items-center gap-1.5 text-[13px] text-mute transition-colors hover:text-ink"
     >
       <svg aria-hidden viewBox="0 0 14 18" className="h-[15px] w-[12px] shrink-0 overflow-visible transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:-rotate-6">
         <path d="M.5 .5 H9.5 L13.5 4.5 V17.5 H.5 Z" className="fill-bg stroke-ink/50" />
@@ -148,7 +150,7 @@ function Github() {
       href={LINKS.github}
       target="_blank"
       rel="noreferrer"
-      className="relative inline-flex text-[14px] text-ink after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-ink after:transition-transform after:duration-300 hover:after:scale-x-100"
+      className="relative inline-flex min-h-[24px] items-center text-[14px] text-ink after:absolute after:inset-x-0 after:bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-ink after:transition-transform after:duration-300 hover:after:scale-x-100"
       aria-label="github, opens in a new tab"
     >
       <DecryptedText text="github" animateOn="hover" sequential speed={45} characters="01<>/{}#_" encryptedClassName="text-mute" />
@@ -262,6 +264,45 @@ export default function Hero() {
     setPlanes(p => [...p.slice(-3), { id: t, x: r.right, y: r.top + r.height / 2 }])
   }
 
+  // SplitText makes every char inline-block, so words need their own nowrap box or they break mid-word
+  const subline = (
+    <>
+      {['Software,', 'design,'].map((w, i) => (
+        <Fragment key={i}><span className="inline-block whitespace-nowrap">{w}</span>{' '}</Fragment>
+      ))}
+      <span className="inline-block whitespace-nowrap">
+        <span data-plane className="cursor-pointer border-b border-dashed border-ink/35">aircraft</span>,
+      </span>{' '}
+      {'and an unreasonable number of open tabs.'.split(' ').map((w, i) => (
+        <Fragment key={i}><span className="inline-block whitespace-nowrap">{w}</span>{i < 6 && ' '}</Fragment>
+      ))}
+    </>
+  )
+
+  // the paragraphs and buttons: inside the text layer on the board, after the portrait on phones
+  const bodyBlock = (
+    <>
+      <div className="mt-4 max-w-[60ch] space-y-3 text-[15px] leading-[1.6] text-mute">
+        <p>I&apos;m a student at VIT Vellore, originally from Delhi. I like figuring things out, making things look right, travelling somewhere new, and occasionally spending an embarrassing amount of time researching something that started as a passing thought.</p>
+        <p>Some days that means building something on my laptop. Other days it means sitting around with friends, going nowhere in particular, and somehow making an entire evening out of it.</p>
+        <p className="text-ink">Either way, I&apos;m probably thinking about something.</p>
+      </div>
+      <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
+        <SayHi />
+        <Github />
+        <Resume />
+      </div>
+    </>
+  )
+  const portrait = (
+    <Obj x={24} y={64} w={460} r={-1.5} z={1} label="portrait.txt">
+      <Printout active={active}>
+        {/* the one intentional overlap */}
+        <Sticker kind="name" width={flow ? 118 : 150} rotate={-8} className={flow ? '-bottom-7 -right-2' : '-bottom-12 -right-16'} />
+      </Printout>
+    </Obj>
+  )
+
   return (
     <Zone id="hero">
       <style>{`
@@ -296,11 +337,12 @@ export default function Hero() {
             <Clock />
           </div>
           <Selectable name="" className="mt-4 w-fit">
-            <h1 className="vp-h1 text-[clamp(34px,9vw,48px)] font-normal leading-[1.05] tracking-tight text-ink">
+            <h1 aria-label="Hi, I'm Aditya." className="vp-h1 text-[clamp(34px,9vw,48px)] font-normal leading-[1.05] tracking-tight text-ink">
               {/* VariableProximity runs a rAF loop and restyles letters on every mousemove, so only mount it while parked here */}
               {active ? (
                 <VariableProximity
                   label="Hi, I'm Aditya."
+                  srLabel={false}
                   fromFontVariationSettings="'wght' 400"
                   toFontVariationSettings="'wght' 800"
                   containerRef={bodyRef}
@@ -313,39 +355,21 @@ export default function Hero() {
               )}
             </h1>
           </Selectable>
-          <div onMouseOver={e => launch(e)} onClick={e => launch(e, true)}>
-            <ScrambledText className="mt-5 max-w-[40ch] text-[17px] leading-[1.5] text-ink" radius={70} duration={0.9} speed={0.6} scrambleChars=".:/">
-              {/* SplitText makes every char inline-block, so words need their own nowrap box or they break mid-word */}
-              {['Software,', 'design,'].map((w, i) => (
-                <Fragment key={i}><span className="inline-block whitespace-nowrap">{w}</span>{' '}</Fragment>
-              ))}
-              <span className="inline-block whitespace-nowrap">
-                <span data-plane className="cursor-pointer border-b border-dashed border-ink/35">aircraft</span>,
-              </span>{' '}
-              {'and an unreasonable number of open tabs.'.split(' ').map((w, i) => (
-                <Fragment key={i}><span className="inline-block whitespace-nowrap">{w}</span>{i < 6 && ' '}</Fragment>
-              ))}
-            </ScrambledText>
+          <p className="sr-only">Software, design, aircraft, and an unreasonable number of open tabs.</p>
+          <div aria-hidden onMouseOver={e => launch(e)} onClick={e => launch(e, true)}>
+            <Suspense fallback={<div className="mt-5 max-w-[40ch] text-[17px] leading-[1.5] text-ink"><p>{subline}</p></div>}>
+              <ScrambledText className="mt-5 max-w-[40ch] text-[17px] leading-[1.5] text-ink" radius={70} duration={0.9} speed={0.6} scrambleChars=".:/">
+                {subline}
+              </ScrambledText>
+            </Suspense>
           </div>
-          <div className="mt-4 max-w-[60ch] space-y-3 text-[15px] leading-[1.6] text-mute">
-            <p>I&apos;m a student at VIT Vellore, originally from Delhi. I like figuring things out, making things look right, travelling somewhere new, and occasionally spending an embarrassing amount of time researching something that started as a passing thought.</p>
-            <p>Some days that means building something on my laptop. Other days it means sitting around with friends, going nowhere in particular, and somehow making an entire evening out of it.</p>
-            <p className="text-ink">Either way, I&apos;m probably thinking about something.</p>
-          </div>
-          <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
-            <SayHi />
-            <Github />
-            <Resume />
-          </div>
+          {!flow && bodyBlock}
         </div>
       </Obj>
 
-      <Obj x={24} y={64} w={460} r={-1.5} z={1} label="portrait.txt">
-        <Printout active={active}>
-          {/* the one intentional overlap */}
-          <Sticker kind="name" width={flow ? 118 : 150} rotate={-8} className={flow ? '-bottom-7 -right-2' : '-bottom-12 -right-16'} />
-        </Printout>
-      </Obj>
+      {/* phones: the portrait follows the headline, then the paragraphs */}
+      {portrait}
+      {flow && <Obj x={540} y={0} w={440}>{bodyBlock}</Obj>}
 
       <Obj x={848} y={506} w={330} z={2}>
         <Labels />

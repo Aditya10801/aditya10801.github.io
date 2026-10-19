@@ -15,13 +15,13 @@ export const ZONES: Record<ZoneId, Rect> = {
   about: at(1680, 120),
   into: at(3160, 260),
   hangar: at(4640, 180),
-  design: at(4640, 1320),
-  log: at(3160, 1400),
-  now: at(1680, 1320),
-  contact: at(200, 1260),
+  design: at(4640, 1160),
+  log: at(3160, 1240),
+  now: at(1680, 1160),
+  contact: at(200, 1100),
 }
 
-export const WORLD = { w: 6040, h: 2200 }
+export const WORLD = { w: 6040, h: 2040 }
 
 /** Scroll distance per leg of the route. */
 export const SEG = 1100

@@ -1,4 +1,4 @@
-// All audio is synthesized with WebAudio: no files, no licensing. Starts when the visitor enters via the preloader.
+// All audio is synthesized with WebAudio: no files, no licensing. Starts on the visitor's first click or key.
 
 type Sfx = 'tick' | 'click' | 'flap' | 'beep' | 'deny' | 'paper' | 'pop' | 'chime'
 
@@ -179,7 +179,24 @@ export function sfx(name: Sfx) {
 export const soundOn = () => on
 export function onSoundChange(fn: (on: boolean) => void) { listeners.add(fn); return () => { listeners.delete(fn) } }
 
-export function setSound(next: boolean) {
+let decided = false // the visitor turned it on or off themselves
+
+/** Music is on by default, which browsers allow only after a gesture: start it on the first click or key anywhere. */
+export function armMusic() {
+  const go = (e: Event) => {
+    // the terminal's own music controls decide for themselves
+    if ((e.target as Element).closest?.('[data-terminal]')) return
+    disarm()
+    if (!decided) setSound(true)
+  }
+  const disarm = () => { removeEventListener('pointerdown', go, true); removeEventListener('keydown', go, true) }
+  addEventListener('pointerdown', go, true)
+  addEventListener('keydown', go, true)
+  return disarm
+}
+
+export function setSound(next: boolean, byUser = false) {
+  if (byUser) decided = true
   on = next
   if (next) {
     init()

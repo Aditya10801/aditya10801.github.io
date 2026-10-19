@@ -445,7 +445,7 @@ export default function AsciiPortrait({ src, className = '', scattered = false, 
       <button
         type="button"
         onClick={cycle}
-        className="group mt-2 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase leading-none tracking-[0.12em] text-mute transition-colors hover:text-ink"
+        className="group mt-1 inline-flex min-h-[24px] items-center gap-1.5 font-mono text-[10px] uppercase leading-none tracking-[0.12em] text-mute transition-colors hover:text-ink"
       >
         <span aria-hidden className="inline-block text-accent transition-transform duration-300 group-hover:rotate-180">↻</span>
         <span>charset: <span className="text-ink">{SETS[mode].name}</span> ({mode + 1}/{SETS.length})</span>

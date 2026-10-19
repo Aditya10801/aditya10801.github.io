@@ -226,7 +226,7 @@ type PassProps = {
   active: boolean
 }
 
-const FIELD_LBL = 'block text-[11px] tracking-[0.16em] opacity-60'
+const FIELD_LBL = 'block text-[11px] tracking-[0.16em] opacity-85'
 const UNDERLINE = 'relative block border-b border-current/40 transition-colors focus-within:border-current'
 
 function Pass({ form, setForm, cls, setCls, gate, setGate, setHint, denied, deny, send, mailto, scanner, bot, active }: PassProps) {
@@ -447,7 +447,7 @@ function Pass({ form, setForm, cls, setCls, gate, setGate, setHint, denied, deny
                   role="radio"
                   aria-checked={cls === c}
                   onClick={() => setCls(c)}
-                  className={`relative rounded-[3px] border px-2 py-0.5 text-[12px] tracking-[0.1em] transition-[opacity,border-color] ${cls === c ? 'border-current font-medium' : 'border-dashed border-current/35 opacity-60 hover:opacity-100'}`}
+                  className={`relative rounded-[3px] border px-2 py-0.5 text-[12px] tracking-[0.1em] transition-[opacity,border-color] ${cls === c ? 'border-current font-medium' : 'border-dashed border-current/35 opacity-85 hover:opacity-100'}`}
                 >
                   {c}
                   {cls === c && <Stamp key={c} />}
@@ -475,7 +475,7 @@ function Pass({ form, setForm, cls, setCls, gate, setGate, setHint, denied, deny
               onBlur={() => setHint(false)}
               className="group/scan shrink-0 rounded-[3px] bg-current px-2.5 py-1.5 text-[12px] tracking-[0.12em] transition-transform active:scale-95 disabled:opacity-60"
             >
-              <span className="text-accent">
+              <span className="text-[var(--accent)]">
                 REQUEST CLEARANCE <span aria-hidden className="inline-block transition-transform group-hover/scan:translate-x-0.5">→</span>
               </span>
             </button>
@@ -489,7 +489,7 @@ function Pass({ form, setForm, cls, setCls, gate, setGate, setHint, denied, deny
         <dl className={`relative flex shrink-0 gap-4 p-6 ${flow ? 'flex-wrap justify-between' : 'w-[170px] flex-col justify-between'}`}>
           {[['SEAT', 'YOUR CHOICE'], ['FROM', 'WHEREVER YOU ARE'], ['TO', "ADITYA'S INBOX"]].map(([k, v]) => (
             <div key={k}>
-              <dt className="text-[11px] tracking-[0.16em] opacity-60">{k}</dt>
+              <dt className="text-[11px] tracking-[0.16em] opacity-85">{k}</dt>
               <dd className={`font-medium tracking-[0.04em] ${k === 'SEAT' ? 'text-[15px]' : 'text-[12px]'}`}>{v}</dd>
             </div>
           ))}
@@ -578,6 +578,15 @@ function Scanner({ ref, gate, hint, denied, active }: { ref: RefObject<HTMLDivEl
       </div>
       {/* scan window */}
       <div className={`relative mt-3 h-[112px] overflow-hidden rounded-[6px] border bg-ink/[0.04] transition-colors ${gate === 'over' ? 'border-accent' : 'border-line'}`}>
+        {/* idle: a pass-shaped target with scanner brackets, so the window reads as "put it here" */}
+        <div aria-hidden className={`absolute inset-0 grid place-items-center transition-opacity duration-300 ${gate === 'scan' ? 'opacity-0' : 'opacity-100'}`}>
+          <div className={`relative grid h-[58%] w-[70%] place-items-center rounded-[5px] border border-dashed transition-colors ${gate === 'over' ? 'border-accent text-accent' : 'border-ink/25 text-mute'}`}>
+            {['left-[-6px] top-[-6px] border-l border-t', 'right-[-6px] top-[-6px] border-r border-t', 'left-[-6px] bottom-[-6px] border-l border-b', 'right-[-6px] bottom-[-6px] border-r border-b'].map(c => (
+              <span key={c} className={`absolute h-2.5 w-2.5 border-current ${c}`} />
+            ))}
+            <span className="font-mono text-[10px] tracking-[0.14em]">AM 0110 · GATE @</span>
+          </div>
+        </div>
         {gate === 'scan' && !still && (
           <motion.span
             aria-hidden
@@ -613,7 +622,7 @@ function EmailRow() {
   return (
     <li className={ROW}>
       <span className={LBL}>email</span>
-      <button onClick={copy} className={`min-w-0 truncate text-left ${VAL}`} aria-label={`Copy email address ${LINKS.email}`}>
+      <button onClick={copy} className={`min-h-[24px] min-w-0 truncate text-left ${VAL}`} aria-label={`Copy email address ${LINKS.email}`}>
         <DecryptedText
           key={String(copied)}
           text={copied ? `${LINKS.email} ✓` : LINKS.email}
@@ -627,7 +636,7 @@ function EmailRow() {
       <a
         href={`mailto:${LINKS.email}?subject=hi%20aditya`}
         aria-label="Write an email"
-        className="font-mono text-[13px] text-mute transition-[color,translate] hover:-translate-y-0.5 hover:translate-x-0.5 hover:text-accent"
+        className="inline-flex min-h-[24px] min-w-[24px] items-center justify-center font-mono text-[13px] text-mute transition-[color,translate] hover:-translate-y-0.5 hover:translate-x-0.5 hover:text-accent"
       >
         ↗
       </a>
@@ -663,7 +672,6 @@ function GithubRow({ active }: { active: boolean }) {
         className={ROW}
         onPointerEnter={() => setHover(true)}
         onPointerLeave={() => setHover(false)}
-        aria-label="GitHub, github.com/Aditya10801"
       >
         <span className={LBL}>github</span>
         <Magnet padding={24} magnetStrength={5} maxOffset={5} className="min-w-0">
@@ -691,12 +699,12 @@ function LinkedinRow() {
   const draw = 'stroke-accent [stroke-dasharray:1] [stroke-dashoffset:1] transition-[stroke-dashoffset] ease-out group-hover:[stroke-dashoffset:0] group-focus-visible:[stroke-dashoffset:0]'
   return (
     <li>
-      <a href={LINKS.linkedin} target="_blank" rel="noreferrer" className={ROW} aria-label="LinkedIn, linkedin.com/in/aditya-madan">
+      <a href={LINKS.linkedin} target="_blank" rel="noreferrer" className={ROW}>
         <span className={LBL}>linkedin</span>
         <RollText text="linkedin.com/in/aditya-madan" className={VAL} />
-        <svg viewBox="0 0 16 16" fill="none" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5 overflow-visible" aria-hidden>
-          <path d="M3 13 L13 3" className="stroke-mute/40" />
-          <path d="M5.5 3 H13 V10.5" className="stroke-mute/40" />
+        <svg viewBox="0 0 16 16" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-[11px] w-[11px] overflow-visible" aria-hidden>
+          <path d="M3 13 L13 3" className="stroke-mute" />
+          <path d="M5.5 3 H13 V10.5" className="stroke-mute" />
           <path d="M3 13 L13 3" pathLength={1} className={`${draw} duration-300`} />
           <path d="M5.5 3 H13 V10.5" pathLength={1} className={`${draw} duration-200 group-hover:delay-200`} />
         </svg>
@@ -717,7 +725,6 @@ function InstaRow() {
         className={`${ROW} overflow-hidden`}
         onPointerEnter={e => e.pointerType === 'mouse' && snap()}
         onPointerDown={e => e.pointerType !== 'mouse' && snap()}
-        aria-label="Instagram, @your.avg.engineer"
       >
         <span className={LBL}>instagram</span>
         <span key={n} className={`truncate ${VAL}`}>
@@ -775,7 +782,6 @@ function ResumeRow() {
         onFocus={start}
         onBlur={stop}
         onClick={() => pct < 0 && start()}
-        aria-label="Download résumé, PDF"
       >
         <span className={LBL}>résumé</span>
         <span className="flex min-w-0 items-baseline gap-3">
@@ -816,8 +822,7 @@ function FooterLine() {
         </span>
         <span aria-hidden>·</span>
         <span>DELHI ⇄ VELLORE</span>
-        <span aria-hidden>·</span>
-        <button onClick={() => goto(0)} className="group/back tracking-normal text-ink/80 transition-colors hover:text-accent">
+        <button onClick={() => goto(0)} className="group/back flex min-h-[24px] w-full items-center gap-1 tracking-normal text-ink/80 transition-colors hover:text-accent">
           return to departure <span aria-hidden className="inline-block transition-transform duration-500 group-hover/back:-rotate-[360deg]">↺</span>
         </button>
       </p>

@@ -166,7 +166,7 @@ function Hood({ p }: { p: Project }) {
           setOpen(o => !o)
           sfx('click')
         }}
-        className="group/hood flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-mute transition-colors hover:text-ink"
+        className="group/hood flex min-h-[24px] items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-mute transition-colors hover:text-ink"
       >
         <span aria-hidden className={`inline-block transition-transform duration-300 ${open ? 'rotate-45' : 'group-hover/hood:rotate-90'}`}>
           +
@@ -234,7 +234,7 @@ function Dossier({ p, flow }: { p: Project; flow: boolean }) {
             </li>
           ))}
         </ul>
-        <a href={p.href} target="_blank" rel="noreferrer" className="group/link inline-flex items-center gap-1.5 font-mono text-[12px] text-ink">
+        <a href={p.href} target="_blank" rel="noreferrer" className="group/link inline-flex min-h-[24px] items-center gap-1.5 font-mono text-[12px] text-ink">
           <span className="bg-[linear-gradient(currentColor,currentColor)] bg-[length:0%_1px] bg-left-bottom bg-no-repeat pb-px transition-[background-size] duration-300 group-hover/link:bg-[length:100%_1px]">
             {p.host}
           </span>

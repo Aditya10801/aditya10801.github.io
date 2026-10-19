@@ -148,6 +148,8 @@ export default function Terminal() {
 
   // compact welcome once, then it gets out of the way
   useEffect(() => {
+    // phones already show the chips, and the panel would cover the first frame
+    if (board.flow) return
     const id = setTimeout(() => print(WELCOME.map(text => ({ kind: 'out' as const, text }))), 900)
     return () => clearTimeout(id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -210,7 +212,7 @@ export default function Terminal() {
       case 'play':
       case 'mute': {
         const on = head === 'play' ? true : head === 'mute' ? false : arg === 'off' ? false : arg === 'on' ? true : !soundOn()
-        setSound(on)
+        setSound(on, true)
         return say(...(on ? ['♪ lo-fi on, generated live in your browser.', 'currently accepting Punjabi music recommendations, despite having Karan Aujla on repeat.'] : ['muted.']))
       }
       case 'theme': {
@@ -261,7 +263,8 @@ export default function Terminal() {
     'theme',
     'help',
   ].filter(Boolean) as string[]
-  const chips = value ? matches : idle
+  // phones keep one chip (the next stop) when the prompt is idle; the rest unfold on tap
+  const chips = value ? matches : board.flow && !focused ? idle.slice(0, 1) : idle
 
   const onKeyDown = (e: RKeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') { run(value); setValue('') }
@@ -275,7 +278,10 @@ export default function Terminal() {
   }
 
   return (
-    <div className="pointer-events-none fixed inset-x-2 bottom-2 z-50 flex flex-col items-center md:inset-x-0 md:bottom-4">
+    <>
+    {/* a paper band behind the dock (below the flight HUD), so nothing on the board shows through between the chips */}
+    <div aria-hidden className="pointer-events-none fixed inset-x-0 bottom-0 z-[39] h-[86px] bg-gradient-to-t from-bg from-60% to-transparent md:h-[140px] md:from-bg/90 md:from-40%" />
+    <nav aria-label="Site navigation" className="pointer-events-none fixed inset-x-2 bottom-2 z-50 flex flex-col items-center md:inset-x-0 md:bottom-4">
       <div data-terminal className="pointer-events-auto w-full md:w-[min(640px,calc(100vw-620px))] md:min-w-[440px]">
         {/* output */}
         <AnimatePresence>
@@ -299,13 +305,13 @@ export default function Terminal() {
         </AnimatePresence>
 
         {/* suggestion chips */}
-        <div className="mb-1.5 flex gap-1.5 overflow-x-auto [scrollbar-width:none]">
+        <div className={`mb-1.5 gap-1.5 overflow-x-auto [scrollbar-width:none] flex`}>
           {chips.map(c => (
             <button
               key={c}
               onMouseDown={e => e.preventDefault()}
               onClick={() => { run(c); setValue('') }}
-              className="shrink-0 rounded-[3px] border border-ink/10 bg-paper px-2 py-1 font-mono text-[11px] text-mute shadow-obj transition-[color,border-color,translate] hover:-translate-y-px hover:border-accent/60 hover:text-ink"
+              className="shrink-0 rounded-[3px] border border-ink/10 bg-paper px-2 py-1 font-mono text-[11px] text-mute shadow-obj transition-[color,border-color,translate] hover:-translate-y-px hover:border-ink hover:bg-ink hover:text-bg"
             >
               {c}
             </button>
@@ -332,7 +338,8 @@ export default function Terminal() {
               onChange={e => setValue(e.target.value)}
               onKeyDown={onKeyDown}
               onFocus={() => { setFocused(true); if (lines.length) setShowOut(true) }}
-              onBlur={() => setFocused(false)}
+              // let a tap on a chip land before the chips fold away
+              onBlur={() => setTimeout(() => setFocused(false), 180)}
               spellCheck={false}
               autoCapitalize="off"
               autoComplete="off"
@@ -349,6 +356,7 @@ export default function Terminal() {
                 <>
                   <span className="blink inline-block h-[1.05em] w-[0.6em] translate-y-[1px]" style={{ background: C.accent }} />
                   <span className="ml-2 hidden text-[12px] md:inline" style={{ color: C.mute }}>type help, or press /</span>
+                  <span className="ml-2 text-[13px] md:hidden" style={{ color: C.mute }}>tap to fly</span>
                 </>
               ) : null}
             </span>
@@ -358,6 +366,7 @@ export default function Terminal() {
           </span>
         </label>
       </div>
-    </div>
+    </nav>
+    </>
   )
 }

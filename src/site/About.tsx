@@ -11,20 +11,20 @@ const EDGE = 'border border-ink/[0.06]'
 const LEAD =
   'I have a habit of getting interested in things and then wanting to know everything about them. The original question is usually innocent. The next forty-seven browser tabs are not.'
 
-/** Types itself in, two chars at a time, while `go` is true. Untyped text stays invisible so the layout never jumps. */
+/** Types itself in, four chars at a time (about a second), while `go` is true. Untyped text stays invisible so the layout never jumps. */
 function Lead({ go }: { go: boolean }) {
   const [n, setN] = useState(() => (reducedMotion() ? LEAD.length : 0))
   const last = useRef(0)
   useEffect(() => {
     if (!go || n >= LEAD.length) return
     const id = setTimeout(() => {
-      setN(v => Math.min(LEAD.length, v + 2))
+      setN(v => Math.min(LEAD.length, v + 4))
       const now = performance.now()
       if (LEAD[n] !== ' ' && now - last.current > 90) {
         last.current = now
         sfx('flap')
       }
-    }, /[,.]/.test(LEAD[n]) ? 160 : 26)
+    }, /[,.]/.test(LEAD[n]) ? 90 : 18)
     return () => clearTimeout(id)
   }, [go, n])
   return (
@@ -101,7 +101,7 @@ function Paper({ active }: { active: boolean }) {
         <button
           onClick={turn}
           aria-label={page ? 'previous page' : 'next page'}
-          className="group/turn mt-5 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-mute transition-colors hover:text-ink"
+          className="group/turn mt-5 inline-flex min-h-[24px] items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-mute transition-colors hover:text-ink"
         >
           <span className={`inline-block transition-transform ${page ? 'group-hover/turn:-translate-x-1' : 'group-hover/turn:translate-x-1'}`}>{page ? '←' : '→'}</span>
           <span>{page ? 'p.1' : 'p.2'}</span>

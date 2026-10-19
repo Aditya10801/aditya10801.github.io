@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page not found · Aditya Madan</title>
+    <meta name="description" content="This page isn't on the board. Head back to Aditya's corner of the internet." />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#141312" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/geist.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/geist-mono.woff2" as="font" type="font/woff2" crossorigin />
+    <script>
+      try { document.documentElement.dataset.theme = localStorage.getItem('theme') || 'light' } catch { document.documentElement.dataset.theme = 'light' }
+    </script>
+    <style>
+      @font-face { font-family: 'Geist'; src: url('/fonts/geist.woff2') format('woff2'); font-weight: 300 800; font-display: swap; }
+      @font-face { font-family: 'Geist Mono'; src: url('/fonts/geist-mono.woff2') format('woff2'); font-weight: 400 500; font-display: swap; }
+      :root { --bg: #efede8; --ink: #141312; --mute: #6b675f; --paper: #fbfaf7; --accent: #ff4f00; --term: #121211; --term-ink: #e9e7e1; --term-mute: #8b877f; }
+      :root[data-theme='dark'] { --bg: #0d0d0c; --ink: #ebe9e4; --mute: #9a968e; --paper: #1a1a18; --accent: #ff5c1f; }
+      @view-transition { navigation: auto; }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; height: 100%; }
+      body {
+        background: var(--bg) radial-gradient(var(--mute) 1px, transparent 1px) 0 0 / 28px 28px;
+        background-blend-mode: normal;
+        color: var(--ink); font: 16px/1.6 'Geist', system-ui, sans-serif;
+        display: grid; place-items: center; padding: 20px;
+      }
+      body::before { content: ''; position: fixed; inset: 0; background: var(--bg); opacity: .86; z-index: -1; }
+      main { width: min(560px, 100%); }
+      .label { font: 500 11px/1 'Geist Mono', monospace; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); }
+      .label b { color: var(--accent); font-weight: 500; }
+      h1 { font-size: 32px; line-height: 1.1; letter-spacing: -.02em; font-weight: 500; margin: 14px 0 10px; }
+      p { margin: 0 0 28px; color: var(--mute); max-width: 46ch; }
+      .term {
+        background: var(--term); color: var(--term-ink); border-radius: 6px; padding: 18px 20px;
+        font: 13px/1.8 'Geist Mono', monospace; box-shadow: 0 18px 30px -10px rgb(20 19 18 / .3);
+        rotate: -.6deg;
+      }
+      .term .m { color: var(--term-mute); }
+      .term .a { color: var(--accent); }
+      .caret { display: inline-block; width: .6em; height: 1.05em; background: var(--accent); vertical-align: -2px; animation: blink 1s steps(1) infinite; }
+      @keyframes blink { 50% { opacity: 0 } }
+      a.back {
+        position: relative; display: inline-flex; align-items: center; gap: 10px; margin-top: 28px;
+        padding: 10px 18px; border-radius: 999px; background: var(--ink); color: var(--bg);
+        font: 500 14px/1 'Geist', sans-serif; text-decoration: none; overflow: hidden;
+      }
+      a.back::before { content: ''; position: absolute; inset: 0; background: var(--accent); translate: -101% 0; transition: translate .5s cubic-bezier(.7,0,.2,1); }
+      a.back:hover::before, a.back:focus-visible::before { translate: 0 0; }
+      a.back span, a.back i { position: relative; }
+      a.back span { display: inline-block; transition: translate .45s cubic-bezier(.7,0,.2,1), color .3s; }
+      a.back:hover span, a.back:focus-visible span { translate: -3px 0; color: #141312; }
+      a.back i { font-style: normal; display: inline-block; transition: translate .45s cubic-bezier(.7,0,.2,1), color .3s; }
+      a.back:hover i, a.back:focus-visible i { translate: 8px -6px; color: #141312; }
+      a.back:active { scale: .97; }
+      a:focus-visible { outline: 1.5px solid #2f5bff; outline-offset: 3px; }
+      @media (prefers-reduced-motion: reduce) { .caret { animation: none; } * { transition: none !important; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="label"><b>[404]</b> off the board</div>
+      <h1>This page isn't on the flight plan.</h1>
+      <p>Could be a typo. Could be a link that taxied off somewhere. Either way, there's nothing parked here.</p>
+      <div class="term" role="img" aria-label="Terminal: cd to this page fails with no such page">
+        <div><span class="a">aditya</span><span class="m">@board:</span>~ <span class="m">$</span> cd <span id="path">this-page</span></div>
+        <div class="a">cd: no such page. try ls, or go home.</div>
+        <div><span class="a">aditya</span><span class="m">@board:</span>~ <span class="m">$</span> <span class="caret"></span></div>
+      </div>
+      <a class="back" href="/"><span>return to departure</span><i aria-hidden="true">↗</i></a>
+    </main>
+    <script>
+      const p = location.pathname.replace(/^\/+|\/+$/g, '')
+      if (p) document.getElementById('path').textContent = p.slice(0, 40)
+    </script>
+  </body>
+</html>

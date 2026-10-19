@@ -8,3 +8,5 @@ dist
 # local only: raw photos (optimized copies live in public/me) and the moodboard
 /me/
 /references/
+.shots/
+.qa-tools/

@@ -25,8 +25,9 @@ function Terminal({ hot, on }: Art) {
       hot ? script('go test ./...', [' ', 'tests running...', 'expectations high...'], 24, 380) : script('go test ./...', [' ', 'tests running...', 'expectations high...'], 70, 900),
     [hot],
   )
-  const [i, setI] = useState(() => (reducedMotion() ? frames.length - 1 : 0))
-  useEffect(() => setI(reducedMotion() ? frames.length - 1 : 0), [frames])
+  // at rest (zone asleep) the card shows its finished run, so a still frame never reads as an empty prompt
+  const [i, setI] = useState(() => frames.length - 1)
+  useEffect(() => setI(reducedMotion() || !on ? frames.length - 1 : 0), [frames, on])
   useEffect(() => {
     if (!on || reducedMotion()) return
     const id = setTimeout(() => setI(v => (v + 1) % frames.length), frames[i]?.[1] ?? 0)
@@ -340,20 +341,12 @@ function PinnedNote({ n, focused, onFocus, on }: { n: number; focused: boolean; 
   const [artHover, setArtHover] = useState(false)
   const hot = hover || focused
   return (
+    // the whole note is clickable for the mouse; the title is the real button for keyboard and screen readers
     <div
-      role="button"
-      tabIndex={0}
-      aria-expanded={focused}
-      aria-label={title}
       onMouseEnter={fine ? () => setHover(true) : undefined}
       onMouseLeave={fine ? () => setHover(false) : undefined}
       onClick={onFocus}
-      onKeyDown={e => {
-        if (e.key !== 'Enter' && e.key !== ' ') return
-        e.preventDefault()
-        onFocus()
-      }}
-      className="group/pin block cursor-pointer outline-none"
+      className="group/pin block cursor-pointer"
     >
       <div
         className={`relative origin-top border border-ink/[0.06] bg-paper p-5 pt-6 transition-[translate,scale,box-shadow] duration-300 ease-[cubic-bezier(.2,.9,.3,1.2)] ${
@@ -385,7 +378,11 @@ function PinnedNote({ n, focused, onFocus, on }: { n: number; focused: boolean; 
             </div>
           </div>
         </div>
-        <h3 className="mt-4 text-[22px] font-medium leading-tight tracking-tight text-ink">{title}</h3>
+        <h3 className="mt-4 text-[22px] font-medium leading-tight tracking-tight text-ink">
+          <button type="button" aria-expanded={focused} onClick={e => { e.stopPropagation(); onFocus() }} className="text-left">
+            {title}
+          </button>
+        </h3>
         <p className="mt-1.5 text-[15px] leading-[1.6] text-mute">{body[0]}</p>
         <div className={fold(focused)}>
           <div className="min-h-0 overflow-hidden">
@@ -412,7 +409,7 @@ function Interstitial() {
         type="button"
         onClick={() => setOpen(o => !o)}
         aria-expanded={open}
-        className="group/m inline-flex items-baseline gap-1 whitespace-nowrap font-mono text-[13px] text-ink underline decoration-ink/30 underline-offset-4 transition-colors hover:decoration-ink"
+        className="group/m inline-flex min-h-[24px] items-center gap-1 whitespace-nowrap font-mono text-[13px] text-ink underline decoration-ink/30 underline-offset-4 transition-colors hover:decoration-ink"
       >
         a little music detour
         <span aria-hidden className="inline-block transition-transform duration-300 group-hover/m:-rotate-12 group-hover/m:scale-110">♪</span>

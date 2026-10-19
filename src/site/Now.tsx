@@ -48,8 +48,8 @@ function Row({ r, i, live, s, fine, on, pick }: { r: (typeof ROWS)[number]; i: n
     tileColor: '#1d1d1b',
     tileRadius: 2,
     flipDuration: 0.08,
-    stagger: 0.03,
-    flipsPerChar: 5,
+    stagger: 0.018,
+    flipsPerChar: 4,
     // the component sets --split-flap-gap but never uses it, so the gap goes on the flex container
     style: { fontFamily: "'Geist Mono', ui-monospace, monospace", fontWeight: 500, gap: s.gap },
   }
@@ -294,8 +294,8 @@ export default function Now() {
         <Departures visit={visit} active={active} />
       </Obj>
 
-      {/* the one overlap: the notam is tucked over the board's edge */}
-      <Obj x={756} y={156} w={424} r={1.2} z={2} label="notam">
+      {/* the notam sits just off the board, slightly turned */}
+      <Obj x={804} y={156} w={396} r={1.2} z={2} label="notam">
         <Notam seen={visit > 0} />
       </Obj>
     </Zone>

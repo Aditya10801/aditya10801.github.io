@@ -72,7 +72,6 @@ function Canvas({ run, flow }: { run: boolean; flow: boolean }) {
       </div>
       <button
         type="button"
-        aria-label="Replay the prototype: four taps before, two taps after"
         onClick={() => {
           setF(0)
           sfx('click')
@@ -80,7 +79,8 @@ function Canvas({ run, flow }: { run: boolean; flow: boolean }) {
         className={`relative block w-full cursor-default bg-card ${flow ? 'px-4 py-6' : 'px-10 py-9'}`}
         style={{ backgroundImage: 'radial-gradient(var(--line) 1px, transparent 1px)', backgroundSize: '16px 16px' }}
       >
-        <span className={`relative flex items-start justify-center ${flow ? 'gap-5' : 'gap-24'}`}>
+        <span className="sr-only">Replay the prototype: four taps before, two taps after</span>
+        <span aria-hidden className={`relative flex items-start justify-center ${flow ? 'gap-5' : 'gap-24'}`}>
           <Artboard title="before" taps={Math.min(t, 4)} total={4} />
           {/* prototype link between the frames */}
           {!flow && (
@@ -119,7 +119,7 @@ function Spec({ flow }: { flow: boolean }) {
             href="https://apps.apple.com/in/app/messit/id6748703795"
             target="_blank"
             rel="noreferrer"
-            className="group/as mt-1 inline-flex items-center gap-1 text-ink/70 underline decoration-ink/20 underline-offset-4 transition-colors hover:text-ink hover:decoration-accent"
+            className="group/as mt-1 inline-flex min-h-[24px] items-center gap-1 text-ink/70 underline decoration-ink/20 underline-offset-4 transition-colors hover:text-ink hover:decoration-accent"
           >
             MessIT on the App Store
             <span aria-hidden className="inline-block transition-transform duration-300 group-hover/as:-translate-y-0.5 group-hover/as:translate-x-0.5">↗</span>
